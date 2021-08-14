@@ -16,7 +16,7 @@ NOT YET FULLY IMPLEMENTED
     * [*How do I search for posts I've interacted on, with a particular word in them?*](https://meta.stackoverflow.com/q/302648)
     * [*Search Q or A's I've upvoted*](https://meta.stackoverflow.com/q/394635)
   * Why scrape the HTML for this data and not get it via the [StackExchange Data Explorer (SEDE)](https://data.stackexchange.com/)?
-    Unfortunately, up-vote and down-vote data is private. It is anonymized in SEDE. Also, the StackOverflow API also does
+    Unfortunately, up-vote and down-vote data is private. It is anonymized in SEDE. The StackOverflow API also does
     not expose this data. So, it must be scraped from the HTML.
 * Static content is peaceful
 * This is a fun project for me
@@ -66,9 +66,4 @@ Nice! I want to explore this.
 
 ## Reference
 
-* [jsdom](https://github.com/jsdom/jsdom)
-  > A JavaScript implementation of various web standards, for use with Node.js
 * [MDN docs: API docs for *NodeList*](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
-* [WireMock](http://wiremock.org/docs/)
-    * Pay special attention to the [*Request Matching*](http://wiremock.org/docs/request-matching/) and [*
-      Stubbing*](http://wiremock.org/docs/stubbing/) pages.

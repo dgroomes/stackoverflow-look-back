@@ -1,8 +1,4 @@
-// Scrape your own StackOverflow votes data from your profile page.
-//
-// Why scrape for this data and not get it via the StackExchange Data Explorer (SEDE; https://data.stackexchange.com/)?
-// Unfortunately, upvote and downvote data is private. It is anonymized in SEDE. Also, the StackOverflow API doesn't expose
-// this data either. So it must be scraped from the HTML.
+// Scrape your own StackOverflow votes data from your profile page. See the README.
 
 const
     voteType = Symbol('voteType'), // consider using a class to represent vote data instead of symbols.
