@@ -1,14 +1,17 @@
 // Scrape your own StackOverflow votes data from your profile page. See the README.
-
-const
-    voteType = Symbol('voteType'), // consider using a class to represent vote data instead of symbols.
-    question = Symbol('question'),
-    postUrl = Symbol('postUrl'),
-    answer = Symbol('answer');
-
-let votes = [] // The votes data will be scraped from the HTML and collected as "usefully organized" data objects into this array
-
 console.log("Hello from 'scrape-votes.js!")
+
+/**
+ * This is a data class that represents a StackOverflow vote.
+ */
+class Vote {
+    constructor(voteType, postUrl) {
+        this.voteType = voteType
+        this.postUrl = postUrl
+    }
+}
+
+let votes = [] // The votes data will be scraped from the HTML and collected into this array as instances of the "Vote" class
 
 // Get a handle on the "Votes tab" HTML element
 let votesTab = document.getElementById("user-tab-votes")
@@ -31,8 +34,6 @@ function scrapeCurrentPage() {
     // * Question rows will always have an anchor tag ('a') with a class named "question-hyperlink"
     for (let row of votesRows) {
 
-        let vote = {}
-
         // All rows will have an anchor tag which links to the up-voted post. This anchor tag is always inside of a
         // 'b' tag.
         let anchor = row.querySelector('b a')
@@ -41,10 +42,11 @@ function scrapeCurrentPage() {
 
         // todo If it is a question, extract the up-voted question link
 
+        let voteType
         if (anchor.classList.contains('question-hyperlink')) {
-            vote[voteType] = question
+            voteType = "question"
         } else if (anchor.classList.contains('answer-hyperlink')) {
-            vote[voteType] = answer
+            voteType = "answer"
         } else {
             throw new Error(`Did not the expected HTML class that identifies this row as a question or answer. 
 anchor tag: ${anchor.outerHTML}
@@ -52,7 +54,7 @@ row: ${row.outerHTML}
 `)
         }
 
-        vote[postUrl] = anchor.href
+        let vote = new Vote(voteType, anchor.href)
 
         // todo If it is an answer, extract the upvoted answer link
         votes.push(vote)
@@ -80,7 +82,7 @@ row: ${row.outerHTML}
         }
 
         let el = document.querySelector('a[rel=next]');
-        if (el === null){
+        if (el === null) {
             console.log("All pages of the votes tab have been visited. Downloading the votes data to a JSON file...")
             downloadVotesData()
             return
