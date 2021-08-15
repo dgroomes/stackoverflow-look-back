@@ -5,9 +5,16 @@ console.log("Hello from 'scrape-votes.js!")
  * This is a data class that represents a StackOverflow vote.
  */
 class Vote {
-    constructor(voteType, postUrl) {
-        this.voteType = voteType
+
+    /**
+     * @param postType the type of post that the vote was for. Either "question" or "answer"
+     * @param postUrl the URL of the post
+     * @param postId the ID of the post
+     */
+    constructor(postType, postUrl, postId) {
+        this.postType = postType
         this.postUrl = postUrl
+        this.postId = postId
     }
 }
 
@@ -38,15 +45,27 @@ function scrapeCurrentPage() {
         // 'b' tag.
         let anchor = row.querySelector('b a')
 
-        // todo extract the data from the 'date_brick' 'td'
-
-        // todo If it is a question, extract the up-voted question link
-
-        let voteType
+        let postUrl = anchor.href;
+        let postType
+        let postId
         if (anchor.classList.contains('question-hyperlink')) {
-            voteType = "question"
+            postType = "question"
+
+            // Extract the question ID from the URL. The question ID is always after the "questions/" part in the URL.
+            // For example, 54189630 is the ID in the below URL:
+            // https://stackoverflow.com/questions/54189630/kill-all-gradle-daemons-regardless-version
+            let match = /questions\/(?<id>\d+)/.exec(postUrl)
+
+            postId = match.groups.id
         } else if (anchor.classList.contains('answer-hyperlink')) {
-            voteType = "answer"
+            postType = "answer"
+
+            // Extract the answer ID from the URL. The answer ID is at the end of the URL.
+            // For example, 28358529 is the ID in the below URL:
+            // https://stackoverflow.com/questions/28351294/postgres-finding-max-value-in-an-int-array/28358529#28358529
+            let match = /\d+$/.exec(postUrl)
+
+            postId = match[0]
         } else {
             throw new Error(`Did not the expected HTML class that identifies this row as a question or answer. 
 anchor tag: ${anchor.outerHTML}
@@ -54,9 +73,8 @@ row: ${row.outerHTML}
 `)
         }
 
-        let vote = new Vote(voteType, anchor.href)
+        let vote = new Vote(postType, postUrl, postId)
 
-        // todo If it is an answer, extract the upvoted answer link
         votes.push(vote)
     }
     console.log(`Found ${votes.length} total votes!`)
@@ -118,7 +136,6 @@ nextVotesPage()
  * This uses a feature called Data URLs (https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)
  */
 function downloadVotesData() {
-    debugger
     let votesJson = JSON.stringify(votes, null, 2)
     let votesEncoded = encodeURIComponent(votesJson)
 
