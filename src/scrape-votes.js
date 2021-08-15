@@ -69,16 +69,23 @@ row: ${row.outerHTML}
  * accidentally trigger a barrage of page loads due to programming error.
  */
 {
-    const limit = 3
+    const limit = 2
     let attempts = 0
 
     function nextVotesPage() {
-        if (attempts++ > limit) throw new Error(`There have been too many 'next page' attempts. limit=${limit} attempts=${attempts}`)
-        let el = document.querySelector('a[rel=next]');
-        if (el === null){
-            console.log("All pages of the votes tab have been visited.")
+        if (++attempts > limit) {
+            console.info(`The limit has been reached for 'next page' attempts. limit=${limit} attempts=${attempts}`)
+            downloadVotesData()
             return
         }
+
+        let el = document.querySelector('a[rel=next]');
+        if (el === null){
+            console.log("All pages of the votes tab have been visited. Downloading the votes data to a JSON file...")
+            downloadVotesData()
+            return
+        }
+
         el.click()
     }
 }
@@ -102,3 +109,19 @@ observer.observe(document, {
 
 scrapeCurrentPage()
 nextVotesPage()
+
+/**
+ * Download the votes data as a JSON file.
+ *
+ * This uses a feature called Data URLs (https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)
+ */
+function downloadVotesData() {
+    debugger
+    let votesJson = JSON.stringify(votes, null, 2)
+    let votesEncoded = encodeURIComponent(votesJson)
+
+    let el = document.createElement('a')
+    el.setAttribute('href', `data:application/json,${votesEncoded}`)
+    el.setAttribute('download', "stackoverflow-votes.json")
+    el.click()
+}
