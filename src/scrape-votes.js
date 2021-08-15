@@ -74,7 +74,12 @@ row: ${row.outerHTML}
 
     function nextVotesPage() {
         if (attempts++ > limit) throw new Error(`There have been too many 'next page' attempts. limit=${limit} attempts=${attempts}`)
-        document.querySelector('a[rel=next]').click()
+        let el = document.querySelector('a[rel=next]');
+        if (el === null){
+            console.log("All pages of the votes tab have been visited.")
+            return
+        }
+        el.click()
     }
 }
 
