@@ -66,4 +66,5 @@ Nice! I want to explore this.
 
 ## Reference
 
-* [MDN docs: API docs for *NodeList*](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
+* [MDN Web docs: API docs for *NodeList*](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
+* [MDN Web docs: API docs for *MutationObserver*](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)
