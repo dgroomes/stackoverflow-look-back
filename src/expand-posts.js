@@ -25,24 +25,28 @@ class Post {
 let sql
 
 /**
- * Expand a post ID into a post object by querying from the Stack Exchange Data Explorer
+ * Expand a list of post IDs into post objects by querying from the Stack Exchange Data Explorer
  *
- * @param id the post ID
- * @return {Promise<Post>} the fully expanded Stack Overflow post data
+ * @param {Array<Number>} ids the list of post ID
+ * @return {Promise<Array<Post>>} the fully expanded Stack Overflow posts data
  */
-async function expand(id) {
-    // todo execute a SEDE SQL query!
-    console.log(`Query for post information for ID=${id}`)
+async function expand(ids) {
+    console.log(`Querying for post information for posts with ids: ${ids}`)
     document.querySelector('.CodeMirror').CodeMirror.setValue(sql) // Set the SQL query
-    document.querySelector('input[name=PostId]').value = id // Set the parameter
-    document.getElementById("submit-query").click() // Execute the query
+
+    let runQueryBtn = document.getElementById("submit-query");
+    runQueryBtn.click() // Click the 'Run Query' button to prompt the parameters field to show up. The query is not actually run.
+    document.querySelector('input[name=PostIds]').value = `'${ids}'` // Set the parameter
+    runQueryBtn.click() // Run the query
+
+    // todo actually return the data
 }
 
 // This is the main function.
 async function exec() {
 
     // Fetch the source code for the SQL query
-    sql = await fetch(`${origin}/get-post-by-id.sql`)
+    sql = await fetch(`${origin}/get-posts-by-ids.sql`)
         .then(response => response.text())
 
     console.log({sql})
@@ -53,9 +57,8 @@ async function exec() {
 
     console.log({votes})
 
-    for (let vote of votes) {
-        await expand(vote.postId)
-    }
+    let ids = votes.map(vote => vote.postId)
+    await expand(ids)
 }
 
 exec()
