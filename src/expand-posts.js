@@ -79,13 +79,8 @@ function instrumentJQuery() {
                             let {rows} = responseData.resultSets[0]
 
                             // Collect the post data
-                            for (let row of rows) {
-                                let id = row[0]
-                                let type = row[1]
-                                let title = row[2]
-                                let body = row[3]
-                                posts.push(new Post(id, type, title, body))
-                            }
+                            rows.map(([id, type, title, body]) => new Post(id, type, title, body))
+                                .forEach(post => posts.push(post))
 
                             console.log({posts})
 
