@@ -79,10 +79,18 @@ function instrumentJQuery() {
                             let {rows} = responseData.resultSets[0]
 
                             // Collect the post data
-                            rows.map(([id, type, title, body]) => new Post(id, type, title, body))
+                            rows.map(([id, type, title, body]) => {
+                                if (type === 1) {
+                                    type = "question"
+                                } else {
+                                    type = "answer"
+                                }
+                                return new Post(id, type, title, body)
+                            })
                                 .forEach(post => posts.push(post))
 
-                            console.log({posts})
+
+                            downloadPostsData()
 
                             // Finally, delegate to the underlying "original/normal/actual" function.
                             Reflect.apply(...arguments)
@@ -125,7 +133,7 @@ async function exec() {
     console.log({sql})
 
     // Fetch the votes data from the local web server
-    let votes = await fetch(`${origin}/example-votes.json`)
+    let votes = await fetch(`${origin}/stackoverflow-votes.json`)
         .then(response => response.json())
 
     console.log({votes})
@@ -134,6 +142,21 @@ async function exec() {
 
     let ids = votes.map(vote => vote.postId)
     await expand(ids)
+}
+
+/**
+ * Download the posts data as a JSON file.
+ *
+ * This uses a feature called Data URLs (https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)
+ */
+function downloadPostsData() {
+    let json = JSON.stringify(posts, null, 2)
+    let encoded = encodeURIComponent(json)
+
+    let el = document.createElement('a')
+    el.setAttribute('href', `data:application/json,${encoded}`)
+    el.setAttribute('download', "stackoverflow-posts.json")
+    el.click()
 }
 
 exec()

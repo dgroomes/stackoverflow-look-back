@@ -45,6 +45,12 @@ and ceremony of creating a full-on browser extension. Plus, browser extensions a
 Oh wait, there is a [standard browser extensions API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Build_a_cross_browser_extension)?
 Nice! I want to explore this.
 
+The overall flow breaks down like this:
+
+1. Scrape your votes data from <https://stackoverflow.com>
+1. Expand the votes data into posts data using <https://data.stackexchange.com>
+1. Generate a static HTML page from the posts data
+
 ## Instructions
 
 1. Run a local web server:
@@ -65,6 +71,10 @@ Nice! I want to explore this.
       el.src = "http://127.0.0.1:8000/scrape-votes.js"
       document.head.append(el)
       ```
+    * The votes data will be downloaded in a file named `stackoverflow-votes.json`
+1. Move the votes data
+    * Move the downloaded votes data JSON file (`stackoverflow-votes.json`) into the `src/` directory. It is used in the
+      next step
 1. Expand the post data
     * Go to the [Stack Exchange Data Explorer](https://data.stackexchange.com/stackoverflow/query/new)
     * Import some JavaScript code into the browser from the web server. Paste the following into the browser console:
@@ -73,8 +83,12 @@ Nice! I want to explore this.
       el.src = "http://127.0.0.1:8000/expand-posts.js"
       document.head.append(el)
       ```
+    * The posts data will be downloaded in a file named `stackoverflow-posts.json`
+1. Move the posts data
+    * Move the downloaded posts data JSON file (`stackoverflow-posts.json`) into the `src/` directory. It is used in the
+      next step
+1. Generate a static HTML document from the posts data
     * TODO
-1. TODO
 
 ## Reference
 
