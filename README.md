@@ -88,6 +88,7 @@ The overall flow breaks down like this:
     * Move the downloaded posts data JSON file (`stackoverflow-posts.json`) into the `src/` directory. It is used in the
       next step
 1. Generate a static HTML document from the posts data
+    * Open <http://127.0.0.1:8000/generate-html.html> 
     * TODO
 
 ## Reference
@@ -95,3 +96,10 @@ The overall flow breaks down like this:
 * [MDN Web docs: API docs for *NodeList*](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
 * [MDN Web docs: API docs for *MutationObserver*](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)
 * [Meta Stack Exchange: Database schema for the Stack Exchange Data Explorer (SEDE)](https://meta.stackexchange.com/a/2678)
+* Multiple references on recommended/possible ways to render HTML dynamically from JS code in the browser (there are many
+  but there is not an obvious choice!)
+   * [StackOverflow Answer: Use `DOMParser`](https://stackoverflow.com/a/3104237)
+   * [StackOverflow Answer: Use `createElement` and extract the `innerHTML`](https://stackoverflow.com/a/3104251)
+   * [StackOverflow Answer: Use `insertAdjacentHtml`](https://stackoverflow.com/a/19241659)
+   * [StackOverflow Answer: Use `<template>`](https://stackoverflow.com/a/35385518)
+   * [StackOverflow Answer: Use `createContextualFragment`](https://stackoverflow.com/a/7326602/1333713)

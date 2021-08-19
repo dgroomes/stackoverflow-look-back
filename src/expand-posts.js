@@ -12,12 +12,14 @@ class Post {
 
     /**
      * @param id
+     * @param parentId the ID of the parent post. This is nullable. Answer posts have parents but questions do not.
      * @param type the type of post. Either "question" or "answer"
      * @param title the title of the post. This is non-null for questions but is null for answers.
      * @param htmlBody the rendered HTML of the post body
      */
-    constructor(id, type, title, htmlBody) {
+    constructor(id, parentId, type, title, htmlBody) {
         this.id = id
+        this.parentId = parentId
         this.type = type
         this.title = title
         this.htmlBody = htmlBody
@@ -79,13 +81,13 @@ function instrumentJQuery() {
                             let {rows} = responseData.resultSets[0]
 
                             // Collect the post data
-                            rows.map(([id, type, title, body]) => {
+                            rows.map(([id, parentId, type, title, body]) => {
                                 if (type === 1) {
                                     type = "question"
                                 } else {
                                     type = "answer"
                                 }
-                                return new Post(id, type, title, body)
+                                return new Post(id, parentId, type, title, body)
                             })
                                 .forEach(post => posts.push(post))
 

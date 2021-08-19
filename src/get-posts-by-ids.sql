@@ -5,6 +5,7 @@
 DECLARE @PostIds NVARCHAR(max) = ##PostIds## -- For example '39126853,4437573'
 
 SELECT Id,
+       ParentId,
        PostTypeId,
        Title,
        Body

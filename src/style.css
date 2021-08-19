@@ -1,0 +1,41 @@
+p, h1, h2, h3 {
+    font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans", sans-serif;
+    font-family: system-ui, sans-serif;
+}
+
+/* Don't bleed the background color of 'pre' tags into the 'Q' and 'A' floating elements. This is a bit hacky but I don't know how else to do this. */
+pre {
+    overflow: hidden;
+}
+
+body {
+    padding: 8px 50px;
+}
+
+h1, h2, h3, p {
+    color: rgb(36, 39, 41);
+}
+
+.question-title {
+    font-size: 27px;
+    font-weight: 400;
+}
+
+/* Blockquotes should have a leading vertical gray bar for visual impact */
+blockquote {
+    border-left: 5px solid rgb(200, 204, 208);
+    padding: 0.5em 10px;
+}
+
+/* Text contained in a block quote should be slightly grayed out */
+blockquote * {
+    color: rgb(83, 90, 96);
+}
+
+blockquote p {
+    display: inline;
+}
+
+pre {
+    background-color: rgb(246, 246, 246);
+}
