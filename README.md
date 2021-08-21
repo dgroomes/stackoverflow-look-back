@@ -93,6 +93,20 @@ The overall flow breaks down like this:
       It mentions 1500, and 3000 and when I go to exactly 1501 posts (there will be 2 * 1501 = 3002) the last post doesn't
       get rendered correctly. I think that's the limit. This issue does not happen Safari.
 
+## Wish list
+
+General clean ups, TODOs and things I wish to implement for this project:
+
+* Fix the CSS grid problem
+* Get post data for questions that were not up-voted but where there was an up-voted answer to that question. This is a
+  common case. I thought it was rare because I assumed that when I upvote an answer that I would have already upvoted the
+  question. But this isn't the case. I have a about two hundred of these cases. Also, even if I wanted to up-vote the question,
+  some are actually locked! For example, one of the very first things I wanted to search for in my SO static data was for how
+  to get the query parameters of the URL from JavaScript. But the question and answer didn't show up because I didn't upvote
+  the question, only the answer, and it turns out the [question itself is locked](https://stackoverflow.com/q/901115/)! 
+* Create a browser extension for this. The main benefit should be the removal of the manual steps like opening three different
+  web pages and moving the downloaded files to different directories.
+
 ## Reference
 
 * [MDN Web docs: API docs for *NodeList*](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
