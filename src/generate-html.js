@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 // Fetch the StackOverflow posts data and generate a static HTML document with it.
 
@@ -87,12 +87,43 @@ async function exec() {
             continue
         }
 
-        postsEl.insertAdjacentHTML('beforeend', questionHtml(question))
+        postsEl.insertAdjacentHTML("beforeend", questionHtml(question))
 
         for (let answer of answers) {
-            postsEl.insertAdjacentHTML('beforeend', answerHtml(answer))
+            postsEl.insertAdjacentHTML("beforeend", answerHtml(answer))
         }
     }
+
+    downloadHtml()
+}
+
+/**
+ * Serialize the whole document to an HTML string and download it to a file.
+ */
+function downloadHtml() {
+    // The styles from linked stylesheets will not be serialized without extra effort. The styles must be copied into a
+    // <style> tag.
+    let style = document.createElement("style");
+    style.textContent = Array.from(document.styleSheets[0].cssRules)
+        .map(rule => rule.cssText)
+        .join("\n");
+    document.head.prepend(style)
+
+    // Remove the 'link' elements since the styles are now embedded in a 'style' element
+    for (let link of document.getElementsByTagName("link")) {
+        link.remove()
+    }
+
+    let serializer = new XMLSerializer();
+    let html = serializer.serializeToString(document);
+    let htmlEncoded = encodeURIComponent(html)
+
+    let el = document.createElement("a")
+    el.setAttribute("href", `data:text/html,${htmlEncoded}`)
+    el.setAttribute("download", "stackoverflow-posts.html")
+    el.click()
+
+    document.body.innerHTML = "<p>This page generated a static HTML document with the given StackOverflow data and downloaded it to a file. See the README.md for more information.</p>"
 }
 
 exec()
