@@ -88,10 +88,10 @@ The overall flow breaks down like this:
 1. Generate a static HTML document from the posts data
     * Open <http://127.0.0.1:8000/generate-html.html>
     * The downloaded file is the final result! Save it somewhere easily accessible.
-    * Known issue: The visual elements in the page break after the 1500th post. I think this is because of an internal
+    * Known issue: The visual elements in the page break after the 1500th post in Chrome. I think this is because of an internal
       limit on CSS Grid sizes. See the note in the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids).
       It mentions 1500, and 3000 and when I go to exactly 1501 posts (there will be 2 * 1501 = 3002) the last post doesn't
-      get rendered correctly. I think that's the limit.
+      get rendered correctly. I think that's the limit. This issue does not happen Safari.
 
 ## Reference
 
