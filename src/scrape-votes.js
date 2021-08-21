@@ -89,7 +89,7 @@ row: ${row.outerHTML}
  * accidentally trigger a barrage of page loads due to programming error.
  */
 {
-    const limit = 2
+    const limit = 100
     let attempts = 0
 
     function nextVotesPage() {
