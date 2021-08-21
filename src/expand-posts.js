@@ -1,7 +1,5 @@
 // Given a collection of post IDs, expand the posts into the HTML body content and creation dates by querying the data from
 // the Stack Exchange Data Explorer. See the README for more info.
-//
-// NOT YET FULLY IMPLEMENTED
 
 let origin = "http://127.0.0.1:8000"
 
@@ -70,34 +68,39 @@ function instrumentJQuery() {
                         throw new Error("There was no 'success' callback defined in the settings for the ajax request. This is unexpected.")
                     }
 
-                    // Proxy the "success" callback so that we can intercept the result set of successful queries to the Stack Exchange Data Explorer
-                    settings.success = new Proxy(success, {
-                        apply(target, thisArg, argumentsList) {
-                            console.log("The 'success' callback was invoked on this ajax request.")
+                    // We only want to register a proxy over GET HTTP requests to the endpoint starting with the URL "/query/job".
+                    // The response for this request is the SQL query result set.
+                    //
+                    // By contrast, the page also makes a POST request which starts the SQL query on the server side. We
+                    // don't need to track this request.
+                    if (settings.type === "GET" && settings.url.includes("/query/job")) {
+                        // Proxy the "success" callback so that we can intercept the result set of successful queries to the Stack Exchange Data Explorer
+                        settings.success = new Proxy(success, {
+                            apply(target, thisArg, argumentsList) {
+                                let responseData = argumentsList[0];
 
-                            let responseData = argumentsList[0];
+                                // Get the first element in the result sets array. When would this ever be more than one?
+                                let {rows} = responseData.resultSets[0]
 
-                            // Get the first element in the result sets array. When would this ever be more than one?
-                            let {rows} = responseData.resultSets[0]
-
-                            // Collect the post data
-                            rows.map(([id, parentId, type, title, body]) => {
-                                if (type === 1) {
-                                    type = "question"
-                                } else {
-                                    type = "answer"
-                                }
-                                return new Post(id, parentId, type, title, body)
-                            })
-                                .forEach(post => posts.push(post))
+                                // Collect the post data
+                                rows.map(([id, parentId, type, title, body]) => {
+                                    if (type === 1) {
+                                        type = "question"
+                                    } else {
+                                        type = "answer"
+                                    }
+                                    return new Post(id, parentId, type, title, body)
+                                })
+                                    .forEach(post => posts.push(post))
 
 
-                            downloadPostsData()
+                                downloadPostsData()
 
-                            // Finally, delegate to the underlying "original/normal/actual" function.
-                            Reflect.apply(...arguments)
-                        }
-                    })
+                                // Finally, delegate to the underlying "original/normal/actual" function.
+                                Reflect.apply(...arguments)
+                            }
+                        })
+                    }
 
                     return resolvedProp.bind(receiver)(...arguments) // Invoke the "actual" property
                 }
@@ -113,10 +116,13 @@ function instrumentJQuery() {
 /**
  * Expand a list of post IDs into post objects by querying from the Stack Exchange Data Explorer
  *
- * @param {Array<Number>} ids the list of post ID
+ * @param {Array<Number>} ids the list of post IDs
  */
 async function expand(ids) {
-    console.log(`Querying for post information for posts with ids: ${ids}`)
+    console.log({
+        message: "Querying for post information for posts with IDs",
+        id: ids
+    })
     document.querySelector('.CodeMirror').CodeMirror.setValue(sql) // Set the SQL query
 
     let runQueryBtn = document.getElementById("submit-query");
@@ -132,18 +138,24 @@ async function exec() {
     sql = await fetch(`${origin}/get-posts-by-ids.sql`)
         .then(response => response.text())
 
-    console.log({sql})
-
     // Fetch the votes data from the local web server
     let votes = await fetch(`${origin}/stackoverflow-votes.json`)
         .then(response => response.json())
 
-    console.log({votes})
-
     instrumentJQuery()
 
-    let ids = votes.map(vote => vote.postId)
-    await expand(ids)
+    // Create a set of all the answer and question posts IDs. Use a Set data structure to avoid duplicates. When an
+    // answer and its question are both up-voted (this is the common case), then we have two references to the question
+    // ID. So, use a Set to avoid duplicates.
+    let ids = new Set()
+    for (let vote of votes) {
+        ids.add(vote.postId)
+        if (vote.postType === "answer") {
+            ids.add(vote.parentPostId)
+        }
+    }
+    let idsClean = Array.from(ids).sort() // Sorting the IDs is not needed, but helps for reproduce-ability and debugging.
+    await expand(idsClean)
 }
 
 /**

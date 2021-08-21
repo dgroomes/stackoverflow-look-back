@@ -74,7 +74,6 @@ function answerHtml(post) {
  */
 async function exec() {
     let posts = await fetchPostsData()
-    console.log(`posts.length: ${posts.length}`)
     // Known issue. Reduce down to the problematic entries due to CSS grid issue. See the note in the README.
     posts = posts.slice(0, 1500) // the 1501st element isn't rendered correctly
 

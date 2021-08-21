@@ -98,7 +98,7 @@ The overall flow breaks down like this:
 General clean ups, TODOs and things I wish to implement for this project:
 
 * Fix the CSS grid problem
-* Get post data for questions that were not up-voted but where there was an up-voted answer to that question. This is a
+* DONE Get post data for questions that were not up-voted but where there was an up-voted answer to that question. This is a
   common case. I thought it was rare because I assumed that when I upvote an answer that I would have already upvoted the
   question. But this isn't the case. I have a about two hundred of these cases. Also, even if I wanted to up-vote the question,
   some are actually locked! For example, one of the very first things I wanted to search for in my SO static data was for how
@@ -106,6 +106,9 @@ General clean ups, TODOs and things I wish to implement for this project:
   the question, only the answer, and it turns out the [question itself is locked](https://stackoverflow.com/q/901115/)! 
 * Create a browser extension for this. The main benefit should be the removal of the manual steps like opening three different
   web pages and moving the downloaded files to different directories.
+* Consider creating a search bar where multiple terms can be search at once. Originally, I was hoping `Cmd + F` would be
+  good enough for search but when the search term is SQL or bash, a lot of results come up and it's useful to add a second
+  search term to reduce the result. This would add quite a bit of code to the page though.
 
 ## Reference
 
