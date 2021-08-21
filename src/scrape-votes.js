@@ -9,12 +9,14 @@ class Vote {
     /**
      * @param postType the type of post that the vote was for. Either "question" or "answer"
      * @param postUrl the URL of the post
-     * @param postId the ID of the post
+     * @param {Number} postId the ID of the post
+     * @param {Number} parentPostId the ID of the parent post. When the post is an answer, then its parent post is a question. A question does not have a parent and this field will be null.
      */
-    constructor(postType, postUrl, postId) {
+    constructor(postType, postUrl, postId, parentPostId) {
         this.postType = postType
         this.postUrl = postUrl
         this.postId = postId
+        this.parentPostId = parentPostId
     }
 }
 
@@ -47,16 +49,20 @@ function scrapeCurrentPage() {
 
         let postUrl = anchor.href;
         let postType
+        let questionId
         let postId
+        let parentPostId
+
+        // Extract the question ID from the URL. The question ID is always after the "questions/" part in the URL.
+        // For example, 54189630 is the ID in the below URL:
+        // https://stackoverflow.com/questions/54189630/kill-all-gradle-daemons-regardless-version
+        let match = /questions\/(?<id>\d+)/.exec(postUrl)
+        questionId = parseInt(match.groups.id)
+
         if (anchor.classList.contains('question-hyperlink')) {
             postType = "question"
-
-            // Extract the question ID from the URL. The question ID is always after the "questions/" part in the URL.
-            // For example, 54189630 is the ID in the below URL:
-            // https://stackoverflow.com/questions/54189630/kill-all-gradle-daemons-regardless-version
-            let match = /questions\/(?<id>\d+)/.exec(postUrl)
-
-            postId = match.groups.id
+            postId = questionId
+            parentPostId = null
         } else if (anchor.classList.contains('answer-hyperlink')) {
             postType = "answer"
 
@@ -65,7 +71,8 @@ function scrapeCurrentPage() {
             // https://stackoverflow.com/questions/28351294/postgres-finding-max-value-in-an-int-array/28358529#28358529
             let match = /\d+$/.exec(postUrl)
 
-            postId = match[0]
+            postId = parseInt(match[0])
+            parentPostId = questionId
         } else {
             throw new Error(`Did not the expected HTML class that identifies this row as a question or answer. 
 anchor tag: ${anchor.outerHTML}
@@ -73,7 +80,7 @@ row: ${row.outerHTML}
 `)
         }
 
-        let vote = new Vote(postType, postUrl, postId)
+        let vote = new Vote(postType, postUrl, postId, parentPostId)
 
         votes.push(vote)
     }
