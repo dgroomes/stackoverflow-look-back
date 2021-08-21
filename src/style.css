@@ -39,3 +39,16 @@ blockquote p {
 pre {
     background-color: rgb(246, 246, 246);
 }
+
+#posts {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 100px 1fr; /* The first column is the Q or A moniker and the second column is the post content */
+    grid-auto-rows: auto;
+}
+
+.question-answer-moniker {
+    font-size: 300%;
+    text-align: center;
+    margin-top: 20px;
+}

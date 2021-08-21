@@ -49,10 +49,9 @@ function groupByQuestion(posts) {
  * @return {string} HTML
  */
 function questionHtml(post) {
-    return `
-<div class="post">
+    return `<a class="question-answer-moniker" href="https://stackoverflow.com/q/${post.id}">Q</a>
+<div>
     <h1 class="question-title">${post.title}</h1>
-    <div style="float: left; font-size: 300%; padding: 50px"><a href="https://stackoverflow.com/q/${post.id}">Q</a></div> 
     ${post.htmlBody}
 </div>`
 }
@@ -63,9 +62,8 @@ function questionHtml(post) {
  * @return {string} HTML
  */
 function answerHtml(post) {
-    return `
-<div class="post">
-    <div style="float: left; font-size: 300%; padding: 50px"><a href="https://stackoverflow.com/a/${post.id}">A</a></div> 
+    return `<a class="question-answer-moniker" href="https://stackoverflow.com/a/${post.id}">A</a>
+<div>
     ${post.htmlBody}
 </div>`
 }
@@ -94,8 +92,6 @@ async function exec() {
         for (let answer of answers) {
             postsEl.insertAdjacentHTML('beforeend', answerHtml(answer))
         }
-
-        postsEl.insertAdjacentHTML('beforeend', `<hr>`)
     }
 }
 
