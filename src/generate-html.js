@@ -46,7 +46,7 @@ async function generateHtml() {
 
     let postsEl = document.getElementById("posts");
 
-    for (let post of posts.sort()) {
+    for (let post of sortPosts(posts)) {
         postsEl.insertAdjacentHTML("beforeend", post.toHtml())
     }
 
