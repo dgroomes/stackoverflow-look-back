@@ -98,7 +98,7 @@ The overall flow breaks down like this:
 General clean ups, TODOs and things I wish to implement for this project:
 
 * DONE Make an `entrypoint.js` file instead of re-using both `scrape-votes.js` and `expand-posts.js` independently
-* Get more re-use out of code. For example, re-use the Votes class between the scrape votes functionality and expand posts
+* IN PROGRESS Get more re-use out of code. For example, re-use the Votes class between the scrape votes functionality and expand posts
   functionality
 * Fix the CSS grid problem
 * DONE Get post data for questions that were not up-voted but where there was an up-voted answer to that question. This is a
@@ -112,6 +112,10 @@ General clean ups, TODOs and things I wish to implement for this project:
 * Consider creating a search bar where multiple terms can be search at once. Originally, I was hoping `Cmd + F` would be
   good enough for search but when the search term is SQL or bash, a lot of results come up and it's useful to add a second
   search term to reduce the result. This would add quite a bit of code to the page though.
+* Consider using modules, but also consider to NOT use modules. Modules are modern, but modules aren't exported in the global
+  context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is kind of
+  a major bummer. Also modules can't be imported in web workers in Safari and FireFox so that is also a bummer when considering
+  converting this tool to a browser extension.
 
 ## Reference
 

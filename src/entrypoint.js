@@ -25,9 +25,14 @@ function includeScript(url) {
     return promise
 }
 
-Promise.all([
-    includeScript(`${origin}/scrape-votes.js`),
-    includeScript(`${origin}/expand-posts.js`)])
+const scripts = [
+    "scrape-votes.js",
+    "expand-posts.js",
+    "vote.js",
+    "post.js"
+]
+
+Promise.all(scripts.map(urlPath => includeScript(`${origin}/${urlPath}`)))
     .then(results => {
         let resultsPrintable = JSON.stringify(results, null, 2);
         console.log(`All dynamically added JavaScript source files have been loaded: ${resultsPrintable}`)
