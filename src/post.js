@@ -4,6 +4,23 @@
 class Post {
 
     /**
+     * Deserialize from a data object to a concrete Post instance.
+     * @param postData a regular object that includes the raw post data
+     * @return {Post} a Post object. It's an instance of either Question or Answer.
+     */
+    static deserialize(postData) {
+        let {type, id, htmlBody} = postData
+
+        if (type === "question") {
+            return new Question(id, postData.title, htmlBody)
+        } else if (postData.type === "answer") {
+            return new Answer(id, postData.questionId, htmlBody)
+        } else {
+            throw new Error(`Unrecognized post type '${type}'`)
+        }
+    }
+
+    /**
      * @param id
      * @param htmlBody the rendered HTML of the post body
      */

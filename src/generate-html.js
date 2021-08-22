@@ -7,18 +7,10 @@
  * @return {array<Post>} array of posts data
  */
 async function fetchPostsData() {
-    let json = await fetch(`${origin}/stackoverflow-posts.json`)
+    let postsData = await fetch(`${origin}/stackoverflow-posts.json`)
         .then(response => response.json())
 
-    return json.map(post => {
-        if (post.type === "question") {
-            return new Question(post.id, post.title, post.htmlBody)
-        } else if (post.type === "answer") {
-            return new Answer(post.id, post.questionId, post.htmlBody)
-        } else {
-            throw new Error(`Unrecognized post type '${post.type}'`)
-        }
-    })
+    return postsData.map(postData => Post.deserialize(postData))
 }
 
 /**

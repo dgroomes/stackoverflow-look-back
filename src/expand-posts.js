@@ -30,16 +30,10 @@ async function expandByIds(ids) {
  */
 async function fetchVotes() {
     // Fetch the votes data from the local web server
-    let votesJson = await fetch(`${origin}/stackoverflow-votes.json`)
+    let votesData = await fetch(`${origin}/stackoverflow-votes.json`)
         .then(response => response.json())
 
-    return votesJson.map(vote => {
-        if (vote.postType === "question") {
-            return new QuestionVote(vote.url)
-        } else {
-            return new AnswerVote(vote.url)
-        }
-    })
+    return votesData.map(voteData => Vote.deserialize(voteData))
 }
 
 /**
