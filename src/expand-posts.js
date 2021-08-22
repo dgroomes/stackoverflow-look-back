@@ -54,7 +54,6 @@ function downloadPostsDateToFile(resultSets) {
 
     let json = JSON.stringify(posts, null, 2)
 
-
     // Download the posts data as a JSON file.
     downloadToFile(json, "stackoverflow-posts.json")
 }
@@ -83,13 +82,7 @@ async function expandPosts() {
     // Create a set of all the answer and question posts IDs. Use a Set data structure to avoid duplicates. When an
     // answer and its question are both up-voted (this is the common case), then we have two references to the question
     // ID. So, use a Set to avoid duplicates.
-    let ids = new Set()
-    for (let vote of votes) {
-        ids.add(vote.id)
-        if (vote instanceof AnswerVote) {
-            ids.add(vote.questionId)
-        }
-    }
-    let idsClean = Array.from(ids).sort() // Sorting the IDs is not needed, but helps for reproduce-ability and debugging.
-    await expandByIds(idsClean)
+    let idsUnique = new Set(votes.flatMap(vote => vote.ids))
+    let idsSorted = Array.from(idsUnique).sort() // Sorting the IDs is not needed, but helps for reproduce-ability and debugging.
+    await expandByIds(idsSorted)
 }

@@ -37,6 +37,13 @@ class Post {
     }
 
     /**
+     * This function is used by functions like "sort" to sort elements by their natural order.
+     */
+    compare() {
+        throw new Error("Must be implemented on sub-classes")
+    }
+
+    /**
      * Generate an HTML string for this post.
      * @return {string} HTML
      */
@@ -80,6 +87,10 @@ class Question extends Post {
         return "question";
     }
 
+    compare() {
+        return [this.id, 0] // Questions should always appear before answers so return '0'
+    }
+
     toHtml() {
         return `<a class="question-answer-moniker" href="https://stackoverflow.com/q/${this.id}">Q</a>
 <div>
@@ -106,6 +117,10 @@ class Answer extends Post {
 
     get type() {
         return "answer"
+    }
+
+    compare() {
+        return [this.questionId, this.id]
     }
 
     toHtml() {

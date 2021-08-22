@@ -14,20 +14,6 @@ async function fetchPostsData() {
 }
 
 /**
- * Sort the posts data. Every question post is followed by its answer posts.
- * @param {array<Post>} posts
- */
-function sortPosts(posts) {
-    return posts.sort(post => {
-        if (post instanceof Question) {
-            return [post.id, 0]
-        } else {
-            return [post.questionId, post.id]
-        }
-    })
-}
-
-/**
  * This is the main function!
  * @return {Promise<void>}
  */
@@ -38,7 +24,10 @@ async function generateHtml() {
 
     let postsEl = document.getElementById("posts");
 
-    for (let post of sortPosts(posts)) {
+     // Sort the posts data. Every question post is followed by its answer posts.
+    let sorted = posts.sort(post => post.compare());
+
+    for (let post of sorted) {
         postsEl.insertAdjacentHTML("beforeend", post.toHtml())
     }
 

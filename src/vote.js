@@ -38,6 +38,13 @@ class Vote {
     constructor(id) {
         this.id = id
     }
+
+    /**
+     * @return {array<Number>} the IDs related to this post
+     */
+    get ids() {
+        throw new Error("Must be implemented on sub-classes")
+    }
 }
 
 /**
@@ -47,6 +54,10 @@ class QuestionVote extends Vote {
 
     constructor(id) {
         super(id);
+    }
+
+    get ids() {
+        return [this.id]
     }
 }
 
@@ -58,5 +69,9 @@ class AnswerVote extends Vote {
     constructor(id, questionId) {
         super(id)
         this.questionId = questionId
+    }
+
+    get ids() {
+        return [this.id, this.questionId]
     }
 }
