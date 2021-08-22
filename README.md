@@ -66,7 +66,7 @@ The overall flow breaks down like this:
     * Import some JavaScript code into the browser from the web server. Paste the following into the browser console:
       ```javascript
       let el = document.createElement("script")
-      el.src = "http://127.0.0.1:8000/scrape-votes.js"
+      el.src = "http://127.0.0.1:8000/entrypoint.js"
       document.head.append(el)
       ```
     * The votes data will be downloaded in a file named `stackoverflow-votes.json`
@@ -78,7 +78,7 @@ The overall flow breaks down like this:
     * Import some JavaScript code into the browser from the web server. Paste the following into the browser console:
       ```javascript
       let el = document.createElement("script")
-      el.src = "http://127.0.0.1:8000/expand-posts.js"
+      el.src = "http://127.0.0.1:8000/entrypoint.js"
       document.head.append(el)
       ```
     * The posts data will be downloaded in a file named `stackoverflow-posts.json`
@@ -97,6 +97,9 @@ The overall flow breaks down like this:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
+* DONE Make an `entrypoint.js` file instead of re-using both `scrape-votes.js` and `expand-posts.js` independently
+* Get more re-use out of code. For example, re-use the Votes class between the scrape votes functionality and expand posts
+  functionality
 * Fix the CSS grid problem
 * DONE Get post data for questions that were not up-voted but where there was an up-voted answer to that question. This is a
   common case. I thought it was rare because I assumed that when I upvote an answer that I would have already upvoted the
@@ -122,3 +125,5 @@ General clean ups, TODOs and things I wish to implement for this project:
    * [StackOverflow Answer: Use `insertAdjacentHtml`](https://stackoverflow.com/a/19241659)
    * [StackOverflow Answer: Use `<template>`](https://stackoverflow.com/a/35385518)
    * [StackOverflow Answer: Use `createContextualFragment`](https://stackoverflow.com/a/7326602/1333713)
+* [Chrome extensions docs](https://developer.chrome.com/docs/extensions/mv3/getstarted/)
+* [MDN Web docs: *JavaScript modules*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)

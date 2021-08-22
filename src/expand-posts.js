@@ -1,8 +1,6 @@
 // Given a collection of post IDs, expand the posts into the HTML body content and creation dates by querying the data from
 // the Stack Exchange Data Explorer. See the README for more info.
 
-let origin = "http://127.0.0.1:8000"
-
 /**
  * A StackOverflow post
  */
@@ -132,7 +130,7 @@ async function expand(ids) {
 }
 
 // This is the main function.
-async function exec() {
+async function expandPosts() {
 
     // Fetch the source code for the SQL query
     sql = await fetch(`${origin}/get-posts-by-ids.sql`)
@@ -172,5 +170,3 @@ function downloadPostsData() {
     el.setAttribute('download', "stackoverflow-posts.json")
     el.click()
 }
-
-exec()

@@ -1,5 +1,4 @@
 // Scrape your own StackOverflow votes data from your profile page. See the README.
-console.log("Hello from 'scrape-votes.js!")
 
 /**
  * This is a data class that represents a StackOverflow vote.
@@ -23,7 +22,7 @@ class Vote {
 let votes = [] // The votes data will be scraped from the HTML and collected into this array as instances of the "Vote" class
 
 // Get a handle on the "Votes tab" HTML element
-let votesTab = document.getElementById("user-tab-votes")
+let votesTab
 
 /**
  * Scrape the current page of votes data.
@@ -117,25 +116,32 @@ row: ${row.outerHTML}
     }
 }
 
-let observer = new MutationObserver(function (mutations) {
-    for (let mutation of mutations) {
-        if (!votesTab.isConnected) {
-            // The votes tab was disconnected! It must have been replaced by a new.
-            votesTab = document.getElementById("user-tab-votes")
-            scrapeCurrentPage()
-            setTimeout(nextVotesPage, 1000) // Trigger the next votes page, but with rate limiting
-            return
+/**
+ * This is the main function
+ */
+function scrapeVotes() {
+    votesTab = document.getElementById("user-tab-votes")
+
+    let observer = new MutationObserver(function (mutations) {
+        for (let mutation of mutations) {
+            if (!votesTab.isConnected) {
+                // The votes tab was disconnected! It must have been replaced by a new.
+                votesTab = document.getElementById("user-tab-votes")
+                scrapeCurrentPage()
+                setTimeout(nextVotesPage, 1000) // Trigger the next votes page, but with rate limiting
+                return
+            }
         }
-    }
-})
+    })
 
-observer.observe(document, {
-    subtree: true, // Monitor all sub-elements (children, children of children, etc) for mutations
-    childList: true, // Monitor for the addition and removal of elements on the target element,
-})
+    observer.observe(document, {
+        subtree: true, // Monitor all sub-elements (children, children of children, etc) for mutations
+        childList: true, // Monitor for the addition and removal of elements on the target element,
+    })
 
-scrapeCurrentPage()
-nextVotesPage()
+    scrapeCurrentPage()
+    nextVotesPage()
+}
 
 /**
  * Download the votes data as a JSON file.
