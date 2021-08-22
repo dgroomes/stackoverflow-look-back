@@ -1,7 +1,7 @@
 /**
  * A StackOverflow post
  */
-export class Post {
+class Post {
 
     /**
      * @param id

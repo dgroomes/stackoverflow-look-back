@@ -72,7 +72,7 @@ function answerHtml(post) {
  * This is the main function!
  * @return {Promise<void>}
  */
-async function exec() {
+async function generateHtml() {
     let posts = await fetchPostsData()
     // Known issue. Reduce down to the problematic entries due to CSS grid issue. See the note in the README.
     posts = posts.slice(0, 1500) // the 1501st element isn't rendered correctly
@@ -118,14 +118,8 @@ function downloadHtml() {
 
     let serializer = new XMLSerializer();
     let html = serializer.serializeToString(document);
-    let htmlEncoded = encodeURIComponent(html)
 
-    let el = document.createElement("a")
-    el.setAttribute("href", `data:text/html,${htmlEncoded}`)
-    el.setAttribute("download", "stackoverflow-posts.html")
-    el.click()
+    downloadToFile(html, "stackoverflow-posts.html")
 
     document.body.innerHTML = "<p>This page generated a static HTML document with the given StackOverflow data and downloaded it to a file. See the README.md for more information.</p>"
 }
-
-exec()

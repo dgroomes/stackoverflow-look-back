@@ -3,6 +3,7 @@
 // either scrape for the votes data or expand the posts data.
 
 const origin = "http://127.0.0.1:8000"
+const votesPageLimit = 3
 
 /**
  * Include a script dependency.
@@ -28,8 +29,10 @@ function includeScript(url) {
 const scripts = [
     "scrape-votes.js",
     "expand-posts.js",
+    "generate-html.js",
     "vote.js",
-    "post.js"
+    "post.js",
+    "download-to-file.js"
 ]
 
 Promise.all(scripts.map(urlPath => includeScript(`${origin}/${urlPath}`)))
@@ -46,6 +49,8 @@ Promise.all(scripts.map(urlPath => includeScript(`${origin}/${urlPath}`)))
         } else if (origin === "https://data.stackexchange.com" && pathname.startsWith("/stackoverflow/query/new")) {
             // The current page is the Stack Exchange Data Explorer. We are in the context for expanding the posts data.
             expandPosts()
+        } else if (pathname.startsWith("/generate-html.html")) {
+            generateHtml()
         } else {
             console.error(`Unexpected page: ${window.location}`)
         }

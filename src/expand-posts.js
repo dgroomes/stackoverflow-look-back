@@ -71,7 +71,11 @@ function instrumentJQuery() {
                                     .forEach(post => posts.push(post))
 
 
-                                downloadPostsData()
+                                let json = JSON.stringify(posts, null, 2)
+
+
+                                // Download the posts data as a JSON file.
+                                downloadToFile(json, "stackoverflow-posts.json")
 
                                 // Finally, delegate to the underlying "original/normal/actual" function.
                                 Reflect.apply(...arguments)
@@ -133,19 +137,4 @@ async function expandPosts() {
     }
     let idsClean = Array.from(ids).sort() // Sorting the IDs is not needed, but helps for reproduce-ability and debugging.
     await expand(idsClean)
-}
-
-/**
- * Download the posts data as a JSON file.
- *
- * This uses a feature called Data URLs (https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)
- */
-function downloadPostsData() {
-    let json = JSON.stringify(posts, null, 2)
-    let encoded = encodeURIComponent(json)
-
-    let el = document.createElement('a')
-    el.setAttribute('href', `data:application/json,${encoded}`)
-    el.setAttribute('download', "stackoverflow-posts.json")
-    el.click()
 }

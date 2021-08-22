@@ -76,12 +76,11 @@ row: ${row.outerHTML}
  * accidentally trigger a barrage of page loads due to programming error.
  */
 {
-    const limit = 100
     let attempts = 0
 
     function nextVotesPage() {
-        if (++attempts > limit) {
-            console.info(`The limit has been reached for 'next page' attempts. limit=${limit} attempts=${attempts}`)
+        if (++attempts > votesPageLimit) {
+            console.info(`The limit has been reached for 'next page' attempts. limit=${votesPageLimit} attempts=${attempts}`)
             downloadVotesData()
             return
         }
@@ -126,15 +125,8 @@ function scrapeVotes() {
 
 /**
  * Download the votes data as a JSON file.
- *
- * This uses a feature called Data URLs (https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)
  */
 function downloadVotesData() {
     let votesJson = JSON.stringify(votes, null, 2)
-    let votesEncoded = encodeURIComponent(votesJson)
-
-    let el = document.createElement('a')
-    el.setAttribute('href', `data:application/json,${votesEncoded}`)
-    el.setAttribute('download', "stackoverflow-votes.json")
-    el.click()
+    downloadToFile(votesJson, "stackoverflow-votes.json")
 }
