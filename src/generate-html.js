@@ -22,60 +22,17 @@ async function fetchPostsData() {
 }
 
 /**
- * Group the posts data by question. Answer posts should be grouped with their parent question.
+ * Sort the posts data. Every question post is followed by its answer posts.
  * @param {array<Post>} posts
  */
-function groupByQuestion(posts) {
-    let map = new Map()
-
-    for (let post of posts) {
-        let questionId
-        let insert
-        if (post instanceof Answer) {
-            questionId = post.questionId
-            insert = (entry) => entry.answers.push(post)
+function sortPosts(posts) {
+    return posts.sort(post => {
+        if (post instanceof Question) {
+            return [post.id, 0]
         } else {
-            questionId = post.id
-            insert = (entry) => entry.question = post
+            return [post.questionId, post.id]
         }
-
-        let entry
-        if (!map.has(questionId)) {
-            entry = {answers: []}
-            map.set(questionId, entry)
-        } else {
-            entry = map.get(questionId)
-        }
-
-        insert(entry)
-    }
-
-    return map
-}
-
-/**
- * Generate the HTML for a question post
- * @param {Question} question a StackOverflow post of type "question"
- * @return {string} HTML
- */
-function questionHtml(question) {
-    return `<a class="question-answer-moniker" href="https://stackoverflow.com/q/${question.id}">Q</a>
-<div>
-    <h1 class="question-title">${question.title}</h1>
-    ${question.htmlBody}
-</div>`
-}
-
-/**
- * Generate the HTML for an answer post
- * @param {Answer} answer a StackOverflow post of type "answer"
- * @return {string} HTML
- */
-function answerHtml(answer) {
-    return `<a class="question-answer-moniker" href="https://stackoverflow.com/a/${answer.id}">A</a>
-<div>
-    ${answer.htmlBody}
-</div>`
+    })
 }
 
 /**
@@ -87,17 +44,10 @@ async function generateHtml() {
     // Known issue. Reduce down to the problematic entries due to CSS grid issue. See the note in the README.
     posts = posts.slice(0, 1500) // the 1501st element isn't rendered correctly
 
-    let grouped = groupByQuestion(posts)
-    console.log({grouped})
-
     let postsEl = document.getElementById("posts");
 
-    for (let [questionId, {question, answers}] of grouped) {
-        postsEl.insertAdjacentHTML("beforeend", questionHtml(question))
-
-        for (let answer of answers) {
-            postsEl.insertAdjacentHTML("beforeend", answerHtml(answer))
-        }
+    for (let post of posts.sort()) {
+        postsEl.insertAdjacentHTML("beforeend", post.toHtml())
     }
 
     downloadHtml()

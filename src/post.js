@@ -15,7 +15,17 @@ class Post {
     /**
      * Returns the type. Either "question" or "answer"
      */
-    get type() { throw new Error("Must be implemented on sub-classes") }
+    get type() {
+        throw new Error("Must be implemented on sub-classes")
+    }
+
+    /**
+     * Generate an HTML string for this post.
+     * @return {string} HTML
+     */
+    toHtml() {
+        throw new Error("Must be implemented on sub-classes")
+    }
 
     /**
      * Define the toJSON function so that JSON.stringify picks up the "key" field and all the normal fields.
@@ -52,6 +62,14 @@ class Question extends Post {
     get type() {
         return "question";
     }
+
+    toHtml() {
+        return `<a class="question-answer-moniker" href="https://stackoverflow.com/q/${this.id}">Q</a>
+<div>
+    <h1 class="question-title">${this.title}</h1>
+    ${this.htmlBody}
+</div>`
+    }
 }
 
 /**
@@ -71,5 +89,12 @@ class Answer extends Post {
 
     get type() {
         return "answer"
+    }
+
+    toHtml() {
+        return `<a class="question-answer-moniker" href="https://stackoverflow.com/a/${this.id}">A</a>
+<div>
+    ${this.htmlBody}
+</div>`
     }
 }
