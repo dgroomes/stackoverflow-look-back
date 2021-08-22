@@ -1,18 +1,51 @@
+// Extract the question ID from the URL. The question ID is always after the "questions/" part in the URL.
+// For example, 54189630 is the ID in the below URL:
+// https://stackoverflow.com/questions/54189630/kill-all-gradle-daemons-regardless-version
+function _extractQuestionId(url) {
+    let match = /questions\/(?<id>\d+)/.exec(url)
+    return parseInt(match.groups.id)
+}
+
 /**
- * This is a data class that represents a StackOverflow vote.
+ * * A StackOverflow vote on a post (either a question post or an answer post).
  */
 class Vote {
 
     /**
-     * @param postType the type of post that the vote was for. Either "question" or "answer"
-     * @param postUrl the URL of the post
-     * @param {Number} postId the ID of the post
-     * @param {Number} parentPostId the ID of the parent post. When the post is an answer, then its parent post is a question. A question does not have a parent and this field will be null.
+     * @param {Number} id the ID of the post that was voted on
      */
-    constructor(postType, postUrl, postId, parentPostId) {
-        this.postType = postType
-        this.postUrl = postUrl
-        this.postId = postId
-        this.parentPostId = parentPostId
+    constructor(id) {
+        this.id = id
+    }
+}
+
+/**
+ * A StackOverflow vote on a question.
+ */
+class QuestionVote extends Vote {
+
+    constructor(url) {
+        let questionId = _extractQuestionId(url);
+        super(questionId);
+    }
+}
+
+/**
+ * A StackOverflow vote on an answer.
+ */
+class AnswerVote extends Vote {
+
+    constructor(url) {
+        let questionId = _extractQuestionId(url);
+
+        // Extract the answer ID from the URL. The answer ID is at the end of the URL.
+        // For example, 28358529 is the ID in the below URL:
+        // https://stackoverflow.com/questions/28351294/postgres-finding-max-value-in-an-int-array/28358529#28358529
+        let match = /\d+$/.exec(url)
+        let id = parseInt(match[0])
+
+        super(id)
+
+        this.questionId = questionId
     }
 }

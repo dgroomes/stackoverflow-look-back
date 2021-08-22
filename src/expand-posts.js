@@ -115,6 +115,24 @@ async function expand(ids) {
     runQueryBtn.click() // Run the query
 }
 
+/**
+ * Fetch the votes data from the local web server
+ * @return {Array<Vote>}
+ */
+async function fetchVotes() {
+    // Fetch the votes data from the local web server
+    let votesJson = await fetch(`${origin}/stackoverflow-votes.json`)
+        .then(response => response.json())
+
+    return votesJson.map(vote => {
+        if (vote.postType === "question") {
+            return new QuestionVote(vote.url)
+        } else {
+            return new AnswerVote(vote.url)
+        }
+    })
+}
+
 // This is the main function.
 async function expandPosts() {
 
@@ -122,9 +140,7 @@ async function expandPosts() {
     sql = await fetch(`${origin}/get-posts-by-ids.sql`)
         .then(response => response.text())
 
-    // Fetch the votes data from the local web server
-    let votes = await fetch(`${origin}/stackoverflow-votes.json`)
-        .then(response => response.json())
+    let votes = await fetchVotes()
 
     instrumentJQuery()
 
@@ -133,9 +149,9 @@ async function expandPosts() {
     // ID. So, use a Set to avoid duplicates.
     let ids = new Set()
     for (let vote of votes) {
-        ids.add(vote.postId)
-        if (vote.postType === "answer") {
-            ids.add(vote.parentPostId)
+        ids.add(vote.id)
+        if (vote instanceof AnswerVote) {
+            ids.add(vote.questionId)
         }
     }
     let idsClean = Array.from(ids).sort() // Sorting the IDs is not needed, but helps for reproduce-ability and debugging.

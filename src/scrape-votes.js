@@ -27,42 +27,19 @@ function scrapeCurrentPage() {
         // 'b' tag.
         let anchor = row.querySelector('b a')
 
-        let postUrl = anchor.href;
         let postType
-        let questionId
-        let postId
-        let parentPostId
-
-        // Extract the question ID from the URL. The question ID is always after the "questions/" part in the URL.
-        // For example, 54189630 is the ID in the below URL:
-        // https://stackoverflow.com/questions/54189630/kill-all-gradle-daemons-regardless-version
-        let match = /questions\/(?<id>\d+)/.exec(postUrl)
-        questionId = parseInt(match.groups.id)
-
         if (anchor.classList.contains('question-hyperlink')) {
             postType = "question"
-            postId = questionId
-            parentPostId = null
         } else if (anchor.classList.contains('answer-hyperlink')) {
             postType = "answer"
-
-            // Extract the answer ID from the URL. The answer ID is at the end of the URL.
-            // For example, 28358529 is the ID in the below URL:
-            // https://stackoverflow.com/questions/28351294/postgres-finding-max-value-in-an-int-array/28358529#28358529
-            let match = /\d+$/.exec(postUrl)
-
-            postId = parseInt(match[0])
-            parentPostId = questionId
         } else {
-            throw new Error(`Did not the expected HTML class that identifies this row as a question or answer. 
+            throw new Error(`Did not find the expected HTML class that identifies this row as a question or answer. 
 anchor tag: ${anchor.outerHTML}
 row: ${row.outerHTML}
 `)
         }
 
-        let vote = new Vote(postType, postUrl, postId, parentPostId)
-
-        votes.push(vote)
+        votes.push({url: anchor.href, postType})
     }
     console.log(`Found ${votes.length} total votes!`)
 }
