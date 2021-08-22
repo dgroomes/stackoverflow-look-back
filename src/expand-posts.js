@@ -45,16 +45,20 @@ function instrumentJQuery() {
                         throw new Error("There was no 'success' callback defined in the settings for the ajax request. This is unexpected.")
                     }
 
-                    // We only want to register a proxy over GET HTTP requests to the endpoint starting with the URL "/query/job".
-                    // The response for this request is the SQL query result set.
-                    //
-                    // By contrast, the page also makes a POST request which starts the SQL query on the server side. We
-                    // don't need to track this request.
-                    if (settings.type === "GET" && settings.url.includes("/query/job")) {
-                        // Proxy the "success" callback so that we can intercept the result set of successful queries to the Stack Exchange Data Explorer
-                        settings.success = new Proxy(success, {
-                            apply(target, thisArg, argumentsList) {
-                                let responseData = argumentsList[0];
+                    // Proxy the "success" callback so that we can intercept the result set of successful queries to the Stack Exchange Data Explorer
+                    settings.success = new Proxy(success, {
+                        apply(target, thisArg, argumentsList) {
+                            let responseData = argumentsList[0];
+
+
+                            // Take careful note. The web page will differ in the ways that it gets the result set. Sometimes,
+                            // it makes an initial POST request to kick off the SQL query on the back end. In this case,
+                            // there will be a later GET request to actually fetch the result set. In other cases, there
+                            // will be a POST request for a "saved query" and the response will include the result set.
+                            // I'm not sure how exactly this works but I think the Stack Exchange Data Explorer is doing
+                            // some caching on queries that it recognizes. In any case, check for the field "resultSets"
+                            // to see if the response has the data or not.
+                            if (responseData.resultSets) {
 
                                 // Get the first element in the result sets array. When would this ever be more than one?
                                 let {rows} = responseData.resultSets[0]
@@ -62,11 +66,10 @@ function instrumentJQuery() {
                                 // Collect the post data
                                 rows.map(([id, parentId, type, title, body]) => {
                                     if (type === 1) {
-                                        type = "question"
+                                        return new Question(id, title, body)
                                     } else {
-                                        type = "answer"
+                                        return new Answer(id, parentId, body)
                                     }
-                                    return new Post(id, parentId, type, title, body)
                                 })
                                     .forEach(post => posts.push(post))
 
@@ -76,12 +79,12 @@ function instrumentJQuery() {
 
                                 // Download the posts data as a JSON file.
                                 downloadToFile(json, "stackoverflow-posts.json")
-
-                                // Finally, delegate to the underlying "original/normal/actual" function.
-                                Reflect.apply(...arguments)
                             }
-                        })
-                    }
+
+                            // Finally, delegate to the underlying "original/normal/actual" function.
+                            Reflect.apply(...arguments)
+                        }
+                    })
 
                     return resolvedProp.bind(receiver)(...arguments) // Invoke the "actual" property
                 }

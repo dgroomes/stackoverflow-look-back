@@ -5,16 +5,71 @@ class Post {
 
     /**
      * @param id
-     * @param parentId the ID of the parent post. This is nullable. Answer posts have parents but questions do not.
-     * @param type the type of post. Either "question" or "answer"
+     * @param htmlBody the rendered HTML of the post body
+     */
+    constructor(id, htmlBody) {
+        this.id = id
+        this.htmlBody = htmlBody
+    }
+
+    /**
+     * Returns the type. Either "question" or "answer"
+     */
+    get type() { throw new Error("Must be implemented on sub-classes") }
+
+    /**
+     * Define the toJSON function so that JSON.stringify picks up the "key" field and all the normal fields.
+     * Read more about toJSON at https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#tojson_behavior
+     */
+    toJSON() {
+        let obj = {
+            type: this.type
+        }
+
+        for (let name of Object.getOwnPropertyNames(this)) {
+            obj[name] = this[name]
+        }
+
+        return obj
+    }
+}
+
+/**
+ * A StackOverflow question post
+ */
+class Question extends Post {
+
+    /**
+     * @param id
      * @param title the title of the post. This is non-null for questions but is null for answers.
      * @param htmlBody the rendered HTML of the post body
      */
-    constructor(id, parentId, type, title, htmlBody) {
-        this.id = id
-        this.parentId = parentId
-        this.type = type
+    constructor(id, title, htmlBody) {
+        super(id, htmlBody);
         this.title = title
-        this.htmlBody = htmlBody
+    }
+
+    get type() {
+        return "question";
+    }
+}
+
+/**
+ * A StackOverflow answer post
+ */
+class Answer extends Post {
+
+    /**
+     * @param id
+     * @param questionId the ID of the answer's question post. The question post is considered the parent of the answer post.
+     * @param htmlBody the rendered HTML of the post body
+     */
+    constructor(id, questionId, htmlBody) {
+        super(id, htmlBody);
+        this.questionId = questionId
+    }
+
+    get type() {
+        return "answer"
     }
 }

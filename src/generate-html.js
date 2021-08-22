@@ -4,16 +4,26 @@
 
 /**
  * Fetch the posts data (questions and answers) from the local web server
- * @return {array} array of posts data
+ * @return {array<Post>} array of posts data
  */
 async function fetchPostsData() {
-    return await fetch(`${origin}/stackoverflow-posts.json`)
+    let json = await fetch(`${origin}/stackoverflow-posts.json`)
         .then(response => response.json())
+
+    return json.map(post => {
+        if (post.type === "question") {
+            return new Question(post.id, post.title, post.htmlBody)
+        } else if (post.type === "answer") {
+            return new Answer(post.id, post.questionId, post.htmlBody)
+        } else {
+            throw new Error(`Unrecognized post type '${post.type}'`)
+        }
+    })
 }
 
 /**
  * Group the posts data by question. Answer posts should be grouped with their parent question.
- * @param posts
+ * @param {array<Post>} posts
  */
 function groupByQuestion(posts) {
     let map = new Map()
@@ -21,8 +31,8 @@ function groupByQuestion(posts) {
     for (let post of posts) {
         let questionId
         let insert
-        if (post.type === "answer") {
-            questionId = post.parentId
+        if (post instanceof Answer) {
+            questionId = post.questionId
             insert = (entry) => entry.answers.push(post)
         } else {
             questionId = post.id
@@ -45,26 +55,26 @@ function groupByQuestion(posts) {
 
 /**
  * Generate the HTML for a question post
- * @param post a StackOverflow post of type "question"
+ * @param {Question} question a StackOverflow post of type "question"
  * @return {string} HTML
  */
-function questionHtml(post) {
-    return `<a class="question-answer-moniker" href="https://stackoverflow.com/q/${post.id}">Q</a>
+function questionHtml(question) {
+    return `<a class="question-answer-moniker" href="https://stackoverflow.com/q/${question.id}">Q</a>
 <div>
-    <h1 class="question-title">${post.title}</h1>
-    ${post.htmlBody}
+    <h1 class="question-title">${question.title}</h1>
+    ${question.htmlBody}
 </div>`
 }
 
 /**
  * Generate the HTML for an answer post
- * @param post a StackOverflow post of type "answer"
+ * @param {Answer} answer a StackOverflow post of type "answer"
  * @return {string} HTML
  */
-function answerHtml(post) {
-    return `<a class="question-answer-moniker" href="https://stackoverflow.com/a/${post.id}">A</a>
+function answerHtml(answer) {
+    return `<a class="question-answer-moniker" href="https://stackoverflow.com/a/${answer.id}">A</a>
 <div>
-    ${post.htmlBody}
+    ${answer.htmlBody}
 </div>`
 }
 
@@ -83,12 +93,6 @@ async function generateHtml() {
     let postsEl = document.getElementById("posts");
 
     for (let [questionId, {question, answers}] of grouped) {
-
-        if (question === undefined) {
-            console.warn(`The question post is missing for question #${questionId}`)
-            continue
-        }
-
         postsEl.insertAdjacentHTML("beforeend", questionHtml(question))
 
         for (let answer of answers) {

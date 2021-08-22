@@ -131,3 +131,4 @@ General clean ups, TODOs and things I wish to implement for this project:
    * [StackOverflow Answer: Use `createContextualFragment`](https://stackoverflow.com/a/7326602/1333713)
 * [Chrome extensions docs](https://developer.chrome.com/docs/extensions/mv3/getstarted/)
 * [MDN Web docs: *JavaScript modules*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
+* [MDN Web docs: *toJSON() behavior*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#tojson_behavior)
