@@ -23,7 +23,7 @@ function saveVotes(votes) {
  * @return {Array<Vote>}
  */
 async function getVotes() {
-    let votesData = await fetch(`${origin}/stackoverflow-votes.json`)
+    let votesData = await fetch(`${origin}/data/stackoverflow-votes.json`)
         .then(response => response.json())
 
     return votesData.map(voteData => Vote.deserialize(voteData))
@@ -45,7 +45,7 @@ function savePosts(posts) {
  * @return {Array<Post>} posts
  */
 async function getPosts() {
-    let postsData = await fetch(`${origin}/stackoverflow-posts.json`)
+    let postsData = await fetch(`${origin}/data/stackoverflow-posts.json`)
         .then(response => response.json())
 
     return postsData.map(postData => Post.deserialize(postData))

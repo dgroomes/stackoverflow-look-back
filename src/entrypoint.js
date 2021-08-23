@@ -3,7 +3,7 @@
 // either scrape for the votes data or expand the posts data.
 
 const origin = "http://127.0.0.1:8000"
-const votesPageLimit = 3
+const votesPageLimit = 1
 
 /**
  * Include a script dependency.

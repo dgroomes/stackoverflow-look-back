@@ -71,8 +71,10 @@ The overall flow breaks down like this:
       ```
     * The votes data will be downloaded in a file named `stackoverflow-votes.json`
 1. Move the votes data
-    * Move the downloaded votes data JSON file (`stackoverflow-votes.json`) into the `src/` directory. It is used in the
-      next step
+    * Move the downloaded votes data JSON file (`stackoverflow-votes.json`) into the `src/data` directory with the following
+      command:
+    * `mv ~/Downloads/stackoverflow-votes.json ~/repos/personal/stackoverflow-static/src/data`
+    * The data is used in the next step.
 1. Expand the post data
     * Go to the [Stack Exchange Data Explorer](https://data.stackexchange.com/stackoverflow/query/new)
     * Import some JavaScript code into the browser from the web server. Paste the following into the browser console:
@@ -83,8 +85,10 @@ The overall flow breaks down like this:
       ```
     * The posts data will be downloaded in a file named `stackoverflow-posts.json`
 1. Move the posts data
-    * Move the downloaded posts data JSON file (`stackoverflow-posts.json`) into the `src/` directory. It is used in the
-      next step
+    * Move the downloaded posts data JSON file (`stackoverflow-posts.json`) into the `src/data` directory with the following
+      command:
+    * `mv ~/Downloads/stackoverflow-posts.json ~/repos/personal/stackoverflow-static/src/data`
+    * The data is used in the next step
 1. Generate a static HTML document from the posts data
     * Open <http://127.0.0.1:8000/generate-html.html>
     * The downloaded file is the final result! Save it somewhere easily accessible.
