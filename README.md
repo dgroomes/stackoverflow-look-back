@@ -102,7 +102,7 @@ The overall flow breaks down like this:
 General clean ups, TODOs and things I wish to implement for this project:
 
 * DONE Make an `entrypoint.js` file instead of re-using both `scrape-votes.js` and `expand-posts.js` independently
-* IN PROGRESS Get more re-use out of code. For example, re-use the Votes class between the scrape votes functionality and expand posts
+* DONE Get more re-use out of code. For example, re-use the Votes class between the scrape votes functionality and expand posts
   functionality
 * Fix the CSS grid problem
 * DONE Get post data for questions that were not up-voted but where there was an up-voted answer to that question. This is a
