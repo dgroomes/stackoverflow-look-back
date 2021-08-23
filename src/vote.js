@@ -9,12 +9,27 @@ class Vote {
      * @return {Vote} a Vote object. It's an instance of either QuestionVote or AnswerVote
      */
     static deserialize(voteData) {
-        let {postType, url} = voteData
+        let {id, type} = voteData
+        if (type === "question") {
+            return new QuestionVote(id)
+        } else if (type === "answer") {
+            return new AnswerVote(id)
+        } else {
+            throw new Error(`Unrecognized post type '${type}'`)
+        }
+    }
 
+    /**
+     * Parse a post URL and instantiate a Vote instance from it
+     * @param postUrl the URL of the post
+     * @param postType either "question" or "answer"
+     * @return {Vote} a Vote object. It's an instance of either QuestionVote or AnswerVote
+     */
+    static parseFromUrl(postUrl, postType) {
         // Extract the question ID from the URL. The question ID is always after the "questions/" part in the URL.
         // For example, 54189630 is the ID in the below URL:
         // https://stackoverflow.com/questions/54189630/kill-all-gradle-daemons-regardless-version
-        let match = /questions\/(?<id>\d+)/.exec(url)
+        let match = /questions\/(?<id>\d+)/.exec(postUrl)
         let questionId = parseInt(match.groups.id)
 
         if (postType === "question") {
@@ -24,7 +39,7 @@ class Vote {
             // Extract the answer ID from the URL. The answer ID is at the end of the URL.
             // For example, 28358529 is the ID in the below URL:
             // https://stackoverflow.com/questions/28351294/postgres-finding-max-value-in-an-int-array/28358529#28358529
-            let match = /\d+$/.exec(url)
+            let match = /\d+$/.exec(postUrl)
             let answerId = parseInt(match[0])
             return new AnswerVote(answerId, questionId)
         } else {
@@ -40,10 +55,21 @@ class Vote {
     }
 
     /**
+     * Returns the type. Either "question" or "answer"
+     */
+    get type() {
+        throw new Error("Must be implemented on sub-classes")
+    }
+
+    /**
      * @return {array<Number>} the IDs related to this post
      */
     get ids() {
         throw new Error("Must be implemented on sub-classes")
+    }
+
+    toJSON() {
+        return toJSON(this, "type")
     }
 }
 
@@ -54,6 +80,10 @@ class QuestionVote extends Vote {
 
     constructor(id) {
         super(id);
+    }
+
+    get type() {
+        return "question";
     }
 
     get ids() {
@@ -69,6 +99,10 @@ class AnswerVote extends Vote {
     constructor(id, questionId) {
         super(id)
         this.questionId = questionId
+    }
+
+    get type() {
+        return "answer"
     }
 
     get ids() {

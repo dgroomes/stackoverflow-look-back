@@ -51,20 +51,8 @@ class Post {
         throw new Error("Must be implemented on sub-classes")
     }
 
-    /**
-     * Define the toJSON function so that JSON.stringify picks up the "key" field and all the normal fields.
-     * Read more about toJSON at https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#tojson_behavior
-     */
     toJSON() {
-        let obj = {
-            type: this.type
-        }
-
-        for (let name of Object.getOwnPropertyNames(this)) {
-            obj[name] = this[name]
-        }
-
-        return obj
+        return toJSON(this, "type")
     }
 }
 

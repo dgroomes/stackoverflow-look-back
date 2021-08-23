@@ -24,44 +24,10 @@ async function expandByIds(ids) {
     runQueryBtn.click() // Run the query
 }
 
-/**
- * Fetch the votes data from the local web server
- * @return {Array<Vote>}
- */
-async function fetchVotes() {
-    // Fetch the votes data from the local web server
-    let votesData = await fetch(`${origin}/stackoverflow-votes.json`)
-        .then(response => response.json())
-
-    return votesData.map(voteData => Vote.deserialize(voteData))
-}
-
-/**
- * Take the result set JSON data, transform it, and save it to a file.
- */
-function downloadPostsDateToFile(resultSets) {
-    // Get the first element in the result sets array. When would this ever be more than one?
-    let {rows} = resultSets[0]
-
-    // Collect the post data
-    let posts = rows.map(([id, parentId, type, title, body]) => {
-        if (type === 1) {
-            return new Question(id, title, body)
-        } else {
-            return new Answer(id, parentId, body)
-        }
-    })
-
-    let json = JSON.stringify(posts, null, 2)
-
-    // Download the posts data as a JSON file.
-    downloadToFile(json, "stackoverflow-posts.json")
-}
-
 // This is the main function.
 async function expandPosts() {
 
-    let votes = await fetchVotes()
+    let votes = await getVotes()
 
     instrumentJQuery()
     registerAjaxSuccessSpy(responseData => {
@@ -75,7 +41,19 @@ async function expandPosts() {
         // to see if the response has the data or not.
         let resultSets = responseData.resultSets
         if (resultSets) {
-            downloadPostsDateToFile(resultSets)
+            // Get the first element in the result sets array. When would this ever be more than one?
+            let {rows} = resultSets[0]
+
+            // Collect the post data from the rows
+            let posts = rows.map(([id, parentId, type, title, body]) => {
+                if (type === 1) {
+                    return new Question(id, title, body)
+                } else {
+                    return new Answer(id, parentId, body)
+                }
+            })
+
+            savePosts(posts)
         }
     })
 

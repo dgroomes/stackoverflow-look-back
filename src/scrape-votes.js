@@ -39,7 +39,8 @@ row: ${row.outerHTML}
 `)
         }
 
-        votes.push({url: anchor.href, postType})
+        let vote = Vote.parseFromUrl(anchor.href, postType)
+        votes.push(vote)
     }
     console.log(`Found ${votes.length} total votes!`)
 }
@@ -58,14 +59,14 @@ row: ${row.outerHTML}
     function nextVotesPage() {
         if (++attempts > votesPageLimit) {
             console.info(`The limit has been reached for 'next page' attempts. limit=${votesPageLimit} attempts=${attempts}`)
-            downloadVotesData()
+            saveVotes(votes)
             return
         }
 
         let el = document.querySelector('a[rel=next]');
         if (el === null) {
             console.log("All pages of the votes tab have been visited. Downloading the votes data to a JSON file...")
-            downloadVotesData()
+            saveVotes(votes)
             return
         }
 
@@ -98,12 +99,4 @@ function scrapeVotes() {
 
     scrapeCurrentPage()
     nextVotesPage()
-}
-
-/**
- * Download the votes data as a JSON file.
- */
-function downloadVotesData() {
-    let votesJson = JSON.stringify(votes, null, 2)
-    downloadToFile(votesJson, "stackoverflow-votes.json")
 }

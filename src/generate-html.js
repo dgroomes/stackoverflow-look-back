@@ -3,22 +3,11 @@
 // Fetch the StackOverflow posts data and generate a static HTML document with it.
 
 /**
- * Fetch the posts data (questions and answers) from the local web server
- * @return {array<Post>} array of posts data
- */
-async function fetchPostsData() {
-    let postsData = await fetch(`${origin}/stackoverflow-posts.json`)
-        .then(response => response.json())
-
-    return postsData.map(postData => Post.deserialize(postData))
-}
-
-/**
  * This is the main function!
  * @return {Promise<void>}
  */
 async function generateHtml() {
-    let posts = await fetchPostsData()
+    let posts = await getPosts()
     // Known issue. Reduce down to the problematic entries due to CSS grid issue. See the note in the README.
     posts = posts.slice(0, 1500) // the 1501st element isn't rendered correctly
 

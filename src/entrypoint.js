@@ -32,8 +32,10 @@ const scripts = [
     "generate-html.js",
     "vote.js",
     "post.js",
+    "persistence.js",
     "util/download-to-file.js",
-    "util/jquery-proxy.js"
+    "util/jquery-proxy.js",
+    "util/to-json.js"
 ]
 
 Promise.all(scripts.map(urlPath => includeScript(`${origin}/${urlPath}`)))
