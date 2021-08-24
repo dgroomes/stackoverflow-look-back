@@ -14,8 +14,11 @@ const mode = (function _detectMode() {
 
         return "chrome-extension"
     }
-    return "manual-mode"
+    return "manual"
 })()
+
+const FILE_DOWNLOAD = "File download";
+const CHROME_STORAGE = "Chrome storage";
 
 /**
  * Get the "votes page limit" configuration
@@ -25,11 +28,6 @@ function getVotesPageLimit() {
     if (mode === "chrome-extension") {
         return new Promise((resolve) => {
             chrome.storage.sync.get("votesPageLimit", (data) => {
-                console.log("Read the following data:")
-                console.dir()
-                console.log({
-                    data
-                })
                 resolve(data.votesPageLimit)
             })
         })
@@ -57,10 +55,21 @@ function saveVotesPageLimit(votesPageLimit) {
  * This downloads the votes data as a JSON file.
  *
  * @param {Array<Vote>} votes
+ * @return {Promise<String>} a promise that resolves when the votes have been successfully saved. The promise's string value indicates which storage backend was used.
  */
 function saveVotes(votes) {
+    if (mode === "chrome-extension") {
+        return new Promise(resolve => {
+            let votesMapped = votes.map(vote => vote.toJSON())
+            chrome.storage.sync.set({votes: votesMapped}, () => {
+                resolve(CHROME_STORAGE)
+            })
+        })
+    }
+
     let votesJson = JSON.stringify(votes, null, 2)
     downloadToFile(votesJson, "stackoverflow-votes.json")
+    return new Promise.resolve(FILE_DOWNLOAD)
 }
 
 /**
@@ -71,9 +80,19 @@ function saveVotes(votes) {
  * @return {Array<Vote>}
  */
 async function getVotes() {
-    let votesData = await fetch(`${origin}/data/stackoverflow-votes.json`)
-        .then(response => response.json())
+    let promise
+    if (mode === "chrome-extension") {
+        promise = new Promise((resolve) => {
+            chrome.storage.sync.get("votes", (data) => {
+                resolve(data.votes)
+            })
+        })
+    } else {
+        promise = fetch(`${origin}/data/stackoverflow-votes.json`)
+            .then(response => response.json())
+    }
 
+    let votesData = await promise
     return votesData.map(voteData => Vote.deserialize(voteData))
 }
 

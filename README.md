@@ -61,15 +61,26 @@ Follow these instructions to install the tool as a Chrome browser extension and 
     * Click the *Load unpacked* button
     * In the file finder window that opens, find this directory and click *Select*
     * It's installed!
-1. Scape votes
-    * todo
+1. Open StackOverflow
+    * Go to <https://stackoverflow.com/> in your browser
+1. Log in
+1. Open your profile
+    * Click your picture in the top right corner to open your profile
+1. Open the "Votes" tab
+    * Find the "Votes" tab and click it.
+    * For me, my Votes tab navigates to this URL: <https://stackoverflow.com/users/1333713/david-groomes?tab=votes>
+1. Scrape the votes data
     * Navigate to a page.
     * Click the blue puzzle icon in the top right of the window
-    * Click "Change Header Text" extension entry
-    * Wait for half a second (not sure why it's so slow)
-    * Click the "Change header text" button
-1. Expand posts
+    * Click the "stackoverflow-static" extension entry
+    * Wait for a second (not sure why it's so slow)
+    * Click the "Scrape votes" button
+1. DOES NOT WORK Expand the post data
+    * Go to the [Stack Exchange Data Explorer](https://data.stackexchange.com/stackoverflow/query/new)
+    * Repeat the earlier steps to open the extension entry
+    * Click the "Expand posts" button
     * todo
+    * The posts data will be downloaded in a file named `stackoverflow-posts.json`
 1. Generate HTML
     * todo
 
@@ -154,7 +165,14 @@ General clean ups, TODOs and things I wish to implement for this project:
   by the `background.service_worker` field in the manifest. I find that 1) When it errors, there are no logs but just the
   infamous "Service worker registration failed" message in the "chrome://extensions" page and 2) I can't attach a debugger.
   The only thing I can do is comment out the whole file, and uncomment lines little by little and adding `console.log`
-  statements. 
+  statements.
+* How many execution contexts are there? 1) The JavaScript execution environment in the page 2) The JavaScript execution
+  environment that executes the extension code like the popups and 3) The JavaScrip execution environment that runs the
+  content scripts? For example, I need to understand this because I'm hitting a roadblock where I want to make a Proxy over
+  jQuery on the webpage, but a content script's execution environment doesn't have access to the web page's variables,
+  but it does have access to the DOM (seems arbitrary to allow one but block the other, but there is probably a good
+  reason). And there is a way to work around this problem anyway: inject a script element into the page itself from a
+  content script. See [this StackOverflow question and answer](https://stackoverflow.com/q/20499994). 
 
 ## Reference
 

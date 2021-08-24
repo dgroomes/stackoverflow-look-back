@@ -59,16 +59,22 @@ row: ${row.outerHTML}
     let attempts = 0
 
     function nextVotesPage() {
+
+        function save() {
+            saveVotes(votes)
+                .then(storageBackend => console.log(`The votes data has been saved successfully using the storage backend '${storageBackend}'`))
+        }
+
         if (++attempts > votesPageLimit) {
             console.info(`The limit has been reached for 'next page' attempts. limit=${votesPageLimit} attempts=${attempts}`)
-            saveVotes(votes)
+            save()
             return
         }
 
         let el = document.querySelector('a[rel=next]');
         if (el === null) {
             console.log("All pages of the votes tab have been visited. Downloading the votes data to a JSON file...")
-            saveVotes(votes)
+            save()
             return
         }
 
