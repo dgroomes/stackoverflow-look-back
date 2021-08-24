@@ -49,6 +49,9 @@ There are two ways–or, *modes*–to use the tool. Choose the mode that you pre
     * Recommended for learning
     * This works for any evergreen browser. This mode relies on standard web APIs.
 
+The source code is laid in a directory structure that reflect the modes. There is a `src/chrome-extension-mode/`
+directory and a `src/manual-mode/` directory.
+
 ## Instructions
 
 Follow these instructions to install the tool as a Chrome browser extension and use it:
@@ -101,7 +104,7 @@ Follow these instructions to run the tool the manual way. It requires more steps
     * Import some JavaScript code into the browser from the web server. Paste the following into the browser console:
       ```javascript
       let el = document.createElement("script")
-      el.src = "http://127.0.0.1:8000/entrypoint.js"
+      el.src = "http://127.0.0.1:8000/manual-mode/entrypoint.js"
       document.head.append(el)
       ```
     * The votes data will be downloaded in a file named `stackoverflow-votes.json`
@@ -115,7 +118,7 @@ Follow these instructions to run the tool the manual way. It requires more steps
     * Import some JavaScript code into the browser from the web server. Paste the following into the browser console:
       ```javascript
       let el = document.createElement("script")
-      el.src = "http://127.0.0.1:8000/entrypoint.js"
+      el.src = "http://127.0.0.1:8000/manual-mode/entrypoint.js"
       document.head.append(el)
       ```
     * The posts data will be downloaded in a file named `stackoverflow-posts.json`
@@ -160,19 +163,20 @@ General clean ups, TODOs and things I wish to implement for this project:
 
 ## Notes
 
-* The Chrome extension development experience is overall pretty good. I imagine it's much better than it was in the early
-  years of Chrome. That said, it's difficult to debug the JavaScript code that runs in a service worker (the one defined
-  by the `background.service_worker` field in the manifest. I find that 1) When it errors, there are no logs but just the
-  infamous "Service worker registration failed" message in the "chrome://extensions" page and 2) I can't attach a debugger.
-  The only thing I can do is comment out the whole file, and uncomment lines little by little and adding `console.log`
+* The Chrome extension development experience is overall pretty good. I imagine it's much better than it was in the
+  early years of Chrome. That said, it's difficult to debug the JavaScript code that runs in a service worker (the one
+  defined by the `background.service_worker` field in the manifest. I find that 1) When it errors, there are no logs but
+  just the infamous "Service worker registration failed" message in the "chrome://extensions" page and 2) I can't attach
+  a debugger. The only thing I can do is comment out the whole file, and uncomment lines little by little and
+  adding `console.log`
   statements.
 * How many execution contexts are there? 1) The JavaScript execution environment in the page 2) The JavaScript execution
   environment that executes the extension code like the popups and 3) The JavaScrip execution environment that runs the
-  content scripts? For example, I need to understand this because I'm hitting a roadblock where I want to make a Proxy over
-  jQuery on the webpage, but a content script's execution environment doesn't have access to the web page's variables,
-  but it does have access to the DOM (seems arbitrary to allow one but block the other, but there is probably a good
-  reason). And there is a way to work around this problem anyway: inject a script element into the page itself from a
-  content script. See [this StackOverflow question and answer](https://stackoverflow.com/q/20499994). 
+  content scripts? For example, I need to understand this because I'm hitting a roadblock where I want to make a Proxy
+  over jQuery on the webpage, but a content script's execution environment doesn't have access to the web page's
+  variables, but it does have access to the DOM (seems arbitrary to allow one but block the other, but there is probably
+  a good reason). And there is a way to work around this problem anyway: inject a script element into the page itself
+  from a content script. See [this StackOverflow question and answer](https://stackoverflow.com/q/20499994).
 
 ## Reference
 
@@ -192,3 +196,5 @@ General clean ups, TODOs and things I wish to implement for this project:
   behavior*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#tojson_behavior)
 * [`dgroomes/web-playground/browser-extensions`](https://github.com/dgroomes/web-playground/tree/main/browser-extensions)
     * My own reference project for Chrome extensions
+* [Chrome extension docs: *chrome.webRequest*](https://developer.chrome.com/docs/extensions/reference/webRequest/)
+    * Consider using this API to intercept requests when running "Chrome extension" mode. 

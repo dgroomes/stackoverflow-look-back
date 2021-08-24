@@ -12,7 +12,7 @@
     "scripting"
   ],
   "action": {
-    "default_popup": "src/chrome-extension/execute.html"
+    "default_popup": "src/chrome-extension-mode/execute.html"
   },
-  "options_page": "src/chrome-extension/options.html"
+  "options_page": "src/chrome-extension-mode/options.html"
 }
