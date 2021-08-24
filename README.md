@@ -32,24 +32,48 @@ This was developed on macOS and for my own personal use.
 
 ---
 
-## Design
+## Design & Modes
 
-This is a simple JavaScript mash-up that brings some custom JavaScript code into your browser to scrape your own votes
-data from your StackOverflow profile page. In a way, it's like a browser extension but the mechanism to load the custom
-code is via a dynamic `<script>` tag to load the code from a local web server. There's no need to go through the effort
-and ceremony of creating a full-on browser extension. Plus, browser extensions are by definition vendor-specific ([Chrome Extensions](https://support.google.com/chrome_webstore/answer/1047776?hl=en&topic=1212379),
-[Firefox add-ons/extensions](https://addons.mozilla.org/en-US/firefox/extensions/), [Safari extensions](https://apps.apple.com/us/story/id1377753262),
-[Edge add-ons](https://microsoftedge.microsoft.com/addons/Microsoft-Edge-Extensions-Home), [Opera addons/extensions](https://addons.opera.com/en/extensions/)).
-Oh wait, there is a [standard browser extensions API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Build_a_cross_browser_extension)?
-Nice! I want to explore this.
-
-The overall flow breaks down like this:
+The overall flow of the tool breaks down like this:
 
 1. Scrape your votes data from <https://stackoverflow.com>
 1. Expand the votes data into posts data using <https://data.stackexchange.com>
 1. Generate a static HTML page from the posts data
 
+There are two ways–or, *modes*–to use the tool. Choose the mode that you prefer:
+
+* *Chrome extension* mode (NOT YET FULLY IMPLEMENTED)
+    * Recommended for Chrome users
+* *Manual* mode
+    * Manually run the tool by executing commands in the browser developer tools and by manually moving files
+    * Recommended for learning
+    * This works for any evergreen browser. This mode relies on standard web APIs.
+
 ## Instructions
+
+Follow these instructions to install the tool as a Chrome browser extension and use it:
+
+1. Open Chrome's extension settings page
+    * Open Chrome to the URL: `chrome://extensions`
+1. Enable developer mode
+    * Enable the *Developer mode* toggle control in the upper right corner of the page
+1. Install the extension
+    * Click the *Load unpacked* button
+    * In the file finder window that opens, find this directory and click *Select*
+    * It's installed!
+1. Scape votes
+    * todo
+    * Navigate to a page.
+    * Click the blue puzzle icon in the top right of the window
+    * Click "Change Header Text" extension entry
+    * Wait for half a second (not sure why it's so slow)
+    * Click the "Change header text" button
+1. Expand posts
+    * todo
+1. Generate HTML
+    * todo
+
+Follow these instructions to run the tool the manual way. It requires more steps:
 
 1. Run a local web server:
     * `./serve.py`
@@ -71,8 +95,8 @@ The overall flow breaks down like this:
       ```
     * The votes data will be downloaded in a file named `stackoverflow-votes.json`
 1. Move the votes data
-    * Move the downloaded votes data JSON file (`stackoverflow-votes.json`) into the `src/data` directory with the following
-      command:
+    * Move the downloaded votes data JSON file (`stackoverflow-votes.json`) into the `src/data` directory with the
+      following command:
     * `mv ~/Downloads/stackoverflow-votes.json ~/repos/personal/stackoverflow-static/src/data`
     * The data is used in the next step.
 1. Expand the post data
@@ -85,54 +109,59 @@ The overall flow breaks down like this:
       ```
     * The posts data will be downloaded in a file named `stackoverflow-posts.json`
 1. Move the posts data
-    * Move the downloaded posts data JSON file (`stackoverflow-posts.json`) into the `src/data` directory with the following
-      command:
+    * Move the downloaded posts data JSON file (`stackoverflow-posts.json`) into the `src/data` directory with the
+      following command:
     * `mv ~/Downloads/stackoverflow-posts.json ~/repos/personal/stackoverflow-static/src/data`
     * The data is used in the next step
 1. Generate a static HTML document from the posts data
     * Open <http://127.0.0.1:8000/generate-html.html>
     * The downloaded file is the final result! Save it somewhere easily accessible.
-    * Known issue: The visual elements in the page break after the 1500th post in Chrome. I think this is because of an internal
-      limit on CSS Grid sizes. See the note in the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids).
-      It mentions 1500, and 3000 and when I go to exactly 1501 posts (there will be 2 * 1501 = 3002) the last post doesn't
-      get rendered correctly. I think that's the limit. This issue does not happen Safari.
+    * Known issue: The visual elements in the page break after the 1500th post in Chrome. I think this is because of an
+      internal limit on CSS Grid sizes. See the note in
+      the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000
+      and when I go to exactly 1501 posts (there will be 2 * 1501 = 3002) the last post doesn't get rendered correctly.
+      I think that's the limit. This issue does not happen Safari.
 
 ## Wish list
 
 General clean ups, TODOs and things I wish to implement for this project:
 
 * DONE Make an `entrypoint.js` file instead of re-using both `scrape-votes.js` and `expand-posts.js` independently
-* DONE Get more re-use out of code. For example, re-use the Votes class between the scrape votes functionality and expand posts
-  functionality
+* DONE Get more re-use out of code. For example, re-use the Votes class between the scrape votes functionality and
+  expand posts functionality
 * Fix the CSS grid problem
-* DONE Get post data for questions that were not up-voted but where there was an up-voted answer to that question. This is a
-  common case. I thought it was rare because I assumed that when I upvote an answer that I would have already upvoted the
-  question. But this isn't the case. I have a about two hundred of these cases. Also, even if I wanted to up-vote the question,
-  some are actually locked! For example, one of the very first things I wanted to search for in my SO static data was for how
-  to get the query parameters of the URL from JavaScript. But the question and answer didn't show up because I didn't upvote
-  the question, only the answer, and it turns out the [question itself is locked](https://stackoverflow.com/q/901115/)! 
-* Create a browser extension for this. The main benefit should be the removal of the manual steps like opening three different
-  web pages and moving the downloaded files to different directories.
+* DONE Get post data for questions that were not up-voted but where there was an up-voted answer to that question. This
+  is a common case. I thought it was rare because I assumed that when I upvote an answer that I would have already
+  upvoted the question. But this isn't the case. I have a about two hundred of these cases. Also, even if I wanted to
+  up-vote the question, some are actually locked! For example, one of the very first things I wanted to search for in my
+  SO static data was for how to get the query parameters of the URL from JavaScript. But the question and answer didn't
+  show up because I didn't upvote the question, only the answer, and it turns out
+  the [question itself is locked](https://stackoverflow.com/q/901115/)!
+* IN PROGRESS Create a browser extension for this. The main benefit should be the removal of the manual steps like
+  opening three different web pages and moving the downloaded files to different directories.
 * Consider creating a search bar where multiple terms can be search at once. Originally, I was hoping `Cmd + F` would be
-  good enough for search but when the search term is SQL or bash, a lot of results come up and it's useful to add a second
-  search term to reduce the result. This would add quite a bit of code to the page though.
-* Consider using modules, but also consider to NOT use modules. Modules are modern, but modules aren't exported in the global
-  context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is kind of
-  a major bummer. Also modules can't be imported in web workers in Safari and FireFox so that is also a bummer when considering
-  converting this tool to a browser extension.
+  good enough for search but when the search term is SQL or bash, a lot of results come up and it's useful to add a
+  second search term to reduce the result. This would add quite a bit of code to the page though.
+* Consider using modules, but also consider to NOT use modules. Modules are modern, but modules aren't exported in the
+  global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is
+  kind of a major bummer. Also modules can't be imported in web workers in Safari and FireFox so that is also a bummer
+  when considering converting this tool to a browser extension.
 
 ## Reference
 
 * [MDN Web docs: API docs for *NodeList*](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
 * [MDN Web docs: API docs for *MutationObserver*](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)
 * [Meta Stack Exchange: Database schema for the Stack Exchange Data Explorer (SEDE)](https://meta.stackexchange.com/a/2678)
-* Multiple references on recommended/possible ways to render HTML dynamically from JS code in the browser (there are many
-  but there is not an obvious choice!)
-   * [StackOverflow Answer: Use `DOMParser`](https://stackoverflow.com/a/3104237)
-   * [StackOverflow Answer: Use `createElement` and extract the `innerHTML`](https://stackoverflow.com/a/3104251)
-   * [StackOverflow Answer: Use `insertAdjacentHtml`](https://stackoverflow.com/a/19241659)
-   * [StackOverflow Answer: Use `<template>`](https://stackoverflow.com/a/35385518)
-   * [StackOverflow Answer: Use `createContextualFragment`](https://stackoverflow.com/a/7326602/1333713)
+* Multiple references on recommended/possible ways to render HTML dynamically from JS code in the browser (there are
+  many but there is not an obvious choice!)
+    * [StackOverflow Answer: Use `DOMParser`](https://stackoverflow.com/a/3104237)
+    * [StackOverflow Answer: Use `createElement` and extract the `innerHTML`](https://stackoverflow.com/a/3104251)
+    * [StackOverflow Answer: Use `insertAdjacentHtml`](https://stackoverflow.com/a/19241659)
+    * [StackOverflow Answer: Use `<template>`](https://stackoverflow.com/a/35385518)
+    * [StackOverflow Answer: Use `createContextualFragment`](https://stackoverflow.com/a/7326602/1333713)
 * [Chrome extensions docs](https://developer.chrome.com/docs/extensions/mv3/getstarted/)
 * [MDN Web docs: *JavaScript modules*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
-* [MDN Web docs: *toJSON() behavior*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#tojson_behavior)
+* [MDN Web docs: *toJSON()
+  behavior*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#tojson_behavior)
+* [`dgroomes/web-playground/browser-extensions`](https://github.com/dgroomes/web-playground/tree/main/browser-extensions)
+    * My own reference project for Chrome extensions

@@ -1,5 +1,7 @@
 // Scrape your own StackOverflow votes data from your profile page. See the README.
 
+console.log("Hello from scrape-votes.js")
+
 let votes = [] // The votes data will be scraped from the HTML and collected into this array as instances of the "Vote" class
 
 // Get a handle on the "Votes tab" HTML element
@@ -78,6 +80,7 @@ row: ${row.outerHTML}
  * This is the main function
  */
 function scrapeVotes() {
+    console.log("Scraping votes...")
     votesTab = document.getElementById("user-tab-votes")
 
     let observer = new MutationObserver(function (mutations) {

@@ -1,4 +1,6 @@
-// This is the entrypoint of the tool.
+// This is the entrypoint of the tool when the tool is run in the "Manual" mode. This file should not be used when the
+// tool is run in the "Chrome extension" mode
+//
 // This file downloads the other JavaScript source files into the browser, then inspects the URL to figure out what to do:
 // either scrape for the votes data or expand the posts data.
 
