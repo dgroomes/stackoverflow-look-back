@@ -147,6 +147,15 @@ General clean ups, TODOs and things I wish to implement for this project:
   kind of a major bummer. Also modules can't be imported in web workers in Safari and FireFox so that is also a bummer
   when considering converting this tool to a browser extension.
 
+## Notes
+
+* The Chrome extension development experience is overall pretty good. I imagine it's much better than it was in the early
+  years of Chrome. That said, it's difficult to debug the JavaScript code that runs in a service worker (the one defined
+  by the `background.service_worker` field in the manifest. I find that 1) When it errors, there are no logs but just the
+  infamous "Service worker registration failed" message in the "chrome://extensions" page and 2) I can't attach a debugger.
+  The only thing I can do is comment out the whole file, and uncomment lines little by little and adding `console.log`
+  statements. 
+
 ## Reference
 
 * [MDN Web docs: API docs for *NodeList*](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)

@@ -4,6 +4,54 @@
 // extension in which case the underlying storage engine will be something like IndexedDB.
 
 /**
+ * Detect the mode that the tool is running in. The persistence functions will work differently depending on the mode.
+ * The value is either "chrome-extension" or "manual"
+ */
+const mode = (function _detectMode() {
+    if (typeof chrome !== "undefined" &&
+        typeof chrome.runtime !== "undefined" &&
+        typeof chrome.runtime.id !== "undefined") {
+
+        return "chrome-extension"
+    }
+    return "manual-mode"
+})()
+
+/**
+ * Get the "votes page limit" configuration
+ * @return {Promise<Number>} a promise containing the value
+ */
+function getVotesPageLimit() {
+    if (mode === "chrome-extension") {
+        return new Promise((resolve) => {
+            chrome.storage.sync.get("votesPageLimit", (data) => {
+                console.log("Read the following data:")
+                console.dir()
+                console.log({
+                    data
+                })
+                resolve(data.votesPageLimit)
+            })
+        })
+    } else {
+        return new Promise(votesPageLimit) // The "votesPageLimit" is hardcoded in the "entrypoint.js" file.
+    }
+}
+
+/**
+ * Save a new value for the "votes page limit" configuration
+ * @return {Promise<*>} a promise that resolves after the value has been successfully saved
+ */
+function saveVotesPageLimit(votesPageLimit) {
+    return new Promise(resolve => {
+        chrome.storage.sync.set({votesPageLimit}, () => {
+            console.log(`Saved value '${votesPageLimit}'`);
+            resolve()
+        })
+    })
+}
+
+/**
  * Save votes to the persistence layer.
  *
  * This downloads the votes data as a JSON file.

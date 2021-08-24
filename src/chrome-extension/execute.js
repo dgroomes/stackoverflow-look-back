@@ -20,7 +20,6 @@ async function exec() {
 
             // Load so many source code files... This is a bit unfortunate isn't it! Modules to the rescue? Using modules
             // depends on the support for it in the Chrome extension APIs...
-            await loadJavaScriptFile("src/chrome-extension/persistence.js")
             await loadJavaScriptFile("src/scrape-votes.js")
             await loadJavaScriptFile("src/vote.js")
             await loadJavaScriptFile("src/persistence.js")
