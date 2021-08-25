@@ -108,6 +108,8 @@ Follow these instructions to run the tool the manual way. It requires more steps
       document.head.append(el)
       ```
     * The votes data will be downloaded in a file named `stackoverflow-votes.json`
+1. Create the data directory:
+    * `mkdir -p src/data`
 1. Move the votes data
     * Move the downloaded votes data JSON file (`stackoverflow-votes.json`) into the `src/data` directory with the
       following command:
@@ -177,6 +179,8 @@ General clean ups, TODOs and things I wish to implement for this project:
   variables, but it does have access to the DOM (seems arbitrary to allow one but block the other, but there is probably
   a good reason). And there is a way to work around this problem anyway: inject a script element into the page itself
   from a content script. See [this StackOverflow question and answer](https://stackoverflow.com/q/20499994).
+* The `let that = this` trick I have to use in the ES6 classes is a bit disappointing... how else could this code be
+  designed? Is there an idiomatic ES6 class way? Or this a quirk of classes?
 
 ## Reference
 

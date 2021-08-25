@@ -7,7 +7,7 @@
  * @return {Promise<void>}
  */
 async function generateHtml() {
-    let posts = await getPosts()
+    let posts = await appStorage.getPosts()
     // Known issue. Reduce down to the problematic entries due to CSS grid issue. See the note in the README.
     posts = posts.slice(0, 1500) // the 1501st element isn't rendered correctly
 

@@ -5,12 +5,22 @@ let form = document.getElementById("options-form");
 form.addEventListener("submit", async event => {
     event.preventDefault() // Prevent a form POST request
     let newValue = votesPageLimitEl.value;
-    await saveVotesPageLimit(newValue)
+    await new Promise(resolve => {
+        chrome.storage.sync.set({votesPageLimit: newValue}, () => {
+            console.log(`Saved value '${newValue}'`);
+            resolve()
+        })
+    })
 })
 
 // Initialize the form field with the value saved in Chrome storage
 async function init() {
-    votesPageLimitEl.value = await getVotesPageLimit()
+    votesPageLimitEl.value = await new Promise((resolve) => {
+        chrome.storage.sync.get("votesPageLimit", (data) => {
+            console.log(`Read the following value from storage for 'votesPageLimit': ${data.votesPageLimit}`)
+            resolve(data.votesPageLimit)
+        })
+    })
 }
 
-init().then(() => console.log("Initialized."))
+init().then(() => console.log("[options.js] Initialized."))

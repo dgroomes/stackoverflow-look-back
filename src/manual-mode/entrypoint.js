@@ -29,28 +29,32 @@ function includeScript(url) {
 }
 
 const scripts = [
-    "scrape-votes.js",
+    "AppStorage.js",
+    "manual-mode/ManualModeStorage.js",
+    "Config.js",
+    "VotesScraper.js",
     "expand-posts.js",
     "generate-html.js",
     "vote.js",
     "post.js",
-    "persistence.js",
     "util/download-to-file.js",
     "util/jquery-proxy.js",
     "util/to-json.js"
 ]
 
-Promise.all(scripts.map(urlPath => includeScript(`${origin}/${urlPath}`)))
-    .then(results => {
-        let resultsPrintable = JSON.stringify(results, null, 2);
-        console.log(`All dynamically added JavaScript source files have been loaded: ${resultsPrintable}`)
+let scriptIncludes = scripts.map(urlPath => includeScript(`${origin}/${urlPath}`));
+
+Promise.all(scriptIncludes)
+    .then(() => Config.init())
+    .then(() => {
+        console.log("All scripts were included and the configuration was initialized.")
 
         let {origin, pathname, search} = window.location;
         let searchParams = new URLSearchParams(search)
 
         if (origin === "https://stackoverflow.com" && pathname.startsWith("/users/") && searchParams.get("tab") === "votes") {
             // The current page is the user profile page. We are in the context for scraping votes.
-            scrapeVotes()
+            votesScraper.scrapeVotes()
         } else if (origin === "https://data.stackexchange.com" && pathname.startsWith("/stackoverflow/query/new")) {
             // The current page is the Stack Exchange Data Explorer. We are in the context for expanding the posts data.
             expandPosts()

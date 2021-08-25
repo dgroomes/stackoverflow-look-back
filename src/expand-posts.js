@@ -27,7 +27,7 @@ async function expandByIds(ids) {
 // This is the main function.
 async function expandPosts() {
 
-    let votes = await getVotes()
+    let votes = await appStorage.getVotes()
 
     instrumentJQuery()
     registerAjaxSuccessSpy(responseData => {
@@ -53,7 +53,7 @@ async function expandPosts() {
                 }
             })
 
-            savePosts(posts)
+            appStorage.savePosts(posts)
         }
     })
 

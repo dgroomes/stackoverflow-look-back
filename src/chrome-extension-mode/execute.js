@@ -20,9 +20,11 @@ async function exec() {
 
             // Load so many source code files... This is a bit unfortunate isn't it! Modules to the rescue? Using modules
             // depends on the support for it in the Chrome extension APIs...
-            await loadJavaScriptFile("src/scrape-votes.js")
+            await loadJavaScriptFile("src/AppStorage.js")
+            await loadJavaScriptFile("src/chrome-extension-mode/ChromeModeStorage.js")
+            await loadJavaScriptFile("src/Config.js")
+            await loadJavaScriptFile("src/VotesScraper.js")
             await loadJavaScriptFile("src/vote.js")
-            await loadJavaScriptFile("src/persistence.js")
             await loadJavaScriptFile("src/util/download-to-file.js")
             await loadJavaScriptFile("src/util/to-json.js")
 
@@ -30,8 +32,10 @@ async function exec() {
             await chrome.scripting.executeScript({
                 target: {tabId: tab.id},
                 function: async () => {
-                    window.votesPageLimit = await getVotesPageLimit()
-                    scrapeVotes()
+                    // Initialize the configuration
+                    await Config.init()
+                    // Scrape the votes!
+                    votesScraper.scrapeVotes()
                 }
             })
 
