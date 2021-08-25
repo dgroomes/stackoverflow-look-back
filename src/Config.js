@@ -10,21 +10,17 @@ class Config {
      * the way.
      *
      * @param {AppStorage} appStorage
-     *
-     * This is pretty strange. But I need a way to provide an instance of the ChromeModeStorage where the calling
-     * code knows that its type is ChromeModeStorage and not the generic AppStorage. I think Intellij/WebStorm's
-     * JavaScript intellisense relies only on the "@return" docs annotation... is there a way to do an inline comment
-     * and "cast" the variable just for intellisense?
-     * @param {ChromeModeStorage} chromeModeStorage
-     *
      * @param {Number} votesPageLimit
      * @param {VotesScraper} votesScraper
+     * @param {PostExpander} postExpander
+     * @param {HtmlGenerator} htmlGenerator
      */
-    constructor(appStorage, chromeModeStorage, votesPageLimit, votesScraper) {
+    constructor(appStorage, votesPageLimit, votesScraper, postExpander, htmlGenerator) {
         window.appStorage = this.appStorage = appStorage
-        window.chromeModeStorage = this.chromeModeStorage = chromeModeStorage
         window.votesPageLimit = this.votesPageLimit = votesPageLimit
         window.votesScraper = this.votesScraper = votesScraper
+        window.postExpander = this.postExpander = postExpander
+        window.htmlGenerator = this.htmlGenerator = htmlGenerator
     }
 
     /**
@@ -41,7 +37,6 @@ class Config {
          * The value is either "chrome-extension" or "manual"
          */
         let appStorage
-        let chromeModeStorage
         let votesPageLimit
 
         if (typeof chrome !== "undefined" &&
@@ -54,16 +49,16 @@ class Config {
                 })
             })
             appStorage = new ChromeModeStorage(votesPageLimit)
-            chromeModeStorage = appStorage
         } else {
             appStorage = new ManualModeStorage()
-            chromeModeStorage = null
-            votesPageLimit = null
+            votesPageLimit = 1
         }
 
         let votesScraper = new VotesScraper()
+        let postExpander = new PostExpander()
+        let htmlGenerator = new HtmlGenerator()
 
-        return new Config(appStorage, chromeModeStorage, votesPageLimit, votesScraper)
+        return new Config(appStorage, votesPageLimit, votesScraper, postExpander, htmlGenerator)
     }
 }
 

@@ -5,7 +5,6 @@
 // either scrape for the votes data or expand the posts data.
 
 const origin = "http://127.0.0.1:8000"
-const votesPageLimit = 1
 
 /**
  * Include a script dependency.
@@ -33,8 +32,8 @@ const scripts = [
     "manual-mode/ManualModeStorage.js",
     "Config.js",
     "VotesScraper.js",
-    "expand-posts.js",
-    "generate-html.js",
+    "PostExpander.js",
+    "HtmlGenerator.js",
     "vote.js",
     "post.js",
     "util/download-to-file.js",
@@ -57,9 +56,9 @@ Promise.all(scriptIncludes)
             votesScraper.scrapeVotes()
         } else if (origin === "https://data.stackexchange.com" && pathname.startsWith("/stackoverflow/query/new")) {
             // The current page is the Stack Exchange Data Explorer. We are in the context for expanding the posts data.
-            expandPosts()
+            postExpander.expandPosts().then(() => console.log("Posts were expanded successfully"))
         } else if (pathname.startsWith("/generate-html.html")) {
-            generateHtml()
+            htmlGenerator.generateHtml().then(() => console.log("HTML was generated successfully"))
         } else {
             console.error(`Unexpected page: ${window.location}`)
         }
