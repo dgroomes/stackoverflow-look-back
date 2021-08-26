@@ -42,5 +42,15 @@ class AppStorage {
      */
     async getPosts() {
     }
+
+
+    /**
+     * Fetch the source code for the SQL query
+     * @return {Promise<string>}
+     */
+    getSqlQuery() {
+        return fetch(`${origin}/get-posts-by-ids.sql`)
+            .then(response => response.text())
+    }
 }
 

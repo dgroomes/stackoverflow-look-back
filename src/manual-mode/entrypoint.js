@@ -30,10 +30,12 @@ function includeScript(url) {
 const scripts = [
     "AppStorage.js",
     "manual-mode/ManualModeStorage.js",
-    "Config.js",
+    "RequestInterceptorInstrumenter.js",
+    "manual-mode/ManualModeRequestInterceptorInstrumenter.js",
     "VotesScraper.js",
     "PostExpander.js",
     "HtmlGenerator.js",
+    "Config.js",
     "vote.js",
     "post.js",
     "util/download-to-file.js",

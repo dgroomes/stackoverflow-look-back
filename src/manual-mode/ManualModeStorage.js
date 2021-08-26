@@ -36,4 +36,13 @@ class ManualModeStorage extends AppStorage {
 
         return postsData.map(postData => Post.deserialize(postData))
     }
+
+    /**
+     * Fetch from the local web server
+     * @return {Promise<string>}
+     */
+    getSqlQuery() {
+        return fetch(`${origin}/get-posts-by-ids.sql`)
+            .then(response => response.text())
+    }
 }

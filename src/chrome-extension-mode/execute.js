@@ -1,5 +1,7 @@
 // This is the code to execute the extension functionality on the web page
 
+let global = this
+
 async function exec() {
 
     // Get the current tab
@@ -14,20 +16,28 @@ async function exec() {
         return chrome.scripting.executeScript({target: {tabId: tab.id}, files: [fileName]})
     }
 
+    async function loadAllJavaScriptFiles() {
+        // Load so many source code files... This is a bit unfortunate isn't it! Modules to the rescue? Using modules
+        // depends on the support for it in the Chrome extension APIs...
+        await loadJavaScriptFile("src/AppStorage.js")
+        await loadJavaScriptFile("src/chrome-extension-mode/ChromeModeStorage.js")
+        await loadJavaScriptFile("src/RequestInterceptorInstrumenter.js")
+        await loadJavaScriptFile("src/RequestInterceptorHandler.js")
+        await loadJavaScriptFile("src/chrome-extension-mode/ChromeModeRequestInterceptorInstrumenter.js")
+        await loadJavaScriptFile("src/VotesScraper.js")
+        await loadJavaScriptFile("src/PostExpander.js")
+        await loadJavaScriptFile("src/HtmlGenerator.js")
+        await loadJavaScriptFile("src/Config.js")
+        await loadJavaScriptFile("src/vote.js")
+        await loadJavaScriptFile("src/util/download-to-file.js")
+        await loadJavaScriptFile("src/util/to-json.js")
+    }
+
     {
         let executeScrapeVotesButton = document.getElementById("execute-scrape-votes");
         executeScrapeVotesButton.addEventListener("click", async () => {
 
-            // Load so many source code files... This is a bit unfortunate isn't it! Modules to the rescue? Using modules
-            // depends on the support for it in the Chrome extension APIs...
-            await loadJavaScriptFile("src/AppStorage.js")
-            await loadJavaScriptFile("src/chrome-extension-mode/ChromeModeStorage.js")
-            await loadJavaScriptFile("src/Config.js")
-            await loadJavaScriptFile("src/VotesScraper.js")
-            await loadJavaScriptFile("src/vote.js")
-            await loadJavaScriptFile("src/util/download-to-file.js")
-            await loadJavaScriptFile("src/util/to-json.js")
-
+            await loadAllJavaScriptFiles()
             console.log("Injecting the script...")
             await chrome.scripting.executeScript({
                 target: {tabId: tab.id},
@@ -42,7 +52,34 @@ async function exec() {
             console.log("The script was injected")
         })
     }
-    // todo wire up the click handler and functions for "expand posts"
+
+    {
+        let executeExpandPostsButton = document.getElementById("execute-expand-posts");
+        executeExpandPostsButton.addEventListener("click", async () => {
+
+            // The next few lines are the worst design in the whole codebase. I'm hacking around my Config abstraction
+            // that I thought would be able to encapsulate this. But we have a split brain problem because of the two
+            // executions context at play: 1) the content scripts and 2) the extension itself
+            global.requestInterceptorInstrumenter = new ChromeModeRequestInterceptorInstrumenter()
+            let postExpander = new PostExpander()
+            postExpander.registerHandler()
+
+            await loadAllJavaScriptFiles()
+            console.log("Injecting the script...")
+            await chrome.scripting.executeScript({
+                target: {tabId: tab.id},
+                function: async () => {
+                    // Initialize the configuration
+                    await Config.init()
+                    // Expand the posts data!
+                    await postExpander.expandPosts()
+                }
+            })
+
+            console.log("The script was injected")
+        })
+    }
+
     // todo wire up the click handler and functions for "generate html"
 }
 

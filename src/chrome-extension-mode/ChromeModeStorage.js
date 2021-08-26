@@ -38,4 +38,13 @@ class ChromeModeStorage extends AppStorage {
 
         return postsData.map(postData => Post.deserialize(postData))
     }
+
+    /**
+     * Fetch the source code for the SQL query
+     * @return {Promise<string>}
+     */
+    getSqlQuery() {
+        let url = chrome.runtime.getURL('/src/get-posts-by-ids.sql')
+        return fetch(url).then(response => response.text())
+    }
 }

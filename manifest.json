@@ -9,7 +9,22 @@
   "permissions": [
     "storage",
     "activeTab",
-    "scripting"
+    "scripting",
+    "webRequest"
+  ],
+  "host_permissions": [
+    "https://stackoverflow.com/",
+    "https://data.stackexchange.com/"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/get-posts-by-ids.sql"
+      ],
+      "matches": [
+        "https://data.stackexchange.com/*"
+      ]
+    }
   ],
   "action": {
     "default_popup": "src/chrome-extension-mode/execute.html"

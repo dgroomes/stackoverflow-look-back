@@ -14,13 +14,17 @@ class Config {
      * @param {VotesScraper} votesScraper
      * @param {PostExpander} postExpander
      * @param {HtmlGenerator} htmlGenerator
+     * @param {RequestInterceptorInstrumenter} requestInterceptorInstrumenter
+     * @param {String} mode
      */
-    constructor(appStorage, votesPageLimit, votesScraper, postExpander, htmlGenerator) {
+    constructor(appStorage, votesPageLimit, votesScraper, postExpander, htmlGenerator, requestInterceptorInstrumenter, mode) {
         window.appStorage = this.appStorage = appStorage
         window.votesPageLimit = this.votesPageLimit = votesPageLimit
         window.votesScraper = this.votesScraper = votesScraper
         window.postExpander = this.postExpander = postExpander
         window.htmlGenerator = this.htmlGenerator = htmlGenerator
+        window.requestInterceptorInstrumenter = this.requestInterceptorInstrumenter = requestInterceptorInstrumenter
+        window.mode = this.mode = mode
     }
 
     /**
@@ -38,6 +42,8 @@ class Config {
          */
         let appStorage
         let votesPageLimit
+        let requestInterceptorInstrumenter
+        let mode
 
         if (typeof chrome !== "undefined" &&
             typeof chrome.runtime !== "undefined" &&
@@ -49,16 +55,20 @@ class Config {
                 })
             })
             appStorage = new ChromeModeStorage(votesPageLimit)
+            requestInterceptorInstrumenter = new ChromeModeRequestInterceptorInstrumenter()
+            mode = "chrome-extension"
         } else {
             appStorage = new ManualModeStorage()
             votesPageLimit = 1
+            requestInterceptorInstrumenter = new ManualModeRequestInterceptorInstrumenter()
+            mode = "manual"
         }
 
         let votesScraper = new VotesScraper()
         let postExpander = new PostExpander()
         let htmlGenerator = new HtmlGenerator()
 
-        return new Config(appStorage, votesPageLimit, votesScraper, postExpander, htmlGenerator)
+        return new Config(appStorage, votesPageLimit, votesScraper, postExpander, htmlGenerator, requestInterceptorInstrumenter, mode)
     }
 }
 

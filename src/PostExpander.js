@@ -1,3 +1,5 @@
+"use strict"
+
 // Given a collection of post IDs, expand the posts into the HTML body content and titles by querying the data from
 // the Stack Exchange Data Explorer. See the README for more info.
 
@@ -15,8 +17,7 @@ class PostExpander {
         })
 
         // Fetch the source code for the SQL query
-        let sql = await fetch(`${origin}/get-posts-by-ids.sql`)
-            .then(response => response.text())
+        let sql = await appStorage.getSqlQuery()
 
         document.querySelector('.CodeMirror').CodeMirror.setValue(sql) // Set the SQL query
 
@@ -31,21 +32,40 @@ class PostExpander {
      * @return {Promise<void>}
      */
     async expandPosts() {
-
         let votes = await appStorage.getVotes()
 
-        instrumentJQuery()
-        registerAjaxSuccessSpy(responseData => {
+        // This is awkward, but only in the "Manual" mode do we want to register the handler. When in "Chrome extension"
+        // mode we need to register the handler from the Chrome extension JavaScript execution context because only that
+        // context has access to the "chrome.webRequest" API. The design of this tool has gotten really complicated since
+        // I've added the Chrome extension mode and since trying to applying object-oriented design and ES6 classes. The
+        // object model is now split haphazardly across the "Content Scripts" execution environment and the Chrome
+        // extension execution environment.
+        if (mode === "manual-mode") {
+            this.registerHandler()
+        }
+        // Create a set of all the answer and question posts IDs. Use a Set data structure to avoid duplicates. When an
+        // answer and its question are both up-voted (this is the common case), then we have two references to the question
+        // ID. So, use a Set to avoid duplicates.
+        let idsUnique = new Set(votes.flatMap(vote => vote.ids))
+        let idsSorted = Array.from(idsUnique).sort() // Sorting the IDs is not needed, but helps for reproduce-ability and debugging.
+        await this.expandByIds(idsSorted)
+    }
 
-            // Take careful note. The web page will differ in the ways that it gets the result set. Sometimes,
-            // it makes an initial POST request to kick off the SQL query on the back end. In this case,
-            // there will be a later GET request to actually fetch the result set. In other cases, there
-            // will be a POST request for a "saved query" and the response will include the result set.
-            // I'm not sure how exactly this works but I think the Stack Exchange Data Explorer is doing
-            // some caching on queries that it recognizes. In any case, check for the field "resultSets"
-            // to see if the response has the data or not.
-            let resultSets = responseData.resultSets
-            if (resultSets) {
+    registerHandler() {
+        class ExpandPostsHandler extends RequestInterceptorHandler {
+
+            shouldHandle(data) {
+                // Take careful note. The web page will differ in the ways that it gets the result set. Sometimes,
+                // it makes an initial POST request to kick off the SQL query on the back end. In this case,
+                // there will be a later GET request to actually fetch the result set. In other cases, there
+                // will be a POST request for a "saved query" and the response will include the result set.
+                // I'm not sure how exactly this works but I think the Stack Exchange Data Explorer is doing
+                // some caching on queries that it recognizes. In any case, check for the field "resultSets"
+                // to see if the response has the data or not.
+                return Boolean(responseData.resultSets)
+            }
+
+            handle(response) {
                 // Get the first element in the result sets array. When would this ever be more than one?
                 let {rows} = resultSets[0]
 
@@ -60,13 +80,8 @@ class PostExpander {
 
                 appStorage.savePosts(posts)
             }
-        })
+        }
 
-        // Create a set of all the answer and question posts IDs. Use a Set data structure to avoid duplicates. When an
-        // answer and its question are both up-voted (this is the common case), then we have two references to the question
-        // ID. So, use a Set to avoid duplicates.
-        let idsUnique = new Set(votes.flatMap(vote => vote.ids))
-        let idsSorted = Array.from(idsUnique).sort() // Sorting the IDs is not needed, but helps for reproduce-ability and debugging.
-        await this.expandByIds(idsSorted)
+        requestInterceptorInstrumenter.register(new ExpandPostsHandler())
     }
 }
