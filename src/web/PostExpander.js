@@ -15,7 +15,7 @@ class PostExpander {
         })
 
         // Fetch the source code for the SQL query
-        let sql = await fetch(`${origin}/get-posts-by-ids.sql`)
+        let sql = await fetch(`${webResourcesOrigin}/web/get-posts-by-ids.sql`)
             .then(response => response.text())
 
         document.querySelector('.CodeMirror').CodeMirror.setValue(sql) // Set the SQL query

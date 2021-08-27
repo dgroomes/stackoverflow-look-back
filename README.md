@@ -49,8 +49,36 @@ There are two ways–or, *modes*–to use the tool. Choose the mode that you pre
     * Recommended for learning
     * This works for any evergreen browser. This mode relies on standard web APIs.
 
-The source code is laid in a directory structure that reflect the modes. There is a `src/chrome-extension-mode/`
-directory and a `src/manual-mode/` directory.
+The source code is laid in a directory structure that groups code by the execution context that the code runs in:
+
+* `src/chrome-extension/`
+    * The code in this directory gets loaded into the extension environment (background workers, popups, etc) or the
+      Content Script environment (an isolated JavaScript environment with access to the web page DOM)
+* `src/web/`
+    * The code in this directory will all be loaded on the web page. All of the files in this directory are explicitly
+      allowed to be loaded into the web page by the `web_accessible_resources` property in the manifest.
+
+Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the
+Chrome extension layer and the web page. So, I'm purposely designing the code base to not have any shared common code.
+
+### My Bias Against Content Scripts
+
+In my opinion, content scripts are not compelling and I don't quite get their necessity in browser extension technical
+architecture. From my perspective there of course needs to be one isolated JavaScript execution environment that powers
+an extension. Why do there need to be two? The extension context has access to powerful browser APIs. The web page
+itself is a powerful execution environment because it has access to the DOM and the application source code. So what is
+the place of content scripts? I know by design, they have access to the DOM while the extension environment does not.
+But why? I'm sure there are good reasons. But the three different exec environments and their unique capabilities and
+restrictions has made it difficult to design and implement my own code.
+
+### My Bias for Web APIs
+
+A corollary to my bias against content scripts is my bias for Web APIs. Specifically, I have a bias that favors using
+the web page to execute a maximum amount of the tool's code. In fact, the "Manual" mode relies almost exclusively on the
+web page to execute the domain logic like the data scraping and HTML generation. It requires just a bit of manual
+intervention in the dev tools. As such, the "Manual" mode is perfectly portable to other browsers because it just relies
+on web APIs whereas the "Chrome extension" mode is mired in accidental design complexity because of the accidental
+design and implementation of non-standard APIs (Chrome-specific).
 
 ## Instructions
 
@@ -73,19 +101,17 @@ Follow these instructions to install the tool as a Chrome browser extension and 
     * Find the "Votes" tab and click it.
     * For me, my Votes tab navigates to this URL: <https://stackoverflow.com/users/1333713/david-groomes?tab=votes>
 1. Scrape the votes data
-    * Navigate to a page.
     * Click the blue puzzle icon in the top right of the window
     * Click the "stackoverflow-static" extension entry
     * Wait for a second (not sure why it's so slow)
-    * Click the "Scrape votes" button
-1. DOES NOT WORK Expand the post data
+    * A popup will show up letting you know that the action should have already been executed. Check the console logs!
+      The votes data should have been scraped and saved to Chrome storage.
+1. IN PROGRESS Expand the post data
     * Go to the [Stack Exchange Data Explorer](https://data.stackexchange.com/stackoverflow/query/new)
+        * If not logged in, then log in and navigate back to the original page.
     * Repeat the earlier steps to open the extension entry
-    * Click the "Expand posts" button
-    * todo
-    * The posts data will be downloaded in a file named `stackoverflow-posts.json`
-1. Generate HTML
-    * todo
+    * The same popup will appear. The post data should have been expanded and saved into Chrome storage.
+1. TODO Generate HTML
 
 Follow these instructions to run the tool the manual way. It requires more steps:
 
@@ -117,6 +143,7 @@ Follow these instructions to run the tool the manual way. It requires more steps
     * The data is used in the next step.
 1. Expand the post data
     * Go to the [Stack Exchange Data Explorer](https://data.stackexchange.com/stackoverflow/query/new)
+        * If not logged in, then log in and navigate back to the original page.
     * Import some JavaScript code into the browser from the web server. Paste the following into the browser console:
       ```javascript
       let el = document.createElement("script")
@@ -162,6 +189,11 @@ General clean ups, TODOs and things I wish to implement for this project:
   global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is
   kind of a major bummer. Also modules can't be imported in web workers in Safari and FireFox so that is also a bummer
   when considering converting this tool to a browser extension.
+* Maybe the web standards for extensions APIs is actually good enough? Chromium browsers (Chrome, Edge, Opera) all
+  pretty much have the same APIs and FireFox also has very similar APIs. They all use the Manifest file format. Safari
+  is the most different. If I can get the browser extension to be "virtually universally usable across all platforms"
+  then I can do away with the manual mode, which only existed for the same reason of being usable across all platforms.
+  This would loosen up the design constraints of the code architecture.
 
 ## Notes
 

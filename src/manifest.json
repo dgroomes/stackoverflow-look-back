@@ -1,0 +1,35 @@
+{
+  "name": "stackoverflow-static",
+  "description": "Scrape a static copy of your own StackOverflow votes data",
+  "version": "0.1",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "init.js"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "web/*"
+      ],
+      "matches": [
+        "https://stackoverflow.com/*",
+        "https://data.stackexchange.com/*"
+      ]
+    }
+  ],
+  "externally_connectable": {
+    "matches": [
+      "https://stackoverflow.com/*",
+      "https://data.stackexchange.com/*"
+    ]
+  },
+  "action": {
+    "default_popup": "chrome-extension/execute.html"
+  },
+  "options_page": "chrome-extension/options.html"
+}
