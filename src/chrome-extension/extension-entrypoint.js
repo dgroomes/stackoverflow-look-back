@@ -17,26 +17,28 @@ async function bootstrapTheContentScript() {
 }
 
 // Register a listener for message passing to the web page.
-// Can we send responses synchronously or asynchronously?
 chrome.runtime.onMessageExternal.addListener(async function (message, sender, sendResponse) {
     console.log(`Received a message:`)
     console.dir(message)
 
     if (message.command === "save") {
         let data = message.data
-        chrome.storage.sync.set(data, () => {
+        chrome.storage.local.set(data, () => {
             sendResponse("The extension successfully saved the data")
         });
     } else if (message.command === "get") {
         let key = message.key
-        chrome.storage.sync.get(key, (found) => {
+        chrome.storage.local.get(key, (found) => {
             sendResponse(found)
         });
+    } else if (message.command === "open-generate-html-page") {
+        chrome.tabs.create({
+            url: 'web/generate-html.html'
+        })
     } else {
         throw new Error(`Unrecognized command: '${message.command}'`)
     }
 })
-
 
 bootstrapTheContentScript()
     .then(() => console.log("[extension-entrypoint.js#bootstrapTheContentScript] Ran to completion"))

@@ -32,6 +32,7 @@ class AppStorage {
     /**
      * Saves posts data to storage
      * @param {Array<Post>}
+     * @return {Promise}
      */
     savePosts(posts) {
     }

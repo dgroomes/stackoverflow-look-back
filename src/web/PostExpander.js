@@ -34,32 +34,35 @@ class PostExpander {
 
         let votes = await appStorage.getVotes()
 
-        instrumentJQuery()
-        registerAjaxSuccessSpy(responseData => {
+        let promise = new Promise(resolve => {
+            instrumentJQuery()
+            registerAjaxSuccessSpy(async responseData => {
 
-            // Take careful note. The web page will differ in the ways that it gets the result set. Sometimes,
-            // it makes an initial POST request to kick off the SQL query on the back end. In this case,
-            // there will be a later GET request to actually fetch the result set. In other cases, there
-            // will be a POST request for a "saved query" and the response will include the result set.
-            // I'm not sure how exactly this works but I think the Stack Exchange Data Explorer is doing
-            // some caching on queries that it recognizes. In any case, check for the field "resultSets"
-            // to see if the response has the data or not.
-            let resultSets = responseData.resultSets
-            if (resultSets) {
-                // Get the first element in the result sets array. When would this ever be more than one?
-                let {rows} = resultSets[0]
+                // Take careful note. The web page will differ in the ways that it gets the result set. Sometimes,
+                // it makes an initial POST request to kick off the SQL query on the back end. In this case,
+                // there will be a later GET request to actually fetch the result set. In other cases, there
+                // will be a POST request for a "saved query" and the response will include the result set.
+                // I'm not sure how exactly this works but I think the Stack Exchange Data Explorer is doing
+                // some caching on queries that it recognizes. In any case, check for the field "resultSets"
+                // to see if the response has the data or not.
+                let resultSets = responseData.resultSets
+                if (resultSets) {
+                    // Get the first element in the result sets array. When would this ever be more than one?
+                    let {rows} = resultSets[0]
 
-                // Collect the post data from the rows
-                let posts = rows.map(([id, parentId, type, title, body]) => {
-                    if (type === 1) {
-                        return new Question(id, title, body)
-                    } else {
-                        return new Answer(id, parentId, body)
-                    }
-                })
+                    // Collect the post data from the rows
+                    let posts = rows.map(([id, parentId, type, title, body]) => {
+                        if (type === 1) {
+                            return new Question(id, title, body)
+                        } else {
+                            return new Answer(id, parentId, body)
+                        }
+                    })
 
-                appStorage.savePosts(posts)
-            }
+                    await appStorage.savePosts(posts)
+                    resolve()
+                }
+            })
         })
 
         // Create a set of all the answer and question posts IDs. Use a Set data structure to avoid duplicates. When an
@@ -68,5 +71,6 @@ class PostExpander {
         let idsUnique = new Set(votes.flatMap(vote => vote.ids))
         let idsSorted = Array.from(idsUnique).sort() // Sorting the IDs is not needed, but helps for reproduce-ability and debugging.
         await this.expandByIds(idsSorted)
+        await promise
     }
 }

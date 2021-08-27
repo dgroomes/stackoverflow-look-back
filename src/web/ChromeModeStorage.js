@@ -33,8 +33,8 @@ class ChromeModeStorage extends AppStorage {
 
     saveVotes(votes) {
         let that = this
+        let votesMapped = votes.map(vote => vote.toJSON())
         return new Promise(resolve => {
-            let votesMapped = votes.map(vote => vote.toJSON())
             chrome.runtime.sendMessage(this.#chromeExtensionId,
                 {command: "save", data: {votes: votesMapped}},
                 function (response) {
@@ -61,8 +61,17 @@ class ChromeModeStorage extends AppStorage {
     }
 
     savePosts(posts) {
-        let json = JSON.stringify(posts, null, 2)
-        downloadToFile(json, "stackoverflow-posts.json")
+        let that = this
+        let postsMapped = posts.map(post => post.toJSON())
+        return new Promise(resolve => {
+            chrome.runtime.sendMessage(this.#chromeExtensionId,
+                {command: "save", data: {posts: postsMapped}},
+                function (response) {
+                    console.log("Got this response from the extension:")
+                    console.dir(response)
+                    resolve(that.#CHROME_STORAGE)
+                })
+        })
     }
 
     async getPosts() {

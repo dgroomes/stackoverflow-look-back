@@ -5,6 +5,7 @@
 
 const manualModeWebServerOrigin = "http://127.0.0.1:8000"
 let mode
+let extensionContext // Is the web page served directly by the extension? I.e. is the web page at a URL starting with "chrome-extension://"
 let webResourcesOrigin
 let chromeExtensionId
 
@@ -15,16 +16,35 @@ let chromeExtensionId
  * either by a special Chrome extension URL or the local web server.
  */
 function detectMode() {
+
+    /**
+     * Identify the Chrome extension ID from a Chrome extension URL
+     * @param url. For example: chrome-extension://akidegfimbjmokpejlcnjagogamdiinl/web/generate-html.html
+     */
+    function identifyChromeId(url) {
+        let regex = new RegExp("chrome-extension://([a-z]+)")
+        mode = "chrome-extension"
+        let matches = url.match(regex)
+        webResourcesOrigin = matches[0]
+        chromeExtensionId = matches[1]
+    }
+
+    // The "generate-html.html" page itself is served by the Chrome extension and so the URL protocol will be
+    // "chrome-extension://"
+    if (window.origin.startsWith("chrome-extension://")) {
+        extensionContext = true
+        identifyChromeId(window.origin)
+        return
+    }
+
+    extensionContext = false
+
     let script = document.getElementById("dom-entrypoint")
     if (script === null) {
         mode = "manual"
         webResourcesOrigin = manualModeWebServerOrigin
     } else {
-        mode = "chrome-extension"
-        let regex = new RegExp("chrome-extension://([a-z]+)")
-        let matches = script.src.match(regex)
-        webResourcesOrigin = matches[0]
-        chromeExtensionId = matches[1]
+        identifyChromeId(script.src)
     }
 }
 
@@ -83,7 +103,9 @@ async function configureState() {
     let appStorage
     if (mode === "chrome-extension") {
         appStorage = new ChromeModeStorage(chromeExtensionId)
-        window.votesPageLimit = await appStorage.getVotesPageLimit()
+        if (!extensionContext) { // This is hacky. But when executing in an extension context, this call will fail because there is no listener.
+            window.votesPageLimit = await appStorage.getVotesPageLimit()
+        }
     } else {
         appStorage = new ManualModeStorage()
         window.votesPageLimit = 1
@@ -105,8 +127,19 @@ function detectAndExecuteFunction() {
         votesScraper.scrapeVotes()
     } else if (origin === "https://data.stackexchange.com" && pathname.startsWith("/stackoverflow/query/new")) {
         // The current page is the Stack Exchange Data Explorer. We are in the context for expanding the posts data.
-        postExpander.expandPosts().then(() => console.log("Posts were expanded successfully"))
-    } else if (pathname.startsWith("/generate-html.html")) {
+        postExpander.expandPosts().then(() => {
+            console.log("Posts were expanded successfully")
+            if (mode === "chrome-extension") {
+                console.log("Because the tool is running 'chrome-extension' mode, the HTML generation step can be automatically run. Opening a new tab to the 'generate-html.html' page...")
+                chrome.runtime.sendMessage(chromeExtensionId,
+                    {command: "open-generate-html-page"},
+                    function (response) {
+                        console.log("Got this response from the extension:")
+                        console.dir(response)
+                    })
+            }
+        })
+    } else if (pathname.includes("/generate-html.html")) {
         htmlGenerator.generateHtml().then(() => console.log("HTML was generated successfully"))
     } else {
         console.error(`Unexpected page: ${window.location}`)

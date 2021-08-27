@@ -106,12 +106,15 @@ Follow these instructions to install the tool as a Chrome browser extension and 
     * Wait for a second (not sure why it's so slow)
     * A popup will show up letting you know that the action should have already been executed. Check the console logs!
       The votes data should have been scraped and saved to Chrome storage.
-1. IN PROGRESS Expand the post data
+1. Expand the post data
     * Go to the [Stack Exchange Data Explorer](https://data.stackexchange.com/stackoverflow/query/new)
         * If not logged in, then log in and navigate back to the original page.
     * Repeat the earlier steps to open the extension entry
     * The same popup will appear. The post data should have been expanded and saved into Chrome storage.
-1. TODO Generate HTML
+    * Additionally, a new tab will open. Follow the next instructions to generate the HTML.
+1. Generate a static HTML document from the posts data
+    * You should be on the new tab that was automatically opened
+    * A file download will appear! This is the final result. Save it somewhere easily accessible.
 
 Follow these instructions to run the tool the manual way. It requires more steps:
 
@@ -130,7 +133,7 @@ Follow these instructions to run the tool the manual way. It requires more steps
     * Import some JavaScript code into the browser from the web server. Paste the following into the browser console:
       ```javascript
       let el = document.createElement("script")
-      el.src = "http://127.0.0.1:8000/manual-mode/entrypoint.js"
+      el.src = "http://127.0.0.1:8000/web/dom-entrypoint.js"
       document.head.append(el)
       ```
     * The votes data will be downloaded in a file named `stackoverflow-votes.json`
@@ -147,7 +150,7 @@ Follow these instructions to run the tool the manual way. It requires more steps
     * Import some JavaScript code into the browser from the web server. Paste the following into the browser console:
       ```javascript
       let el = document.createElement("script")
-      el.src = "http://127.0.0.1:8000/manual-mode/entrypoint.js"
+      el.src = "http://127.0.0.1:8000/web/dom-entrypoint.js"
       document.head.append(el)
       ```
     * The posts data will be downloaded in a file named `stackoverflow-posts.json`
@@ -158,7 +161,13 @@ Follow these instructions to run the tool the manual way. It requires more steps
     * The data is used in the next step
 1. Generate a static HTML document from the posts data
     * Open <http://127.0.0.1:8000/generate-html.html>
-    * The downloaded file is the final result! Save it somewhere easily accessible.
+    * Import some JavaScript code into the browser from the web server. Paste the following into the browser console:
+      ```javascript
+      let el = document.createElement("script")
+      el.src = "http://127.0.0.1:8000/web/dom-entrypoint.js"
+      document.head.append(el)
+      ```
+    * A file download will appear! This is the final result. Save it somewhere easily accessible.
     * Known issue: The visual elements in the page break after the 1500th post in Chrome. I think this is because of an
       internal limit on CSS Grid sizes. See the note in
       the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000

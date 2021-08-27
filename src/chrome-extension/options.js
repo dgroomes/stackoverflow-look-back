@@ -6,7 +6,7 @@ form.addEventListener("submit", async event => {
     event.preventDefault() // Prevent a form POST request
     let newValue = votesPageLimitEl.value;
     await new Promise(resolve => {
-        chrome.storage.sync.set({votesPageLimit: newValue}, () => {
+        chrome.storage.local.set({votesPageLimit: newValue}, () => {
             console.log(`Saved value '${newValue}'`);
             resolve()
         })
@@ -16,7 +16,7 @@ form.addEventListener("submit", async event => {
 // Initialize the form field with the value saved in Chrome storage
 async function init() {
     votesPageLimitEl.value = await new Promise((resolve) => {
-        chrome.storage.sync.get("votesPageLimit", (data) => {
+        chrome.storage.local.get("votesPageLimit", (data) => {
             console.log(`Read the following value from storage for 'votesPageLimit': ${data.votesPageLimit}`)
             resolve(data.votesPageLimit)
         })
