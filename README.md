@@ -189,7 +189,7 @@ General clean ups, TODOs and things I wish to implement for this project:
   SO static data was for how to get the query parameters of the URL from JavaScript. But the question and answer didn't
   show up because I didn't upvote the question, only the answer, and it turns out
   the [question itself is locked](https://stackoverflow.com/q/901115/)!
-* IN PROGRESS Create a browser extension for this. The main benefit should be the removal of the manual steps like
+* DONE Create a browser extension for this. The main benefit should be the removal of the manual steps like
   opening three different web pages and moving the downloaded files to different directories.
 * Consider creating a search bar where multiple terms can be search at once. Originally, I was hoping `Cmd + F` would be
   good enough for search but when the search term is SQL or bash, a lot of results come up and it's useful to add a
@@ -203,6 +203,10 @@ General clean ups, TODOs and things I wish to implement for this project:
   is the most different. If I can get the browser extension to be "virtually universally usable across all platforms"
   then I can do away with the manual mode, which only existed for the same reason of being usable across all platforms.
   This would loosen up the design constraints of the code architecture.
+* There are some occasional caching problems. Sometimes when I load a page, it saves "AppStorage" not define and stuff
+  like that. I think it's a caching problem because when I "hard reload and empty caches" it works. But then later it
+  might fail again although I haven't even changed the code so I don't understand how the cache could still be stale,
+  and thus still be a problem. Not sure. But it's annoying.
 
 ## Notes
 

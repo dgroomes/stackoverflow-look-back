@@ -13,7 +13,7 @@ class Vote {
         if (type === "question") {
             return new QuestionVote(id)
         } else if (type === "answer") {
-            return new AnswerVote(id)
+            return new AnswerVote(id, voteData.questionId)
         } else {
             throw new Error(`Unrecognized post type '${type}'`)
         }
