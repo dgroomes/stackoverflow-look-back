@@ -11,13 +11,13 @@ class HtmlGenerator {
      */
     async generateHtml() {
         let posts = await appStorage.getPosts()
-        // Known issue. Reduce down to the problematic entries due to CSS grid issue. See the note in the README.
-        posts = posts.slice(0, 1500) // the 1501st element isn't rendered correctly
-
         let postsEl = document.getElementById("posts");
 
         // Sort the posts data. Every question post is followed by its answer posts.
-        let sorted = posts.sort(post => post.compare());
+        let sorted = posts.sort((postA, postB) => postA.compare() - postB.compare());
+
+        // Known issue. Reduce down to the problematic entries due to CSS grid issue. See the note in the README.
+        sorted = sorted.slice(0, 1500) // the 1501st element isn't rendered correctly
 
         for (let post of sorted) {
             postsEl.insertAdjacentHTML("beforeend", post.toHtml())
