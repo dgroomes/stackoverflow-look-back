@@ -191,7 +191,7 @@ General clean ups, TODOs and things I wish to implement for this project:
   is the most different. If I can get the browser extension to be "virtually universally usable across all platforms"
   then I can do away with the manual mode, which only existed for the same reason of being usable across all platforms.
   This would loosen up the design constraints of the code architecture.
-* There are some occasional caching problems. Sometimes when I load a page, it saves "AppStorage" not define and stuff
+* DONE (Update I think it's a race condition with the JavaScript doc load order) There are some occasional caching problems. Sometimes when I load a page, it saves "AppStorage" not define and stuff
   like that. I think it's a caching problem because when I "hard reload and empty caches" it works. But then later it
   might fail again although I haven't even changed the code so I don't understand how the cache could still be stale,
   and thus still be a problem. Not sure. But it's annoying.

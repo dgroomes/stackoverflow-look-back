@@ -49,13 +49,13 @@ function detectMode() {
 }
 
 /**
- * @return {Promise[]}
+ * Load all scripts
+ * @return {Promise} a promise that resolves when all scripts have loaded into the page. Specifically, all script
+ * elements will have called their 'onload' functions.
  */
 function downloadScripts() {
-    const scripts = [
+    const noDepsScripts = [
         "AppStorage.js",
-        "ManualModeStorage.js",
-        "ChromeModeStorage.js",
         "VotesScraper.js",
         "PostExpander.js",
         "HtmlGenerator.js",
@@ -66,28 +66,35 @@ function downloadScripts() {
         "util/to-json.js"
     ]
 
+    // These files depend on another file already having been loaded because they use the "extends" keyword at the
+    // top-level. If I used the module system would this not be a problem?
+    const oneDepsScripts = [
+        "ManualModeStorage.js",
+        "ChromeModeStorage.js",
+    ]
+
     /**
      * Include a script dependency.
      *
      * This creates a <script> element with the given URL and adds it to the document head. The script will be downloaded and
      * run. This is a way to dynamically load JavaScript to the page.
-     * @param url
+     * @param fileName
      * @return {Promise} a promise that resolves when the script loads
      */
-    function includeScript(url) {
+    function includeScript(fileName) {
         let el = document.createElement("script")
-        el.src = url
+        el.src = `${webResourcesOrigin}/web/${fileName}`
         document.head.append(el)
 
-        let pointer
-        let promise = new Promise((res, rej) => pointer = {res, rej})
-
-        el.onload = pointer.res
-
-        return promise
+        return new Promise((res, rej) => {
+            el.onload = function () {
+                res()
+            }
+        })
     }
 
-    return scripts.map(urlPath => includeScript(`${webResourcesOrigin}/web/${urlPath}`));
+    return Promise.all(noDepsScripts.map(fileName => includeScript(fileName)))
+        .then(_ => Promise.all(oneDepsScripts.map(fileName => includeScript(fileName))))
 }
 
 async function configureState() {
@@ -148,9 +155,8 @@ function detectAndExecuteFunction() {
 
 detectMode()
 
-Promise.all(downloadScripts())
-    .then(async () => {
-        console.log("All scripts were included.")
-        await configureState()
-        detectAndExecuteFunction()
-    })
+downloadScripts().then(async () => {
+    console.log("All scripts were included.")
+    await configureState()
+    detectAndExecuteFunction()
+})

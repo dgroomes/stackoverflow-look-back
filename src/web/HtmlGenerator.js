@@ -14,6 +14,7 @@ class HtmlGenerator {
         let postsEl = document.getElementById("posts");
 
         // Sort the posts data. Every question post is followed by its answer posts.
+        // See the "compareFn" parameter for "Array.prototype.sort()": https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
         let sorted = posts.sort((postA, postB) => postA.compare() - postB.compare());
 
         // Known issue. Reduce down to the problematic entries due to CSS grid issue. See the note in the README.
