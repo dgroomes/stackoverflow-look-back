@@ -74,10 +74,19 @@ class ChromeModeStorage extends AppStorage {
         })
     }
 
+    // Warning: This is bad design. This method is implemented differently than the others. It does not make a "sendMessage"
+    // request like the others but instead executes the "chrome.storage" API directly. This is because this function is
+    // only called in an extension context and not a web page context. This stuff is really confusing! Anyway, it works!
     async getPosts() {
-        let postsData = await fetch(`${origin}/data/stackoverflow-posts.json`)
-            .then(response => response.json())
+        let promise = new Promise(resolve => {
+            chrome.storage.local.get("posts", (found) => {
+                console.log("Got this response from storage:")
+                console.dir(found)
+                resolve(found.posts)
+            });
+        })
 
+        let postsData = await promise
         return postsData.map(postData => Post.deserialize(postData))
     }
 }
