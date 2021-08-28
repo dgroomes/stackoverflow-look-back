@@ -178,19 +178,7 @@ Follow these instructions to run the tool the manual way. It requires more steps
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* DONE Make an `entrypoint.js` file instead of re-using both `scrape-votes.js` and `expand-posts.js` independently
-* DONE Get more re-use out of code. For example, re-use the Votes class between the scrape votes functionality and
-  expand posts functionality
 * Fix the CSS grid problem
-* DONE Get post data for questions that were not up-voted but where there was an up-voted answer to that question. This
-  is a common case. I thought it was rare because I assumed that when I upvote an answer that I would have already
-  upvoted the question. But this isn't the case. I have a about two hundred of these cases. Also, even if I wanted to
-  up-vote the question, some are actually locked! For example, one of the very first things I wanted to search for in my
-  SO static data was for how to get the query parameters of the URL from JavaScript. But the question and answer didn't
-  show up because I didn't upvote the question, only the answer, and it turns out
-  the [question itself is locked](https://stackoverflow.com/q/901115/)!
-* DONE Create a browser extension for this. The main benefit should be the removal of the manual steps like
-  opening three different web pages and moving the downloaded files to different directories.
 * Consider creating a search bar where multiple terms can be search at once. Originally, I was hoping `Cmd + F` would be
   good enough for search but when the search term is SQL or bash, a lot of results come up and it's useful to add a
   second search term to reduce the result. This would add quite a bit of code to the page though.
@@ -207,6 +195,23 @@ General clean ups, TODOs and things I wish to implement for this project:
   like that. I think it's a caching problem because when I "hard reload and empty caches" it works. But then later it
   might fail again although I haven't even changed the code so I don't understand how the cache could still be stale,
   and thus still be a problem. Not sure. But it's annoying.
+
+## Finished Wish List items
+
+These are the finished items from the Wish List:
+
+* DONE Make an `entrypoint.js` file instead of re-using both `scrape-votes.js` and `expand-posts.js` independently
+* DONE Get more re-use out of code. For example, re-use the Votes class between the scrape votes functionality and
+  expand posts functionality
+* DONE Get post data for questions that were not up-voted but where there was an up-voted answer to that question. This
+  is a common case. I thought it was rare because I assumed that when I upvote an answer that I would have already
+  upvoted the question. But this isn't the case. I have a about two hundred of these cases. Also, even if I wanted to
+  up-vote the question, some are actually locked! For example, one of the very first things I wanted to search for in my
+  SO static data was for how to get the query parameters of the URL from JavaScript. But the question and answer didn't
+  show up because I didn't upvote the question, only the answer, and it turns out
+  the [question itself is locked](https://stackoverflow.com/q/901115/)!
+* DONE Create a browser extension for this. The main benefit should be the removal of the manual steps like
+  opening three different web pages and moving the downloaded files to different directories.
 
 ## Notes
 
