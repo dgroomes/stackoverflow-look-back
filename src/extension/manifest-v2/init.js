@@ -11,11 +11,15 @@ chrome.runtime.onInstalled.addListener(async () => {
         console.log(`[init.js] Saved default value for 'votesPageLimit': '${defaultInitialVotesPageLimit}'`);
     })
 
-    chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
+    chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
         chrome.declarativeContent.onPageChanged.addRules([{
-            conditions: [new chrome.declarativeContent.PageStateMatcher({
-                pageUrl: {hostEquals: 'stackoverflow.com'},
-            })
+            conditions: [
+                new chrome.declarativeContent.PageStateMatcher({
+                    pageUrl: {hostEquals: 'stackoverflow.com'},
+                }),
+                new chrome.declarativeContent.PageStateMatcher({
+                    pageUrl: {hostEquals: 'data.stackexchange.com'},
+                })
             ],
             actions: [new chrome.declarativeContent.ShowPageAction()]
         }]);
