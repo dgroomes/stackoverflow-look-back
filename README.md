@@ -42,7 +42,7 @@ The overall flow of the tool breaks down like this:
 
 There are two ways–or, *modes*–to use the tool. Choose the mode that you prefer:
 
-* *Chrome extension* mode (NOT YET FULLY IMPLEMENTED)
+* *Chrome extension* mode
     * Recommended for Chrome users
 * *Manual* mode
     * Manually run the tool by executing commands in the browser developer tools and by manually moving files
@@ -60,11 +60,9 @@ The source code is laid in a directory structure that groups code by the executi
             * The code in this directory gets loaded into the extension environment (background workers, popups, etc) or
               the Content Script environment (an isolated JavaScript environment with access to the web page DOM)
         * `manifest-v3/`
-            * Code that supports a Manifest V3 web extension.
+            * Code that supports a Manifest V3 web extension. Note that FireFox does not support Manifest V3 as of 2021.
         * `manifest-v2/`
-            * NOT YET FULLY IMPLEMENTED. This is a work-in-progress and I'm not sure I'll get this to work. If it turns
-              that it's not worth doing I'll abandon it. I'm hoping the API difference between v2 and v3 is not that bad
-              for my needs at least.
+            * Code that supports a Manifest V2 web extension. 
 
 Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the
 Chrome extension layer and the web page. So, I'm purposely designing the code base to not have any shared common code.
@@ -208,8 +206,9 @@ General clean ups, TODOs and things I wish to implement for this project:
   similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral view. Why?
   This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab over and
   over again while iterating on the UI.
-* IN PROGRESS (Maybe) Create a Chrome Manifest v2 extension. This would enable making a FireFox extension, which is
+* DONE Create a Chrome Manifest v2 extension. This would enable making a FireFox extension, which is
   still on v2 but is working on supporting v3 sometime in 2022.
+* Test the v2 extension in FireFox
 
 ## Finished Wish List items
 
