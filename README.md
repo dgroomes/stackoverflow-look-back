@@ -270,4 +270,5 @@ These are the finished items from the Wish List:
 * [FireFox Extension Workshop: *Porting a Google Chrome
   extension*](https://extensionworkshop.com/documentation/develop/porting-a-google-chrome-extension/)
     * Shoot, FireFox doesn't support Manifest v3 and I spent all this time writing a Chrome extension in Manifest v3. I
-      wish I had implemented in Manifest v2 so that I could compatibility with FireFox. 
+      wish I had implemented in Manifest v2 so that I could compatibility with FireFox.
+* [Chrome extension docs: Manifest V2 *Getting started*](https://developer.chrome.com/docs/extensions/mv2/getstarted/)
