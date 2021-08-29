@@ -5,5 +5,8 @@
   "manifest_version": 2,
   "background": {
     "service_worker": "init.js"
-  }
+  },
+  "web_accessible_resources": [
+    "web/*"
+  ]
 }
