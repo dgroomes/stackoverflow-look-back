@@ -4,7 +4,9 @@
   "version": "0.1",
   "manifest_version": 2,
   "background": {
-    "scripts": ["init.js"],
+    "scripts": [
+      "init.js"
+    ],
     "persistent": false
   },
   "permissions": [
@@ -17,6 +19,12 @@
   "web_accessible_resources": [
     "web/*"
   ],
+  "externally_connectable": {
+    "matches": [
+      "https://stackoverflow.com/*",
+      "https://data.stackexchange.com/*"
+    ]
+  },
   "page_action": {
     "default_popup": "extension/common/execute.html"
   }

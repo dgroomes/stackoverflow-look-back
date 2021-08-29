@@ -9,6 +9,7 @@
 // execution of the flow should occur only between the extension and the web page. The content script should disappear
 // right after the bootstrap phase..
 
+console.log("[content-script-entrypoint.js] Running...")
 
 // Inject a "<script>" element into the web page which will download "dom-entrypoint.js"
 let scriptEl = document.createElement("script")

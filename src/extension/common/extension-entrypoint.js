@@ -4,7 +4,6 @@
 // This code sets up the infrastructure for listening to messages from the web page. This code bootstraps the content
 // script which then bootstraps the web page.
 
-
 /**
  * Execute a content script.
  *
