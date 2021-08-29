@@ -62,7 +62,9 @@ The source code is laid in a directory structure that groups code by the executi
         * `manifest-v3/`
             * Code that supports a Manifest V3 web extension.
         * `manifest-v2/`
-            * NOT YET IMPLEMENTED
+            * NOT YET FULLY IMPLEMENTED. This is a work-in-progress and I'm not sure I'll get this to work. If it turns
+              that it's not worth doing I'll abandon it. I'm hoping the API difference between v2 and v3 is not that bad
+              for my needs at least.
 
 Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the
 Chrome extension layer and the web page. So, I'm purposely designing the code base to not have any shared common code.

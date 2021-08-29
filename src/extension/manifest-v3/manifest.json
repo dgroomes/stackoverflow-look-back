@@ -1,5 +1,5 @@
 {
-  "name": "stackoverflow-static",
+  "name": "stackoverflow-static (manifest v3)",
   "description": "Scrape a static copy of your own StackOverflow votes data",
   "version": "0.1",
   "manifest_version": 3,
