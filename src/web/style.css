@@ -50,5 +50,7 @@ pre {
 .question-answer-moniker {
     font-size: 300%;
     text-align: center;
+    margin: auto;
     margin-top: 20px;
+    display: table; /* This is a neat trick to center an inline element horizontally without much effort. */
 }

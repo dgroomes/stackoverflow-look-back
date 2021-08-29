@@ -81,7 +81,9 @@ class Question extends Post {
     }
 
     toHtml() {
-        return `<a class="question-answer-moniker" href="https://stackoverflow.com/q/${this.id}">Q</a>
+        return `<div>
+    <a class="question-answer-moniker" href="https://stackoverflow.com/q/${this.id}">Q</a>
+</div>
 <div>
     <h1 class="question-title">${this.title}</h1>
     ${this.htmlBody}
@@ -113,7 +115,9 @@ class Answer extends Post {
     }
 
     toHtml() {
-        return `<a class="question-answer-moniker" href="https://stackoverflow.com/a/${this.id}">A</a>
+        return `<div>
+    <a class="question-answer-moniker" href="https://stackoverflow.com/a/${this.id}">A</a>
+</div>
 <div>
     ${this.htmlBody}
 </div>`
