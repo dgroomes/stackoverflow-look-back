@@ -195,6 +195,10 @@ General clean ups, TODOs and things I wish to implement for this project:
   like that. I think it's a caching problem because when I "hard reload and empty caches" it works. But then later it
   might fail again although I haven't even changed the code so I don't understand how the cache could still be stale,
   and thus still be a problem. Not sure. But it's annoying.
+* Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post data in a
+  similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral view. Why?
+  This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab over and
+  over again while iterating on the UI.
 
 ## Finished Wish List items
 
