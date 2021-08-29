@@ -12,7 +12,7 @@ async function bootstrapTheContentScript() {
     // Create the content script entrypoint
     await chrome.scripting.executeScript({
         target: {tabId: tab.id},
-        files: ["chrome-extension/content-script-entrypoint.js"]
+        files: ["extension/common/content-script-entrypoint.js"]
     })
 }
 

@@ -51,12 +51,18 @@ There are two ways–or, *modes*–to use the tool. Choose the mode that you pre
 
 The source code is laid in a directory structure that groups code by the execution context that the code runs in:
 
-* `src/chrome-extension/`
-    * The code in this directory gets loaded into the extension environment (background workers, popups, etc) or the
-      Content Script environment (an isolated JavaScript environment with access to the web page DOM)
 * `src/web/`
-    * The code in this directory will all be loaded on the web page. All of the files in this directory are explicitly
-      allowed to be loaded into the web page by the `web_accessible_resources` property in the manifest.
+    * The code in this directory will all be loaded on the web page. This directory might be more accurately named as
+      `web-page/`.
+* `src/extension/`
+    * The directories in this directory are for web extensions. It breaks down into these sub-directories:
+        * `common/`
+            * The code in this directory gets loaded into the extension environment (background workers, popups, etc) or
+              the Content Script environment (an isolated JavaScript environment with access to the web page DOM)
+        * `manifest-v3/`
+            * Code that supports a Manifest V3 web extension.
+        * `manifest-v2/`
+            * NOT YET IMPLEMENTED
 
 Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the
 Chrome extension layer and the web page. So, I'm purposely designing the code base to not have any shared common code.
@@ -90,7 +96,7 @@ Follow these instructions to install the tool as a Chrome browser extension and 
     * Enable the *Developer mode* toggle control in the upper right corner of the page
 1. Install the extension
     * Click the *Load unpacked* button
-    * In the file finder window that opens, find this directory and click *Select*
+    * In the file finder window that opens, find the directory `src/extension/manifest-v3` and click *Select*
     * It's installed!
 1. Open StackOverflow
     * Go to <https://stackoverflow.com/> in your browser
@@ -191,14 +197,17 @@ General clean ups, TODOs and things I wish to implement for this project:
   is the most different. If I can get the browser extension to be "virtually universally usable across all platforms"
   then I can do away with the manual mode, which only existed for the same reason of being usable across all platforms.
   This would loosen up the design constraints of the code architecture.
-* DONE (Update I think it's a race condition with the JavaScript doc load order) There are some occasional caching problems. Sometimes when I load a page, it saves "AppStorage" not define and stuff
-  like that. I think it's a caching problem because when I "hard reload and empty caches" it works. But then later it
-  might fail again although I haven't even changed the code so I don't understand how the cache could still be stale,
-  and thus still be a problem. Not sure. But it's annoying.
+* DONE (Update I think it's a race condition with the JavaScript doc load order) There are some occasional caching
+  problems. Sometimes when I load a page, it saves "AppStorage" not define and stuff like that. I think it's a caching
+  problem because when I "hard reload and empty caches" it works. But then later it might fail again although I haven't
+  even changed the code so I don't understand how the cache could still be stale, and thus still be a problem. Not sure.
+  But it's annoying.
 * Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post data in a
   similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral view. Why?
   This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab over and
   over again while iterating on the UI.
+* IN PROGRESS (Maybe) Create a Chrome Manifest v2 extension. This would enable making a FireFox extension, which is
+  still on v2 but is working on supporting v3 sometime in 2022.
 
 ## Finished Wish List items
 
@@ -214,8 +223,8 @@ These are the finished items from the Wish List:
   SO static data was for how to get the query parameters of the URL from JavaScript. But the question and answer didn't
   show up because I didn't upvote the question, only the answer, and it turns out
   the [question itself is locked](https://stackoverflow.com/q/901115/)!
-* DONE Create a browser extension for this. The main benefit should be the removal of the manual steps like
-  opening three different web pages and moving the downloaded files to different directories.
+* DONE Create a browser extension for this. The main benefit should be the removal of the manual steps like opening
+  three different web pages and moving the downloaded files to different directories.
 
 ## Notes
 
@@ -255,7 +264,8 @@ These are the finished items from the Wish List:
 * [`dgroomes/web-playground/browser-extensions`](https://github.com/dgroomes/web-playground/tree/main/browser-extensions)
     * My own reference project for Chrome extensions
 * [Chrome extension docs: *chrome.webRequest*](https://developer.chrome.com/docs/extensions/reference/webRequest/)
-    * Consider using this API to intercept requests when running "Chrome extension" mode. 
-* [FireFox Extension Workshop: *Porting a Google Chrome extension*](https://extensionworkshop.com/documentation/develop/porting-a-google-chrome-extension/)
+    * Consider using this API to intercept requests when running "Chrome extension" mode.
+* [FireFox Extension Workshop: *Porting a Google Chrome
+  extension*](https://extensionworkshop.com/documentation/develop/porting-a-google-chrome-extension/)
     * Shoot, FireFox doesn't support Manifest v3 and I spent all this time writing a Chrome extension in Manifest v3. I
       wish I had implemented in Manifest v2 so that I could compatibility with FireFox. 

@@ -29,7 +29,7 @@
     ]
   },
   "action": {
-    "default_popup": "chrome-extension/execute.html"
+    "default_popup": "extension/common/execute.html"
   },
-  "options_page": "chrome-extension/options.html"
+  "options_page": "extension/common/options.html"
 }
