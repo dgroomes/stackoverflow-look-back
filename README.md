@@ -59,10 +59,13 @@ The source code is laid in a directory structure that groups code by the executi
         * `common/`
             * The code in this directory gets loaded into the extension environment (background workers, popups, etc) or
               the Content Script environment (an isolated JavaScript environment with access to the web page DOM)
-        * `manifest-v3/`
-            * Code that supports a Manifest V3 web extension. Note that FireFox does not support Manifest V3 as of 2021.
-        * `manifest-v2/`
-            * Code that supports a Manifest V2 web extension. 
+        * `chrome-manifest-v3/`
+            * Code that supports a Manifest V3 web extension developed for Chrome.
+        * `chrome-manifest-v2/`
+            * Code that supports a Manifest V2 web extension developed for Chrome.
+        * `firefox-manifest-v2/` NOT YET IMPLEMENTED
+            * Code that supports a Manifest V2 web extension developed for Firefox. Note that FireFox does not support
+              Manifest V3 as of 2021.
 
 Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the
 Chrome extension layer and the web page. So, I'm purposely designing the code base to not have any shared common code.
@@ -96,7 +99,8 @@ Follow these instructions to install the tool as a Chrome browser extension and 
     * Enable the *Developer mode* toggle control in the upper right corner of the page
 1. Install the extension
     * Click the *Load unpacked* button
-    * In the file finder window that opens, find the directory `src/extension/manifest-v3` and click *Select*
+    * In the file finder window that opens, find the directory `src/extension/chrome-manifest-v3` and click *Select*
+        * Alternatively, install the Manifest V2 extension in the directory `src/extension/chrome-manifest-v2`
     * It's installed!
 1. Open StackOverflow
     * Go to <https://stackoverflow.com/> in your browser
@@ -107,7 +111,7 @@ Follow these instructions to install the tool as a Chrome browser extension and 
     * Find the "Votes" tab and click it.
     * For me, my Votes tab navigates to this URL: <https://stackoverflow.com/users/1333713/david-groomes?tab=votes>
 1. Scrape the votes data
-    * Click the blue puzzle icon in the top right of the window
+    * Click the puzzle icon in the top right of the window
     * Click the "stackoverflow-static" extension entry
     * Wait for a second (not sure why it's so slow)
     * A popup will show up letting you know that the action should have already been executed. Check the console logs!
@@ -206,8 +210,8 @@ General clean ups, TODOs and things I wish to implement for this project:
   similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral view. Why?
   This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab over and
   over again while iterating on the UI.
-* DONE Create a Chrome Manifest v2 extension. This would enable making a FireFox extension, which is
-  still on v2 but is working on supporting v3 sometime in 2022.
+* DONE Create a Chrome Manifest v2 extension. This would enable making a FireFox extension, which is still on v2 but is
+  working on supporting v3 sometime in 2022.
 * Test the v2 extension in FireFox
 
 ## Finished Wish List items
