@@ -201,18 +201,14 @@ General clean ups, TODOs and things I wish to implement for this project:
   is the most different. If I can get the browser extension to be "virtually universally usable across all platforms"
   then I can do away with the manual mode, which only existed for the same reason of being usable across all platforms.
   This would loosen up the design constraints of the code architecture.
-* DONE (Update I think it's a race condition with the JavaScript doc load order) There are some occasional caching
-  problems. Sometimes when I load a page, it saves "AppStorage" not define and stuff like that. I think it's a caching
-  problem because when I "hard reload and empty caches" it works. But then later it might fail again although I haven't
-  even changed the code so I don't understand how the cache could still be stale, and thus still be a problem. Not sure.
-  But it's annoying.
 * Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post data in a
   similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral view. Why?
   This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab over and
   over again while iterating on the UI.
-* DONE Create a Chrome Manifest v2 extension. This would enable making a FireFox extension, which is still on v2 but is
-  working on supporting v3 sometime in 2022.
-* Test the v2 extension in FireFox
+* IN PROGRESS Build a FireFox extension for the tool. For the most part, code can be re-used, but when it comes to the
+  extension APIs themselves, there are significant differences. In fact, porting the extension to FireFox has been one
+  of the most challenging software efforts I've done in recent years! In part, because I've been away from JavaScript
+  dev for so long but also because the standardization of extension APIs is still a work-in-progress.
 
 ## Finished Wish List items
 
@@ -230,6 +226,13 @@ These are the finished items from the Wish List:
   the [question itself is locked](https://stackoverflow.com/q/901115/)!
 * DONE Create a browser extension for this. The main benefit should be the removal of the manual steps like opening
   three different web pages and moving the downloaded files to different directories.
+* DONE (Update I think it's a race condition with the JavaScript doc load order) There are some occasional caching
+  problems. Sometimes when I load a page, it saves "AppStorage" not define and stuff like that. I think it's a caching
+  problem because when I "hard reload and empty caches" it works. But then later it might fail again although I haven't
+  even changed the code so I don't understand how the cache could still be stale, and thus still be a problem. Not sure.
+  But it's annoying.
+* DONE Create a Chrome Manifest v2 extension. This would enable making a FireFox extension, which is still on v2 but is
+  working on supporting v3 sometime in 2022.
 
 ## Notes
 
@@ -275,3 +278,25 @@ These are the finished items from the Wish List:
     * Shoot, FireFox doesn't support Manifest v3 and I spent all this time writing a Chrome extension in Manifest v3. I
       wish I had implemented in Manifest v2 so that I could compatibility with FireFox.
 * [Chrome extension docs: Manifest V2 *Getting started*](https://developer.chrome.com/docs/extensions/mv2/getstarted/)
+* [MDN Web docs: "page_action"](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/page_action)
+    * Note that the Manifest property `show_matches` (of `page_actions`) is only supported in FireFox. By default, page
+      actions are hidden in FireFox but by contrast, page actions are shown by default in other browsers. This was a
+      surprising find to me because I couldn't see the page action in the URL bar and I was confused! I need to
+      explicitly enable it with the `show_matches` property.
+* [Extension Workshop](https://extensionworkshop.com/documentation/develop/debugging/#developer-tools-toolbox)
+    * A special FireFox site that is focused entirely on extension development.
+    * > Get help creating and publishing Firefox add-ons that make browsing smarter, safer, and faster.
+* [Bugzilla (FireFox bug tracker)](https://bugzilla.mozilla.org/show_bug.cgi?id=1420286)
+    * You can't use symlinks in web extensions. This works in Chrome, so this type of issue wasn't on my radar and I
+      spent a lot of time trying to track this issue down. I wonder if symlinks might work in FireFox Development
+      version? Update: no, it is the same in FireFox Developer edition.
+* [GitHub repo: mozilla/web-ext](https://github.com/mozilla/web-ext)
+    * I'm purposely choosing to not use this tool. I want to keep the dependencies to an absolute minimum and this tool
+      is not critical.
+* [MDN Web Docs: Manifest property "externally_connectable"](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/externally_connectable)
+    * The `externally_connectable` is not supported in FireFox. An alternative must be used for message passing between
+      the web page and the extension.
+      See <https://github.com/mdn/webextensions-examples/tree/master/page-to-extension-messaging>.
+* [MDN Web Docs: the EventTarget APIs](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget)
+* [MDN Web Docs: Window postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)
+* [MDN Web Docs: runtime.sendMessage()](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/sendMessage)

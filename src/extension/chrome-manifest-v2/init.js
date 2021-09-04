@@ -4,6 +4,8 @@
 // are enabled for. This is a key difference between the extension architectures of Manifest V2 and V3. In V3, we
 // declares these permissions in the manifest file itself.
 
+console.log("[init.js] Initializing...")
+
 const defaultInitialVotesPageLimit = 1 // a default value for the "votes page limit" configuration.
 
 chrome.runtime.onInstalled.addListener(async () => {

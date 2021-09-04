@@ -3,6 +3,8 @@
 // This file downloads the other JavaScript source files into the browser, wires up all objects and configuration, then
 // inspects the URL to figure out what to do: either scrape for the votes data or expand the posts data.
 
+console.log("[dom-entrypoint.js] Initializing...")
+
 const manualModeWebServerOrigin = "http://127.0.0.1:8000"
 let mode
 let extensionContext // Is the web page served directly by the extension? I.e. is the web page at a URL starting with "chrome-extension://"
