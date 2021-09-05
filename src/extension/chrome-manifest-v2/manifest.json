@@ -5,6 +5,7 @@
   "manifest_version": 2,
   "background": {
     "scripts": [
+      "extension/common/init-common.js",
       "init.js"
     ],
     "persistent": false
