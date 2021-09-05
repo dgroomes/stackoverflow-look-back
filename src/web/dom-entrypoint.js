@@ -6,36 +6,55 @@
 console.log("[dom-entrypoint.js] Initializing...")
 
 const manualModeWebServerOrigin = "http://127.0.0.1:8000"
-let mode
+let mode // Either "manual" or "web-extension"
+let browserName // Either "chrome" or "firefox. This is only referenced in "web-extension" mode because the Firefox and Chrome web extension APIs have differences and we need to know the browser.
 let extensionContext // Is the web page served directly by the extension? I.e. is the web page at a URL starting with "chrome-extension://"
-let webResourcesOrigin
-let chromeExtensionId
+let webResourcesOrigin // The origin that serves the web resources like the JavaScript files. This origin will either be a special Chrome/Firefox extension URL or the local web server when in "manual" mode
+let webExtensionId // This is only set when in "web-extension" mode. It is the ID of the web extension. This is always a super long ID that's generated the browser.
 
 /**
- * Detect the mode: either "manual" or "chrome-extension".
- *
- * Also, based on the mode, configure the origin that serves the web resources like the JavaScript files. This origin will
- * either by a special Chrome extension URL or the local web server.
+ * Detect the current environment and assign the following global properties:
+ *   - mode
+ *   - browserName
+ *   - extensionContext
+ *   - webResourcesOrigin
+ *   - webExtensionId
  */
-function detectMode() {
+function detectEnvironment() {
 
     /**
-     * Identify the Chrome extension ID from a Chrome extension URL
-     * @param url. For example: chrome-extension://akidegfimbjmokpejlcnjagogamdiinl/web/generate-html.html
+     * Detect information based on the extension URL.
+     *
+     * From the examples below, notice how the legal characters include lowercase letters, numbers and the hyphen
+     * character.
+     *
+     * @param url. For example:
+     *               - chrome-extension://akidegfimbjmokpejlcnjagogamdiinl/web/generate-html.html
+     *               - moz-extension://df0b610b-995b-9240-8c3b-fcaf155c9005/web/dom-entrypoint.js
      */
-    function identifyChromeId(url) {
-        let regex = new RegExp("chrome-extension://([a-z]+)")
-        mode = "chrome-extension"
-        let matches = url.match(regex)
+    function detectFromExtensionUrl(url) {
+        let regex = new RegExp("(chrome-extension|moz-extension)://([a-z0-9-]+)")
+        let matches = regex.exec(url)
         webResourcesOrigin = matches[0]
-        chromeExtensionId = matches[1]
+
+        let host = matches[1]
+        if (host === "chrome-extension")
+            browserName = "chrome"
+        else if (host === "moz-extension") {
+            browserName = "firefox"
+        } else {
+            throw new Error(`Unrecognized host name: '${host}', Expected either 'chrome-extension' or 'moz-extension'`)
+        }
+
+        webExtensionId = matches[2]
     }
 
-    // The "generate-html.html" page itself is served by the Chrome extension and so the URL protocol will be
-    // "chrome-extension://"
-    if (window.origin.startsWith("chrome-extension://")) {
+    // The "generate-html.html" page itself is served by the web extension and so the URL protocol will be
+    // "chrome-extension://" or "moz-extension://"
+    if (window.origin.startsWith("chrome-extension://") || window.origin.startsWith("moz-extension://")) {
         extensionContext = true
-        identifyChromeId(window.origin)
+        mode = "web-extension"
+        detectFromExtensionUrl(window.origin)
         return
     }
 
@@ -46,7 +65,8 @@ function detectMode() {
         mode = "manual"
         webResourcesOrigin = manualModeWebServerOrigin
     } else {
-        identifyChromeId(script.src)
+        mode = "web-extension"
+        detectFromExtensionUrl(script.src)
     }
 }
 
@@ -110,8 +130,14 @@ async function configureState() {
     }
 
     let appStorage
-    if (mode === "chrome-extension") {
-        appStorage = new ChromeModeStorage(chromeExtensionId)
+    if (mode === "web-extension") {
+        if (browserName === "chrome") {
+            appStorage = new ChromeModeStorage(webExtensionId)
+        } else if (browserName === "firefox") {
+            throw new Error("Not yet supported")
+        } else {
+            throw new Error(`Unexpected browser: ${browserName}. Expected either 'chrome' or 'firefox'`)
+        }
         if (!extensionContext) { // This is hacky. But when executing in an extension context, this call will fail because there is no listener.
             window.votesPageLimit = await appStorage.getVotesPageLimit()
         }
@@ -138,9 +164,9 @@ function detectAndExecuteFunction() {
         // The current page is the Stack Exchange Data Explorer. We are in the context for expanding the posts data.
         postExpander.expandPosts().then(() => {
             console.log("Posts were expanded successfully")
-            if (mode === "chrome-extension") {
-                console.log("Because the tool is running 'chrome-extension' mode, the HTML generation step can be automatically run. Opening a new tab to the 'generate-html.html' page...")
-                chrome.runtime.sendMessage(chromeExtensionId,
+            if (mode === "web-extension") {
+                console.log("Because the tool is running 'web-extension' mode, the HTML generation step can be automatically run. Opening a new tab to the 'generate-html.html' page...")
+                chrome.runtime.sendMessage(webExtensionId,
                     {command: "open-generate-html-page"},
                     function (response) {
                         console.log("Got this response from the extension:")
@@ -155,10 +181,16 @@ function detectAndExecuteFunction() {
     }
 }
 
-detectMode()
-
-downloadScripts().then(async () => {
+/**
+ *  This is the main function
+ */
+async function exec() {
+    detectEnvironment()
+    await downloadScripts()
     console.log("All scripts were included.")
     await configureState()
     detectAndExecuteFunction()
-})
+}
+
+// noinspection JSIgnoredPromiseFromCall
+exec()
