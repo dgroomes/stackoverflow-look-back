@@ -15,6 +15,7 @@ console.log("[extension-entrypoint.js] Initializing...")
  * @return {Promise} that resolves when the content script has been loaded/executed(?)
  */
 async function execContentScript(fileName) {
+    console.log(`Executing content script: ${fileName}`)
 
     // Detect which version of the manifest this extension is defined as (e.g. Manifest V2 or V3)
     // The value will be a number: either 2 or 3.
@@ -38,6 +39,6 @@ async function execContentScript(fileName) {
     }
 }
 
-execContentScript("extension/common/content-script-entrypoint.js")
+execContentScript("/extension/common/content-script-entrypoint.js")
     .then(() => console.log("[extension-entrypoint.js] Ran to completion"))
     .catch(e => console.log("[extension-entrypoint.js] Something went wrong", e))

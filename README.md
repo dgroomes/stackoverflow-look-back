@@ -100,7 +100,8 @@ Follow these instructions to install the tool as a Chrome browser extension and 
 1. Install the extension
     * Click the *Load unpacked* button
     * In the file finder window that opens, find the directory `src/extension/chrome-manifest-v3` and click *Select*
-        * Alternatively, install the Manifest V2 extension in the directory `src/extension/chrome-manifest-v2`
+        * Alternatively, install the Chrome Manifest V2 extension in the directory `src/extension/chrome-manifest-v2`
+        * Alternatively, install the Firefox Manifest V2 extension in the directory `src/extension/firefox-manifest-v2`
     * It's installed!
 1. Open StackOverflow
     * Go to <https://stackoverflow.com/> in your browser
@@ -183,6 +184,30 @@ Follow these instructions to run the tool the manual way. It requires more steps
       the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000
       and when I go to exactly 1501 posts (there will be 2 * 1501 = 3002) the last post doesn't get rendered correctly.
       I think that's the limit. This issue does not happen Safari.
+
+## FireFox
+
+NOT YET FULLY IMPLEMENTED. The Firefox extension is not yet fully implemented.
+I'm blocked on:
+> Unchecked lastError value: Error: An unexpected error occurred
+> 
+> execContentScript moz-extension://c6f78137-5e54-814f-88cf-93a433bf3cba/extension/common/extension-entrypoint.js:25
+
+And I don't know how to see the underlying error message.
+
+Although this tool was developed as a Chrome extension, it can also be installed as a web extension in FireFox!
+
+Follow these instructions to install it in FireFox:
+
+* Build the web extension for FireFox
+    * `./build-for-firefox.sh`
+* Open FireFox to the debug page
+    * Open FireFox
+    * Paste and go to this URL: <about:debugging#/runtime/this-firefox>
+* Load the plugin
+    * Click the button with the words *Load Temporary Add-on…*
+    * In the file finder window that opens, find the file `build/firefox-web-extension/manifest.json` and click *Open*
+    * It's installed!
 
 ## Wish list
 

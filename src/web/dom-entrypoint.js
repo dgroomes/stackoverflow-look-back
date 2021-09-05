@@ -93,6 +93,7 @@ function downloadScripts() {
     const oneDepsScripts = [
         "ManualModeStorage.js",
         "ChromeModeStorage.js",
+        "FirefoxModeStorage.js"
     ]
 
     /**
@@ -134,12 +135,14 @@ async function configureState() {
         if (browserName === "chrome") {
             appStorage = new ChromeModeStorage(webExtensionId)
         } else if (browserName === "firefox") {
-            throw new Error("Not yet supported")
+            appStorage = new FirefoxModeStorage(webExtensionId)
         } else {
             throw new Error(`Unexpected browser: ${browserName}. Expected either 'chrome' or 'firefox'`)
         }
         if (!extensionContext) { // This is hacky. But when executing in an extension context, this call will fail because there is no listener.
+            console.log(`[dom-entrypoint.js] Fetching the votesPageLimit`)
             window.votesPageLimit = await appStorage.getVotesPageLimit()
+            console.log(`[dom-entrypoint.js] Got the votesPageLimit (${window.votesPageLimit})`)
         }
     } else {
         appStorage = new ManualModeStorage()

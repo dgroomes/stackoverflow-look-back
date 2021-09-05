@@ -1,0 +1,42 @@
+{
+  "name": "stackoverflow-static (manifest v2)",
+  "description": "Scrape a static copy of your own StackOverflow votes data",
+  "version": "0.1",
+  "manifest_version": 2,
+  "background": {
+    "scripts": [
+      "extension/common/init-common.js",
+      "init.js"
+    ]
+  },
+  "permissions": [
+    "activeTab",
+    "storage",
+    "https://stackoverflow.com/*",
+    "https://data.stackexchange.com/*"
+  ],
+  "web_accessible_resources": [
+    "web/*"
+  ],
+  "page_action": {
+    "default_popup": "extension/common/execute.html",
+    "show_matches": [
+      "https://stackoverflow.com/*",
+      "https://data.stackexchange.com/*"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://stackoverflow.com/*",
+        "https://data.stackexchange.com/*"
+      ],
+      "js": [
+        "extension/common/content-script-messaging-proxy.js"
+      ]
+    }
+  ],
+  "options_ui": {
+    "page": "extension/common/options.html"
+  }
+}
