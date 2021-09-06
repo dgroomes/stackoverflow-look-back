@@ -4,6 +4,11 @@
  *
  * This interface must be implemented by concrete implementation classes for each of the "Chrome extension" and "Manual"
  * modes.
+ *
+ * Consider modeling a RemoteProceduralCall class which has two sub-classes: ChromeRemoteProcedureCall and
+ * FirefoxRemoteProcedureCall. The implementation of the methods in the AppStorage sub-classes (ChromeModeStorage and
+ * FirefoxModeStorage) is too common now. Instead, the main difference is how Firefox and Chrome do remote procedure
+ * calls from the web page to the back-end. AppStorage doesn't need to be an interface anymore, but a concrete class.
  */
 class AppStorage {
 

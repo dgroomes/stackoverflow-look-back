@@ -77,11 +77,16 @@ class FirefoxModeStorage extends AppStorage {
     }
 
     async getVotes() {
-        throw new Error("Not yet implemented")
+        return this.#execRemoteProcedure("get", {key: "votes"})
+            .then(returnValue => {
+                return returnValue.votes.map(voteData => Vote.deserialize(voteData))
+            })
     }
 
     savePosts(posts) {
-        throw new Error("Not yet implemented")
+        let postsMapped = posts.map(post => post.toJSON())
+
+        return this.#execRemoteProcedure("save", {posts: postsMapped})
     }
 
     async getPosts() {
