@@ -8,4 +8,4 @@ browser.runtime.onInstalled.addListener(() => {
     setDefaultConfig()
 })
 
-addCommandsListener()
+addRpcListener()

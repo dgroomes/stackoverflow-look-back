@@ -5,23 +5,22 @@ console.log("[content-script-messaging-proxy.js] Initializing...")
 // Listen for messages from the web page and forward them to the background scripts.
 window.addEventListener("message", (message) => {
     if (message.data.sender !== "content-script-messaging-proxy") { // Filter out messages sent by this script to avoid an infinite loop
-        let {callerId, command, payload} = message.data
+        let {callerId} = message.data
+        delete message.data.callerId // It's not necessary to pass the callerId to the background script.
 
         // Send the message to the background script, and register a handler that forwards the response to the web page.
         chrome.runtime.sendMessage(null,
-            {command, payload},
+            message.data,
             null,
-            function (found) {
-                console.log(`[content-script-messaging-proxy.js] Got a response via callback from the extension messaging system: ${jsonify(found)}`)
+            function (returnValue) {
+                console.log(`[content-script-messaging-proxy.js] Got a response via callback from the extension messaging system: ${jsonify(returnValue)}`)
 
                 // Finally, send the response message back to the web page  to the background script, and register a
-                // handler that forwards the response to the web page. todo: consider inventing a simple remote
-                // procedure call lifecycle like "requested -> complete" instead of using "sender". That might make a
-                // stronger metaphor.
+                // handler that forwards the response to the web page.
                 window.postMessage({
                     sender: "content-script-messaging-proxy",
                     callerId,
-                    payload: found
+                    returnValue
                 }, "*")
             })
     }

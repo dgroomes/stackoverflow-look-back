@@ -10,4 +10,4 @@ chrome.runtime.onInstalled.addListener(() => {
     setDefaultConfig()
 })
 
-addCommandsListener()
+addRpcListener()

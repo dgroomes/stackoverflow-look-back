@@ -170,7 +170,7 @@ function detectAndExecuteFunction() {
             if (mode === "web-extension") {
                 console.log("Because the tool is running 'web-extension' mode, the HTML generation step can be automatically run. Opening a new tab to the 'generate-html.html' page...")
                 chrome.runtime.sendMessage(webExtensionId,
-                    {command: "open-generate-html-page"},
+                    {procedureName: "open-generate-html-page"},
                     function (response) {
                         console.log("Got this response from the extension:")
                         console.dir(response)

@@ -2,12 +2,9 @@
  * An implementation of the AppStorage interface for the "Chrome extension" mode.
  *
  * It will read and write domain data by passing messages to the Chrome extension.
- *
- * Consider DRYing up the sendMessage and Promise boilerplate where it is re-used multiple times
  */
 class ChromeModeStorage extends AppStorage {
 
-    #CHROME_STORAGE = "Chrome storage"
     #chromeExtensionId
 
     constructor(chromeExtensionId) {
@@ -16,62 +13,49 @@ class ChromeModeStorage extends AppStorage {
     }
 
     /**
-     * This method is only available in ChromeModeStorage
-     * @return {Promise<*>} a promise containing the votesPageLimit value
+     * Send a message to the extension back-end to execute a command. This is a remote procedure call (RPC).
+     *
+     * @param procedureName the "procedure name" of the remote procedure call.
+     * @param procedureArgs the "procedure arguments" of the remote procedure call.
+     * @return {Promise} a promise containing the return value of the remote procedure call
      */
-    getVotesPageLimit() {
+    #execRemoteProcedure(procedureName, procedureArgs) {
         return new Promise((resolve) => {
-            chrome.runtime.sendMessage(this.#chromeExtensionId,
-                {command: "get", key: "votesPageLimit"},
-                function (found) {
-                    console.log("Got this response from the extension:")
-                    console.dir(found)
-                    resolve(found.votesPageLimit)
+            chrome.runtime.sendMessage(this.#chromeExtensionId, {procedureName, procedureArgs},
+                function (returnValue) {
+                    console.log("Got a return value from the remote procedure call:")
+                    console.dir(returnValue)
+                    resolve(returnValue)
                 })
         })
+    }
+
+    /**
+     * This method is only available in the "web-extension" mode
+     * @return {Promise<Number>} a promise containing the votesPageLimit value
+     */
+    getVotesPageLimit() {
+        return this.#execRemoteProcedure("get", {key: "votesPageLimit"})
+            .then(returnValue => returnValue.votesPageLimit)
     }
 
     saveVotes(votes) {
-        let that = this
         let votesMapped = votes.map(vote => vote.toJSON())
-        return new Promise(resolve => {
-            chrome.runtime.sendMessage(this.#chromeExtensionId,
-                {command: "save", data: {votes: votesMapped}},
-                function (response) {
-                    console.log("Got this response from the extension:")
-                    console.dir(response)
-                    resolve(that.#CHROME_STORAGE)
-                })
-        })
+
+        return this.#execRemoteProcedure("save", {votes: votesMapped})
     }
 
     async getVotes() {
-        let promise = new Promise(resolve => {
-            chrome.runtime.sendMessage(this.#chromeExtensionId,
-                {command: "get", key: "votes"},
-                function (found) {
-                    console.log("Got this response from the extension:")
-                    console.dir(found)
-                    resolve(found.votes)
-                })
-        })
-
-        let votesData = await promise
-        return votesData.map(voteData => Vote.deserialize(voteData))
+        return this.#execRemoteProcedure("get", {key: "votes"})
+            .then(returnValue => {
+                return returnValue.votes.map(voteData => Vote.deserialize(voteData))
+            })
     }
 
     savePosts(posts) {
-        let that = this
         let postsMapped = posts.map(post => post.toJSON())
-        return new Promise(resolve => {
-            chrome.runtime.sendMessage(this.#chromeExtensionId,
-                {command: "save", data: {posts: postsMapped}},
-                function (response) {
-                    console.log("Got this response from the extension:")
-                    console.dir(response)
-                    resolve(that.#CHROME_STORAGE)
-                })
-        })
+
+        return this.#execRemoteProcedure("save", {posts: postsMapped})
     }
 
     // Warning: This is bad design. This method is implemented differently than the others. It does not make a "sendMessage"

@@ -27,4 +27,4 @@ chrome.runtime.onInstalled.addListener(() => {
     })
 })
 
-addCommandsListener()
+addRpcListener()

@@ -12,9 +12,10 @@ function setDefaultConfig() {
 }
 
 /**
- * Register a listener in the background script that will receive commands from the front-end.
+ * Registers a listener in the background script that will receive remote procedure call (RPC) requests from the front-end
+ * and then executes those requests.
  */
-function addCommandsListener() {
+function addRpcListener() {
 
     // Chrome and FireFox have different message APIs. Use the appropriate API based on the detected browser.
     let onMessageFn
@@ -29,23 +30,25 @@ function addCommandsListener() {
     onMessageFn.addListener(function (message, sender, sendResponse) {
         console.log(`[init.js] Received a message:`)
         console.dir(message)
-        let {command, payload} = message
+        let {procedureName, procedureArgs} = message
 
-        if (command === "save") {
-            chrome.storage.local.set(payload, () => {
-                sendResponse("The extension successfully saved the data")
+        if (procedureName === "save") {
+            chrome.storage.local.set(procedureArgs, () => {
+                console.log("The extension successfully saved the data")
+                sendResponse(true)
             })
-        } else if (command === "get") {
-            let key = payload.key
+        } else if (procedureName === "get") {
+            let key = procedureArgs.key
             chrome.storage.local.get(key, (found) => {
+                console.log("The extension successfully read the data")
                 sendResponse(found)
             })
-        } else if (command === "open-generate-html-page") {
+        } else if (procedureName === "open-generate-html-page") {
             chrome.tabs.create({
                 url: 'web/generate-html.html'
             })
         } else {
-            throw new Error(`Unrecognized command: '${command}'`)
+            throw new Error(`Unrecognized procedure name: '${procedureName}'`)
         }
 
         return true // Returning "true" tells FireFox that we plan to invoke the "sendResponse" function later (rather, asynchronously). Otherwise, the "sendResponse" function would become invalid.

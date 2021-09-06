@@ -7,7 +7,6 @@
  */
 class FirefoxModeStorage extends AppStorage {
 
-    #FIREFOX_STORAGE = "Firefox storage"
     #webExtensionId
 
     constructor(webExtensionId) {
@@ -18,33 +17,33 @@ class FirefoxModeStorage extends AppStorage {
     #callerIdSequence = 0
 
     /**
-     * Send a message to the extension back-end (the content-script and background scripts).
+     * Send a message to the extension back-end to execute a command. This is a remote procedure call (RPC).
      *
-     * This is effectively a remote procedure call. This function uses the asynchronous broadcast messaging system and
-     * creates a one-for-one request/response procedure call. Honestly, the implementation seems a little strange
-     * but it makes for a great API to the calling code. I think this is an effective pattern.
+     * This function uses the asynchronous broadcast messaging system of the "window" object plus Firefox's "runtime.sendMessage"
+     * extension API to make a one-for-one request/response procedure call. Honestly, the implementation seems a little
+     * strange but it makes for a great API to the calling code. I think this is an effective pattern.
      *
      * This function will send a message to the content-script proxy ("content-script-messaging-proxy.js") and then
      * register a listener on the window to listen for the eventual expected response message. A "caller ID" and
      * a "sender" property are used to filter out messages that may have been initiated by invocations of "#message" by
      * other callers.
      *
-     * @param command the command that the back-end should execute. This is the "procedure name" of the remote procedure call.
-     * @param payload the payload of the message to send
-     * @return {Promise} a promise containing the response message
+     * @param procedureName the "procedure name" of the remote procedure call.
+     * @param procedureArgs the "procedure arguments" of the remote procedure call.
+     * @return {Promise} a promise containing the return value of the remote procedure call
      */
-    #message(command, payload) {
+    #execRemoteProcedure(procedureName, procedureArgs) {
         let callerId = this.#callerIdSequence++
 
         // I'm assuming it's wise to wire up the event listener before posting the message to avoid a race condition.
         // That's why I've put this before the "window.postMessage". But I don't think it actually matters.
-        let responsePromise = new Promise((resolve => {
+        let returnValuePromise = new Promise((resolve => {
             window.addEventListener("message", function listenForCommandResponse({data}) {
                 if (data.sender === "content-script-messaging-proxy"
                     && data.callerId === callerId) {
 
                     window.removeEventListener("message", listenForCommandResponse)
-                    resolve(data.payload)
+                    resolve(data.returnValue)
                 }
             })
         }))
@@ -52,11 +51,11 @@ class FirefoxModeStorage extends AppStorage {
         window.postMessage({
             sender: "FirefoxModeStorage.js",
             callerId,
-            command,
-            payload
+            procedureName,
+            procedureArgs
         }, "*")
 
-        return responsePromise
+        return returnValuePromise
     }
 
     /**
@@ -64,21 +63,17 @@ class FirefoxModeStorage extends AppStorage {
      * @return {Promise<Number>} a promise containing the votesPageLimit value
      */
     getVotesPageLimit() {
-        return this.#message("get", {
+        return this.#execRemoteProcedure("get", {
             key: "votesPageLimit"
-        }).then((found) => {
+        }).then(found => {
             return found.votesPageLimit
         })
     }
 
     saveVotes(votes) {
-        let that = this
         let votesMapped = votes.map(vote => vote.toJSON())
 
-        return this.#message("save", {votes: votesMapped})
-            .then(() => {
-                return that.#FIREFOX_STORAGE
-            })
+        return this.#execRemoteProcedure("save", {votes: votesMapped})
     }
 
     async getVotes() {

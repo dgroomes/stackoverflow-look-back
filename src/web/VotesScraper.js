@@ -91,7 +91,7 @@ row: ${row.outerHTML}
 
         function save() {
             appStorage.saveVotes(votes)
-                .then(storageBackend => console.log(`The votes data has been saved successfully using the storage backend '${storageBackend}'`))
+                .then(() => console.log(`The votes data has been saved successfully`))
         }
 
         if (++this.attempts > votesPageLimit) {
