@@ -1,20 +1,17 @@
-// This is the entrypoint of the tool that runs in the DOM. It accommodates both the "Manual" and "Chrome extension" modes.
+// This is the entrypoint of the tool that runs in the DOM.
 //
 // This file downloads the other JavaScript source files into the browser, wires up all objects and configuration, then
 // inspects the URL to figure out what to do: either scrape for the votes data or expand the posts data.
 
 console.log("[dom-entrypoint.js] Initializing...")
 
-const manualModeWebServerOrigin = "http://127.0.0.1:8000"
-let mode // Either "manual" or "web-extension"
-let browserName // Either "chrome" or "firefox. This is only referenced in "web-extension" mode because the Firefox and Chrome web extension APIs have differences and we need to know the browser.
+let browserName // Either "chrome" or "firefox. Firefox and Chrome web extension APIs have differences and we need to know the browser.
 let extensionContext // Is the web page served directly by the extension? I.e. is the web page at a URL starting with "chrome-extension://"
-let webResourcesOrigin // The origin that serves the web resources like the JavaScript files. This origin will either be a special Chrome/Firefox extension URL or the local web server when in "manual" mode
-let webExtensionId // This is only set when in "web-extension" mode. It is the ID of the web extension. This is always a super long ID that's generated the browser.
+let webResourcesOrigin // The origin that serves the web resources like the JavaScript files. This origin will be a special Chrome/Firefox extension URL.
+let webExtensionId // This is the ID of the web extension. This is always a super long ID that's generated the browser.
 
 /**
  * Detect the current environment and assign the following global properties:
- *   - mode
  *   - browserName
  *   - extensionContext
  *   - webResourcesOrigin
@@ -53,7 +50,6 @@ function detectEnvironment() {
     // "chrome-extension://" or "moz-extension://"
     if (window.origin.startsWith("chrome-extension://") || window.origin.startsWith("moz-extension://")) {
         extensionContext = true
-        mode = "web-extension"
         detectFromExtensionUrl(window.origin)
         return
     }
@@ -61,13 +57,7 @@ function detectEnvironment() {
     extensionContext = false
 
     let script = document.getElementById("dom-entrypoint")
-    if (script === null) {
-        mode = "manual"
-        webResourcesOrigin = manualModeWebServerOrigin
-    } else {
-        mode = "web-extension"
-        detectFromExtensionUrl(script.src)
-    }
+    detectFromExtensionUrl(script.src)
 }
 
 /**
@@ -131,25 +121,21 @@ async function configureState() {
     }
 
     let rpcClient
-    if (mode === "web-extension") {
-        if (browserName === "chrome") {
-            rpcClient = new ChromeRpcClient(webExtensionId)
-        } else if (browserName === "firefox") {
-            rpcClient = new FirefoxRpcClient(webExtensionId)
-        } else {
-            throw new Error(`Unexpected browser: ${browserName}. Expected either 'chrome' or 'firefox'`)
-        }
 
-        window.appStorage = new AppStorage(rpcClient, browserName)
-
-        if (!extensionContext) { // This is hacky. But when executing in an extension context, this call will fail because there is no listener.
-            console.log(`[dom-entrypoint.js] Fetching the votesPageLimit`)
-            window.votesPageLimit = await appStorage.getVotesPageLimit()
-            console.log(`[dom-entrypoint.js] Got the votesPageLimit (${window.votesPageLimit})`)
-        }
+    if (browserName === "chrome") {
+        rpcClient = new ChromeRpcClient(webExtensionId)
+    } else if (browserName === "firefox") {
+        rpcClient = new FirefoxRpcClient(webExtensionId)
     } else {
-        window.appStorage = new ManualModeStorage()
-        window.votesPageLimit = 1
+        throw new Error(`Unexpected browser: ${browserName}. Expected either 'chrome' or 'firefox'`)
+    }
+
+    window.appStorage = new AppStorage(rpcClient, browserName)
+
+    if (!extensionContext) { // This is hacky. But when executing in an extension context, this call will fail because there is no listener.
+        console.log(`[dom-entrypoint.js] Fetching the votesPageLimit`)
+        window.votesPageLimit = await appStorage.getVotesPageLimit()
+        console.log(`[dom-entrypoint.js] Got the votesPageLimit (${window.votesPageLimit})`)
     }
 
     window.votesScraper = new VotesScraper()
@@ -170,11 +156,8 @@ function detectAndExecuteFunction() {
         // The current page is the Stack Exchange Data Explorer. We are in the context for expanding the posts data.
         postExpander.expandPosts().then(() => {
             console.log("Posts were expanded successfully")
-            if (mode === "web-extension") {
-                console.log("Because the tool is running 'web-extension' mode, the HTML generation step can be automatically run. Opening a new tab to the 'generate-html.html' page...")
-
-                rpcClient.execRemoteProcedure("open-generate-html-page", {})
-            }
+            console.log("Opening a new tab to the 'generate-html.html' page...")
+            rpcClient.execRemoteProcedure("open-generate-html-page", {})
         })
     } else if (pathname.includes("/generate-html.html")) {
         htmlGenerator.generateHtml().then(() => console.log("HTML was generated successfully"))

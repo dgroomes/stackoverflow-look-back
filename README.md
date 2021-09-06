@@ -32,23 +32,13 @@ This was developed on macOS and for my own personal use.
 
 ---
 
-## Design & Modes
+## Design
 
 The overall flow of the tool breaks down like this:
 
 1. Scrape your votes data from <https://stackoverflow.com>
 1. Expand the votes data into posts data using <https://data.stackexchange.com>
 1. Generate a static HTML page from the posts data
-
-There are two ways–or, *modes*–to use the tool. Choose the mode that you prefer:
-
-* *Chrome extension* mode
-    * Recommended for Chrome users
-* *Manual* mode
-    * **WARNING**: This does not work anymore (although it could be patched easily) and is going to be removed fully.
-    * Manually run the tool by executing commands in the browser developer tools and by manually moving files
-    * Recommended for learning
-    * This works for any evergreen browser. This mode relies on standard web APIs.
 
 The source code is laid in a directory structure that groups code by the execution context that the code runs in:
 
@@ -89,12 +79,10 @@ restrictions has made it difficult to design and implement my own code.
 
 ### My Bias for Web APIs
 
-A corollary to my bias against content scripts is my bias for Web APIs. Specifically, I have a bias that favors using
-the web page to execute a maximum amount of the tool's code. In fact, the "Manual" mode relies almost exclusively on the
-web page to execute the domain logic like the data scraping and HTML generation. It requires just a bit of manual
-intervention in the dev tools. As such, the "Manual" mode is perfectly portable to other browsers because it just relies
-on web APIs whereas the "Chrome extension" mode is mired in accidental design complexity because of the accidental
-design and implementation of non-standard APIs (Chrome-specific).
+A corollary to my bias against content scripts is my bias for Web APIs. Most of the source code for this extension
+actually executes on the web page, where standard Web APIs can be used. This code executes the domain logic like the
+data scraping and HTML generation. As such, this code is perfectly portable to other "evergreen" browsers because it
+just relies on standard web APIs instead of non-standard browser extension APIs (i.e. Manifest V2 and V3).
 
 ## Instructions
 
@@ -137,64 +125,6 @@ Follow these instructions to install the tool as a Chrome browser extension and 
 1. Generate a static HTML document from the posts data
     * You should be on the new tab that was automatically opened
     * A file download will appear! This is the final result. Save it somewhere easily accessible.
-
-Follow these instructions to run the tool the manual way. It requires more steps:
-
-1. Run a local web server:
-    * `./serve.py`
-    * Note: this requires Python 3
-1. Open StackOverflow
-    * Go to <https://stackoverflow.com/> in your browser
-1. Log in
-1. Open your profile
-    * Click your picture in the top right corner to open your profile
-1. Open the "Votes" tab
-    * Find the "Votes" tab and click it.
-    * For me, my Votes tab navigates to this URL: <https://stackoverflow.com/users/1333713/david-groomes?tab=votes>
-1. Scrape the votes data
-    * Import some JavaScript code into the browser from the web server. Paste the following into the browser console:
-      ```javascript
-      let el = document.createElement("script")
-      el.src = "http://127.0.0.1:8000/web/dom-entrypoint.js"
-      document.head.append(el)
-      ```
-    * The votes data will be downloaded in a file named `stackoverflow-votes.json`
-1. Create the data directory:
-    * `mkdir -p src/data`
-1. Move the votes data
-    * Move the downloaded votes data JSON file (`stackoverflow-votes.json`) into the `src/data` directory with the
-      following command:
-    * `mv ~/Downloads/stackoverflow-votes.json ~/repos/personal/stackoverflow-static/src/data`
-    * The data is used in the next step.
-1. Expand the post data
-    * Go to the [Stack Exchange Data Explorer](https://data.stackexchange.com/stackoverflow/query/new)
-        * If not logged in, then log in and navigate back to the original page.
-    * Import some JavaScript code into the browser from the web server. Paste the following into the browser console:
-      ```javascript
-      let el = document.createElement("script")
-      el.src = "http://127.0.0.1:8000/web/dom-entrypoint.js"
-      document.head.append(el)
-      ```
-    * The posts data will be downloaded in a file named `stackoverflow-posts.json`
-1. Move the posts data
-    * Move the downloaded posts data JSON file (`stackoverflow-posts.json`) into the `src/data` directory with the
-      following command:
-    * `mv ~/Downloads/stackoverflow-posts.json ~/repos/personal/stackoverflow-static/src/data`
-    * The data is used in the next step
-1. Generate a static HTML document from the posts data
-    * Open <http://127.0.0.1:8000/generate-html.html>
-    * Import some JavaScript code into the browser from the web server. Paste the following into the browser console:
-      ```javascript
-      let el = document.createElement("script")
-      el.src = "http://127.0.0.1:8000/web/dom-entrypoint.js"
-      document.head.append(el)
-      ```
-    * A file download will appear! This is the final result. Save it somewhere easily accessible.
-    * Known issue: The visual elements in the page break after the 1500th post in Chrome. I think this is because of an
-      internal limit on CSS Grid sizes. See the note in
-      the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000
-      and when I go to exactly 1501 posts (there will be 2 * 1501 = 3002) the last post doesn't get rendered correctly.
-      I think that's the limit. This issue does not happen Safari.
 
 ## FireFox
 
@@ -240,11 +170,6 @@ General clean ups, TODOs and things I wish to implement for this project:
   global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is
   kind of a major bummer. Also modules can't be imported in web workers in Safari and FireFox so that is also a bummer
   when considering converting this tool to a browser extension.
-* Maybe the web standards for extensions APIs is actually good enough? Chromium browsers (Chrome, Edge, Opera) all
-  pretty much have the same APIs and FireFox also has very similar APIs. They all use the Manifest file format. Safari
-  is the most different. If I can get the browser extension to be "virtually universally usable across all platforms"
-  then I can do away with the manual mode, which only existed for the same reason of being usable across all platforms.
-  This would loosen up the design constraints of the code architecture.
 * Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post data in a
   similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral view. Why?
   This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab over and
@@ -253,6 +178,11 @@ General clean ups, TODOs and things I wish to implement for this project:
   extension APIs themselves, there are significant differences. In fact, porting the extension to FireFox has been one
   of the most challenging software efforts I've done in recent years! In part, because I've been away from JavaScript
   dev for so long but also because the standardization of extension APIs is still a work-in-progress.
+* Known issue: The visual elements in the page break after the 1500th post in Chrome. I think this is because of an
+  internal limit on CSS Grid sizes. See the note in
+  the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000 and
+  when I go to exactly 1501 posts (there will be 2 * 1501 = 3002) the last post doesn't get rendered correctly. I think
+  that's the limit. This issue does not happen Safari.
 
 ## Finished Wish List items
 
@@ -316,7 +246,7 @@ These are the finished items from the Wish List:
 * [`dgroomes/web-playground/browser-extensions`](https://github.com/dgroomes/web-playground/tree/main/browser-extensions)
     * My own reference project for Chrome extensions
 * [Chrome extension docs: *chrome.webRequest*](https://developer.chrome.com/docs/extensions/reference/webRequest/)
-    * Consider using this API to intercept requests when running "Chrome extension" mode.
+    * Consider using this API to intercept requests instead of using a Proxy object on the web page
 * [FireFox Extension Workshop: *Porting a Google Chrome
   extension*](https://extensionworkshop.com/documentation/develop/porting-a-google-chrome-extension/)
     * Shoot, FireFox doesn't support Manifest v3 and I spent all this time writing a Chrome extension in Manifest v3. I
