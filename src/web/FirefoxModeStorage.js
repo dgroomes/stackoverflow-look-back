@@ -27,8 +27,6 @@ class FirefoxModeStorage extends AppStorage {
     #waitForMessage(callerId) {
         return new Promise((resolve => {
             window.addEventListener("message", function listenForCommandResponse({data}) {
-                console.log(`[FirefoxModeStorage.js#listenForCommandResponse] Received message from window: ${JSON.stringify(data, null, 2)}`)
-
                 if (data.sender === "content-script-messaging-proxy"
                     && data.callerId === callerId) {
 
@@ -62,7 +60,24 @@ class FirefoxModeStorage extends AppStorage {
     }
 
     saveVotes(votes) {
-        throw new Error("Not yet implemented")
+        let that = this
+        let votesMapped = votes.map(vote => vote.toJSON())
+
+        let callerId = "saveVotes"
+        let promise = this.#waitForMessage(callerId)
+
+        window.postMessage({
+            sender: "FirefoxModeStorage.js",
+            callerId,
+            payload: {
+                command: "saved",
+                data: {votes: votesMapped}
+            }
+        }, "*")
+
+        return promise.then(() => {
+            return that.#FIREFOX_STORAGE
+        })
     }
 
     async getVotes() {
