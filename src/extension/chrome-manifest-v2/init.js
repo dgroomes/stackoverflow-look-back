@@ -6,6 +6,8 @@
 
 console.log("[chrome-manifest-v2/init.js] Initializing...")
 
+browserName = "chrome"
+
 chrome.runtime.onInstalled.addListener(() => {
 
     setDefaultConfig()

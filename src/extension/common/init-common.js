@@ -16,8 +16,7 @@ function setDefaultConfig() {
  */
 function addCommandsListener() {
 
-    // Chrome and FireFox have different message APIs. Detect the browser and use the correct API.
-    let browserName = detectBrowser()
+    // Chrome and FireFox have different message APIs. Use the appropriate API based on the detected browser.
     let onMessageFn
     if (browserName === "chrome") {
         onMessageFn = chrome.runtime.onMessageExternal
@@ -51,30 +50,4 @@ function addCommandsListener() {
 
         return true // Returning "true" tells FireFox that we plan to invoke the "sendResponse" function later (rather, asynchronously). Otherwise, the "sendResponse" function would become invalid.
     })
-}
-
-/**
- * Detect the current browser.
- *
- * This function uses the origin to detect what the current browser is.
- *
- * @return {String} chrome or firefox
- */
-function detectBrowser() {
-    let {origin} = window;
-
-    if (origin.startsWith("chrome-extension://")) {
-        return "chrome"
-    } else if (origin.startsWith("moz-extension://")) {
-        return "firefox"
-    } else {
-        throw new Error(`Unrecognized origin. Could not detect the browser from the origin: ${origin}`)
-    }
-}
-
-/**
- * JSONify an object. This is especially useful for logging.
- */
-function jsonify(obj) {
-    return JSON.stringify(obj, null, 2)
 }
