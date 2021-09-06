@@ -29,23 +29,23 @@ function addCommandsListener() {
     onMessageFn.addListener(function (message, sender, sendResponse) {
         console.log(`[init.js] Received a message:`)
         console.dir(message)
+        let {command, payload} = message
 
-        if (message.command === "save") {
-            let data = message.data
-            chrome.storage.local.set(data, () => {
+        if (command === "save") {
+            chrome.storage.local.set(payload, () => {
                 sendResponse("The extension successfully saved the data")
             })
-        } else if (message.command === "get") {
-            let key = message.key
+        } else if (command === "get") {
+            let key = payload.key
             chrome.storage.local.get(key, (found) => {
                 sendResponse(found)
             })
-        } else if (message.command === "open-generate-html-page") {
+        } else if (command === "open-generate-html-page") {
             chrome.tabs.create({
                 url: 'web/generate-html.html'
             })
         } else {
-            throw new Error(`Unrecognized command: '${message.command}'`)
+            throw new Error(`Unrecognized command: '${command}'`)
         }
 
         return true // Returning "true" tells FireFox that we plan to invoke the "sendResponse" function later (rather, asynchronously). Otherwise, the "sendResponse" function would become invalid.

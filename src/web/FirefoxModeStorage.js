@@ -15,6 +15,8 @@ class FirefoxModeStorage extends AppStorage {
         this.#webExtensionId = webExtensionId
     }
 
+    #callerIdSequence = 0
+
     /**
      * Send a message to the extension back-end (the content-script and background scripts).
      *
@@ -27,11 +29,13 @@ class FirefoxModeStorage extends AppStorage {
      * a "sender" property are used to filter out messages that may have been initiated by invocations of "#message" by
      * other callers.
      *
-     * @param callerId the ID of the caller that originally sent this message. For example, "get", "save"
+     * @param command the command that the back-end should execute. This is the "procedure name" of the remote procedure call.
      * @param payload the payload of the message to send
      * @return {Promise} a promise containing the response message
      */
-    #message(callerId, payload) {
+    #message(command, payload) {
+        let callerId = this.#callerIdSequence++
+
         // I'm assuming it's wise to wire up the event listener before posting the message to avoid a race condition.
         // That's why I've put this before the "window.postMessage". But I don't think it actually matters.
         let responsePromise = new Promise((resolve => {
@@ -48,6 +52,7 @@ class FirefoxModeStorage extends AppStorage {
         window.postMessage({
             sender: "FirefoxModeStorage.js",
             callerId,
+            command,
             payload
         }, "*")
 
@@ -59,8 +64,7 @@ class FirefoxModeStorage extends AppStorage {
      * @return {Promise<Number>} a promise containing the votesPageLimit value
      */
     getVotesPageLimit() {
-        return this.#message("getVotesPageLimit", {
-            command: "get",
+        return this.#message("get", {
             key: "votesPageLimit"
         }).then((found) => {
             return found.votesPageLimit
@@ -71,12 +75,10 @@ class FirefoxModeStorage extends AppStorage {
         let that = this
         let votesMapped = votes.map(vote => vote.toJSON())
 
-        return this.#message("saveVotes", {
-            command: "saved",
-            data: {votes: votesMapped}
-        }).then(() => {
-            return that.#FIREFOX_STORAGE
-        })
+        return this.#message("save", {votes: votesMapped})
+            .then(() => {
+                return that.#FIREFOX_STORAGE
+            })
     }
 
     async getVotes() {
