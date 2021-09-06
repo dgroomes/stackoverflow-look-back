@@ -174,10 +174,6 @@ General clean ups, TODOs and things I wish to implement for this project:
   similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral view. Why?
   This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab over and
   over again while iterating on the UI.
-* DONE Build a FireFox extension for the tool. For the most part, code can be re-used, but when it comes to the
-  extension APIs themselves, there are significant differences. In fact, porting the extension to FireFox has been one
-  of the most challenging software efforts I've done in recent years! In part, because I've been away from JavaScript
-  dev for so long but also because the standardization of extension APIs is still a work-in-progress.
 * Known issue: The visual elements in the page break after the 1500th post in Chrome. I think this is because of an
   internal limit on CSS Grid sizes. See the note in
   the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000 and
@@ -207,6 +203,10 @@ These are the finished items from the Wish List:
   But it's annoying.
 * DONE Create a Chrome Manifest v2 extension. This would enable making a FireFox extension, which is still on v2 but is
   working on supporting v3 sometime in 2022.
+* DONE Build a FireFox extension for the tool. For the most part, code can be re-used, but when it comes to the
+  extension APIs themselves, there are significant differences. In fact, porting the extension to FireFox has been one
+  of the most challenging software efforts I've done in recent years! In part, because I've been away from JavaScript
+  dev for so long but also because the standardization of extension APIs is still a work-in-progress.
 
 ## Notes
 
