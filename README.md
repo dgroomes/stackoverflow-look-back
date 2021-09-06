@@ -45,7 +45,7 @@ There are two ways–or, *modes*–to use the tool. Choose the mode that you pre
 * *Chrome extension* mode
     * Recommended for Chrome users
 * *Manual* mode
-    * **WARNING**: This does not work anymore (although it could be patched easily) and is going to be removed fully. 
+    * **WARNING**: This does not work anymore (although it could be patched easily) and is going to be removed fully.
     * Manually run the tool by executing commands in the browser developer tools and by manually moving files
     * Recommended for learning
     * This works for any evergreen browser. This mode relies on standard web APIs.
@@ -64,12 +64,18 @@ The source code is laid in a directory structure that groups code by the executi
             * Code that supports a Manifest V3 web extension developed for Chrome.
         * `chrome-manifest-v2/`
             * Code that supports a Manifest V2 web extension developed for Chrome.
-        * `firefox-manifest-v2/` NOT YET IMPLEMENTED
+        * `firefox-manifest-v2/`
             * Code that supports a Manifest V2 web extension developed for Firefox. Note that FireFox does not support
               Manifest V3 as of 2021.
 
 Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the
 Chrome extension layer and the web page. So, I'm purposely designing the code base to not have any shared common code.
+
+The extension has been verified to work in these browsers:
+
+* [x] Firefox 91
+* [x] Chrome 92
+* [x] Opera 78
 
 ### My Bias Against Content Scripts
 
@@ -96,13 +102,15 @@ Follow these instructions to install the tool as a Chrome browser extension and 
 
 1. Open Chrome's extension settings page
     * Open Chrome to the URL: `chrome://extensions`
+    * Alternatively, follow the instructions in the [Firefox](#firefox) section below to install the extension in
+      Firefox
+    * Alternatively, follow the instructions in the [Opera](#opera) section below to install the extension in Opera
 1. Enable developer mode
     * Enable the *Developer mode* toggle control in the upper right corner of the page
 1. Install the extension
     * Click the *Load unpacked* button
     * In the file finder window that opens, find the directory `src/extension/chrome-manifest-v3` and click *Select*
         * Alternatively, install the Chrome Manifest V2 extension in the directory `src/extension/chrome-manifest-v2`
-        * Alternatively, install the Firefox Manifest V2 extension in the directory `src/extension/firefox-manifest-v2`
     * It's installed!
 1. Open StackOverflow
     * Go to <https://stackoverflow.com/> in your browser
@@ -113,9 +121,11 @@ Follow these instructions to install the tool as a Chrome browser extension and 
     * Find the "Votes" tab and click it.
     * For me, my Votes tab navigates to this URL: <https://stackoverflow.com/users/1333713/david-groomes?tab=votes>
 1. Scrape the votes data
-    * Click the puzzle icon in the top right of the window
+    * Open the extensions menu by pressing the puzzle icon in the top right of the window
+        * Alternatively, for Opera, it is a cube button
+        * Alternatively, for Firefox, there is NOT an extensions menu and instead you invoke the extension directly by
+          clicking a puzzle icon button on the right side of the URL bar.
     * Click the "stackoverflow-static" extension entry
-    * Wait for a second (not sure why it's so slow)
     * A popup will show up letting you know that the action should have already been executed. Check the console logs!
       The votes data should have been scraped and saved to Chrome storage.
 1. Expand the post data
@@ -188,26 +198,34 @@ Follow these instructions to run the tool the manual way. It requires more steps
 
 ## FireFox
 
-NOT YET FULLY IMPLEMENTED. The Firefox extension is not yet fully implemented.
-I'm blocked on:
-> Unchecked lastError value: Error: An unexpected error occurred
-> 
-> execContentScript moz-extension://c6f78137-5e54-814f-88cf-93a433bf3cba/extension/common/extension-entrypoint.js:25
-
-And I don't know how to see the underlying error message.
-
 Although this tool was developed as a Chrome extension, it can also be installed as a web extension in FireFox!
 
 Follow these instructions to install it in FireFox:
 
-* Build the web extension for FireFox
+1. Build the web extension for FireFox
     * `./build-for-firefox.sh`
-* Open FireFox to the debug page
+1. Open FireFox to the debug page
     * Open FireFox
     * Paste and go to this URL: <about:debugging#/runtime/this-firefox>
-* Load the plugin
+1. Load the plugin
     * Click the button with the words *Load Temporary Add-on…*
     * In the file finder window that opens, find the file `build/firefox-web-extension/manifest.json` and click *Open*
+    * It's installed!
+
+## Opera
+
+The extension can also run in [Opera](https://www.opera.com).
+
+Follow these instructions to install it in Opera:
+
+1. Open Opera to the debug page:
+    * Open Opera
+    * Paste and go to this URL: <opera:extensions>
+1. Enable developer mode
+    * Toggle on the *Developer mode* control in the top right corner
+1. Load the plugin
+    * Click the "Load unpacked" button
+    * In the file finder window that opens, find the directory `src/extension/chrome-manifest-v3` and click *Select*
     * It's installed!
 
 ## Wish list
@@ -326,3 +344,4 @@ These are the finished items from the Wish List:
 * [MDN Web Docs: the EventTarget APIs](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget)
 * [MDN Web Docs: Window postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)
 * [MDN Web Docs: runtime.sendMessage()](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/sendMessage)
+* [Opera dev docs: *The Basics of Making an Extension*](https://dev.opera.com/extensions/basics/)
