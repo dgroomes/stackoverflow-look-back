@@ -8,7 +8,7 @@
     * Does StackOverflow already support this? <https://stackoverflow.com> does not have search functionality for posts
       that you've up-voted. By contrast, there is a way to search for posts that you've bookmarked (née favorited) using
       the search option `inbookmarks:mine`. See the search page <https://stackoverflow.com/search> for all search
-      options. I've bookmarked 117 posts whereas I've up-voted 1,760 posts! **I want search coverage on my votes** (
+      options. I've bookmarked 117 posts whereas I've up-voted 1,850 posts! **I want search coverage on my votes** (
       Hello StackOverflow, if you see this, consider this a feature request, or at least, a user experience data point!
       Thank you). Here are some related questions by other people:
         * [*How do I search for posts I've interacted on, with a particular word in
@@ -58,14 +58,14 @@ The source code is laid in a directory structure that groups code by the executi
             * Code that supports a Manifest V2 web extension developed for Firefox. Note that FireFox does not support
               Manifest V3 as of 2021.
 
-Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the
-web extension layer and the web page. So, I'm purposely designing the code base to not have any shared common code.
+Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the web
+extension layer and the web page. So, I'm purposely designing the code base to not have any shared common code.
 
 The extension has been verified to work in these browsers:
 
-* [x] Firefox 91
-* [x] Chrome 92
-* [x] Opera 78
+* [x] Firefox (version 91)
+* [x] Chrome (version 92)
+* [x] Opera (version 78)
 
 ### My Bias Against Content Scripts
 
@@ -98,7 +98,8 @@ Follow these instructions to install the tool as a Chrome browser extension and 
 1. Install the extension
     * Click the *Load unpacked* button
     * In the file finder window that opens, find the directory `src/extension/chromium-manifest-v3` and click *Select*
-        * Alternatively, install the Chromium Manifest V2 extension in the directory `src/extension/chromium-manifest-v2`
+        * Alternatively, install the Chromium Manifest V2 extension in the
+          directory `src/extension/chromium-manifest-v2`
     * It's installed!
 1. Open StackOverflow
     * Go to <https://stackoverflow.com/> in your browser
@@ -158,7 +159,7 @@ Follow these instructions to install it in Opera:
     * In the file finder window that opens, find the directory `src/extension/chromium-manifest-v3` and click *Select*
     * It's installed!
 
-## Wish list
+## Wish List
 
 General clean ups, TODOs and things I wish to implement for this project:
 
@@ -170,10 +171,17 @@ General clean ups, TODOs and things I wish to implement for this project:
   global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is
   kind of a major bummer. Also modules can't be imported in web workers in Safari and FireFox so that is also a bummer
   when considering converting this tool to a browser extension.
-* Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post data in a
-  similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral view. Why?
-  This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab over and
-  over again while iterating on the UI.
+* IN PROGRESS Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post
+  data in a similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral
+  view. Why? This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab
+  over and over again while iterating on the UI.
+    * Create a browser action to open the "generate-html.html" page
+        * Because web extensions are only allowed one UI control in the browser, we can't just add a new button to
+          implement this feature. Instead, we need to extend the `execute.html` page and remove its "automatic action
+          detection based on URL" logic and replace it with explicity "Scrape Votes", "Expand Post Data", "View", and
+          "Download" buttons. This was actually the original implementation a long while back so I can copy from the
+          original code.
+    * Next, render the data to the page
 * Known issue: The visual elements in the page break after the 1500th post in Chrome. I think this is because of an
   internal limit on CSS Grid sizes. See the note in
   the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000 and
@@ -226,6 +234,9 @@ These are the finished items from the Wish List:
   from a content script. See [this StackOverflow question and answer](https://stackoverflow.com/q/20499994).
 * The `let that = this` trick I have to use in the ES6 classes is a bit disappointing... how else could this code be
   designed? Is there an idiomatic ES6 class way? Or this a quirk of classes?
+* One of the significant changes of Chrome's Manifest V3 over Manifest V2 is
+  the [Action API unification](https://developer.chrome.com/docs/extensions/mv3/intro/mv3-migration/#action-api-unification)
+  .
 
 ## Reference
 
@@ -275,3 +286,7 @@ These are the finished items from the Wish List:
 * [MDN Web Docs: Window postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)
 * [MDN Web Docs: runtime.sendMessage()](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/sendMessage)
 * [Opera dev docs: *The Basics of Making an Extension*](https://dev.opera.com/extensions/basics/)
+* [MDN Web Docs: browserAction.onClicked](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction/onClicked)
+* [Chrome extension docs: *chrome.browserAction*](https://developer.chrome.com/docs/extensions/reference/browserAction/)
+    * It says "Availability: Manifest V2" so does that mean only v2 or v2 and *later* which would include v3? Answer:
+      correct. 
