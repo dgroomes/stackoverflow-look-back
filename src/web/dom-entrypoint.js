@@ -124,14 +124,13 @@ async function configureState() {
 
     /**
      * This just exists to help intellisense in the IDE
-     * @param {AppStorage} appStorage
+     * @param {RpcClient} rpcClient
      */
-    function assignPolymorphicGlobals(appStorage) {
-        window.appStorage = appStorage
+    function assignPolymorphicGlobals(rpcClient) {
+        window.rpcClient = rpcClient
     }
 
     let rpcClient
-    let appStorage
     if (mode === "web-extension") {
         if (browserName === "chrome") {
             rpcClient = new ChromeRpcClient(webExtensionId)
@@ -141,7 +140,7 @@ async function configureState() {
             throw new Error(`Unexpected browser: ${browserName}. Expected either 'chrome' or 'firefox'`)
         }
 
-        appStorage = new AppStorage(rpcClient, browserName)
+        window.appStorage = new AppStorage(rpcClient, browserName)
 
         if (!extensionContext) { // This is hacky. But when executing in an extension context, this call will fail because there is no listener.
             console.log(`[dom-entrypoint.js] Fetching the votesPageLimit`)
@@ -149,7 +148,7 @@ async function configureState() {
             console.log(`[dom-entrypoint.js] Got the votesPageLimit (${window.votesPageLimit})`)
         }
     } else {
-        appStorage = new ManualModeStorage()
+        window.appStorage = new ManualModeStorage()
         window.votesPageLimit = 1
     }
 
@@ -157,7 +156,7 @@ async function configureState() {
     window.postExpander = new PostExpander()
     window.htmlGenerator = new HtmlGenerator()
 
-    assignPolymorphicGlobals(appStorage)
+    assignPolymorphicGlobals(rpcClient)
 }
 
 function detectAndExecuteFunction() {
@@ -173,12 +172,8 @@ function detectAndExecuteFunction() {
             console.log("Posts were expanded successfully")
             if (mode === "web-extension") {
                 console.log("Because the tool is running 'web-extension' mode, the HTML generation step can be automatically run. Opening a new tab to the 'generate-html.html' page...")
-                chrome.runtime.sendMessage(webExtensionId,
-                    {procedureName: "open-generate-html-page"},
-                    function (response) {
-                        console.log("Got this response from the extension:")
-                        console.dir(response)
-                    })
+
+                rpcClient.execRemoteProcedure("open-generate-html-page", {})
             }
         })
     } else if (pathname.includes("/generate-html.html")) {
