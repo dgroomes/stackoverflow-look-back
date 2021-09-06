@@ -77,6 +77,9 @@ function detectEnvironment() {
  */
 function downloadScripts() {
     const noDepsScripts = [
+        "RpcClient.js",
+        "ChromeRpcClient.js",
+        "FirefoxRpcClient.js",
         "AppStorage.js",
         "VotesScraper.js",
         "PostExpander.js",
@@ -130,12 +133,15 @@ async function configureState() {
         window.appStorage = appStorage
     }
 
+    let rpcClient
     let appStorage
     if (mode === "web-extension") {
         if (browserName === "chrome") {
-            appStorage = new ChromeModeStorage(webExtensionId)
+            rpcClient = new ChromeRpcClient(webExtensionId)
+            appStorage = new ChromeModeStorage(rpcClient)
         } else if (browserName === "firefox") {
-            appStorage = new FirefoxModeStorage(webExtensionId)
+            rpcClient = new FirefoxRpcClient(webExtensionId)
+            appStorage = new FirefoxModeStorage(rpcClient)
         } else {
             throw new Error(`Unexpected browser: ${browserName}. Expected either 'chrome' or 'firefox'`)
         }
