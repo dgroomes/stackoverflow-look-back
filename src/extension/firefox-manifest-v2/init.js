@@ -2,7 +2,7 @@
 
 console.log("[firefox-manifest-v2/init.js] Initializing...")
 
-browserName = "firefox"
+browserDescriptor = "firefox"
 
 browser.runtime.onInstalled.addListener(() => {
     setDefaultConfig()

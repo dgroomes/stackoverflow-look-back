@@ -4,9 +4,9 @@
 # Specifically, this will create the directory "build/firefox-web-extension/" in the root of the project. This directory
 # will be ready to install into FireFox as a web extension.
 #
-# Why do we need a build script for building the FireFox extension but not the Chrome extension? FireFox does not
-# support symlinks in web extensions but Chrome does. So for the Chrome extension, we use a symlink to the common code
-# and there is no need to "build" anything. After you "git clone" this repo, the Chrome extension is ready to be
+# Why do we need a build script for building the FireFox extension but not the Chromium extension? FireFox does not
+# support symlinks in web extensions but Chromium browsers do. So for the Chromium extension, we use a symlink to the common code
+# and there is no need to "build" anything. After you "git clone" this repo, the Chromium extension is ready to be
 # installed with no extra steps. But for the FireFox plugin, we need a build step that makes physical copies of the
 # common code because of the symlink restriction.
 #

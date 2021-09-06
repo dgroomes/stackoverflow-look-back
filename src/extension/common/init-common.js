@@ -17,14 +17,14 @@ function setDefaultConfig() {
  */
 function addRpcListener() {
 
-    // Chrome and FireFox have different message APIs. Use the appropriate API based on the detected browser.
+    // Chromium and FireFox have different message APIs. Use the appropriate API based on the detected browser.
     let onMessageFn
-    if (browserName === "chrome") {
+    if (browserDescriptor === "chromium") {
         onMessageFn = chrome.runtime.onMessageExternal
-    } else if (browserName === "firefox") {
+    } else if (browserDescriptor === "firefox") {
         onMessageFn = browser.runtime.onMessage
     } else {
-        throw new Error(`Unrecognized browserName: ${browserName}`)
+        throw new Error(`Unrecognized browserDescriptor: ${browserDescriptor}`)
     }
 
     onMessageFn.addListener(function (message, sender, sendResponse) {

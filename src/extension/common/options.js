@@ -13,7 +13,7 @@ form.addEventListener("submit", async event => {
     })
 })
 
-// Initialize the form field with the value saved in Chrome storage
+// Initialize the form field with the value saved in the browser storage
 async function init() {
     votesPageLimitEl.value = await new Promise((resolve) => {
         chrome.storage.local.get("votesPageLimit", (data) => {

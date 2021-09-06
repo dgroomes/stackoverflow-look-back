@@ -50,16 +50,16 @@ The source code is laid in a directory structure that groups code by the executi
         * `common/`
             * The code in this directory gets loaded into the extension environment (background workers, popups, etc) or
               the Content Script environment (an isolated JavaScript environment with access to the web page DOM)
-        * `chrome-manifest-v3/`
-            * Code that supports a Manifest V3 web extension developed for Chrome.
-        * `chrome-manifest-v2/`
-            * Code that supports a Manifest V2 web extension developed for Chrome.
+        * `chromium-manifest-v3/`
+            * Code that supports a Manifest V3 web extension developed for Chromium browsers.
+        * `chromium-manifest-v2/`
+            * Code that supports a Manifest V2 web extension developed for Chromium browsers.
         * `firefox-manifest-v2/`
             * Code that supports a Manifest V2 web extension developed for Firefox. Note that FireFox does not support
               Manifest V3 as of 2021.
 
 Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the
-Chrome extension layer and the web page. So, I'm purposely designing the code base to not have any shared common code.
+web extension layer and the web page. So, I'm purposely designing the code base to not have any shared common code.
 
 The extension has been verified to work in these browsers:
 
@@ -97,8 +97,8 @@ Follow these instructions to install the tool as a Chrome browser extension and 
     * Enable the *Developer mode* toggle control in the upper right corner of the page
 1. Install the extension
     * Click the *Load unpacked* button
-    * In the file finder window that opens, find the directory `src/extension/chrome-manifest-v3` and click *Select*
-        * Alternatively, install the Chrome Manifest V2 extension in the directory `src/extension/chrome-manifest-v2`
+    * In the file finder window that opens, find the directory `src/extension/chromium-manifest-v3` and click *Select*
+        * Alternatively, install the Chromium Manifest V2 extension in the directory `src/extension/chromium-manifest-v2`
     * It's installed!
 1. Open StackOverflow
     * Go to <https://stackoverflow.com/> in your browser
@@ -115,12 +115,12 @@ Follow these instructions to install the tool as a Chrome browser extension and 
           clicking a puzzle icon button on the right side of the URL bar.
     * Click the "stackoverflow-static" extension entry
     * A popup will show up letting you know that the action should have already been executed. Check the console logs!
-      The votes data should have been scraped and saved to Chrome storage.
+      The votes data should have been scraped and saved to browser storage.
 1. Expand the post data
     * Go to the [Stack Exchange Data Explorer](https://data.stackexchange.com/stackoverflow/query/new)
         * If not logged in, then log in and navigate back to the original page.
     * Repeat the earlier steps to open the extension entry
-    * The same popup will appear. The post data should have been expanded and saved into Chrome storage.
+    * The same popup will appear. The post data should have been expanded and saved into browser storage.
     * Additionally, a new tab will open. Follow the next instructions to generate the HTML.
 1. Generate a static HTML document from the posts data
     * You should be on the new tab that was automatically opened
@@ -155,7 +155,7 @@ Follow these instructions to install it in Opera:
     * Toggle on the *Developer mode* control in the top right corner
 1. Load the plugin
     * Click the "Load unpacked" button
-    * In the file finder window that opens, find the directory `src/extension/chrome-manifest-v3` and click *Select*
+    * In the file finder window that opens, find the directory `src/extension/chromium-manifest-v3` and click *Select*
     * It's installed!
 
 ## Wish list

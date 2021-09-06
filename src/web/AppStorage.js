@@ -4,11 +4,9 @@
 class AppStorage {
 
     #rpcClient
-    #browserName
 
-    constructor(rpcClient, browserName) {
+    constructor(rpcClient) {
         this.#rpcClient = rpcClient
-        this.#browserName = browserName
     }
 
     /**

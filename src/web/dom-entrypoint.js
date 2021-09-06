@@ -5,14 +5,14 @@
 
 console.log("[dom-entrypoint.js] Initializing...")
 
-let browserName // Either "chrome" or "firefox. Firefox and Chrome web extension APIs have differences and we need to know the browser.
+let browserDescriptor // Either "chromium" or "firefox. Firefox and Chromium web extension APIs have differences and we need to know the browser.
 let extensionContext // Is the web page served directly by the extension? I.e. is the web page at a URL starting with "chrome-extension://"
-let webResourcesOrigin // The origin that serves the web resources like the JavaScript files. This origin will be a special Chrome/Firefox extension URL.
+let webResourcesOrigin // The origin that serves the web resources like the JavaScript files. This origin will be a special Chromium/Firefox extension URL.
 let webExtensionId // This is the ID of the web extension. This is always a super long ID that's generated the browser.
 
 /**
  * Detect the current environment and assign the following global properties:
- *   - browserName
+ *   - browserDescriptor
  *   - extensionContext
  *   - webResourcesOrigin
  *   - webExtensionId
@@ -36,9 +36,9 @@ function detectEnvironment() {
 
         let host = matches[1]
         if (host === "chrome-extension")
-            browserName = "chrome"
+            browserDescriptor = "chromium"
         else if (host === "moz-extension") {
-            browserName = "firefox"
+            browserDescriptor = "firefox"
         } else {
             throw new Error(`Unrecognized host name: '${host}', Expected either 'chrome-extension' or 'moz-extension'`)
         }
@@ -82,7 +82,7 @@ function downloadScripts() {
     // These files depend on another file already having been loaded because they use the "extends" keyword at the
     // top-level. If I used the module system would this not be a problem?
     const oneDepsScripts = [
-        "ChromeRpcClient.js",
+        "ChromiumRpcClient.js",
         "FirefoxRpcClient.js"
     ]
 
@@ -122,15 +122,15 @@ async function configureState() {
 
     let rpcClient
 
-    if (browserName === "chrome") {
-        rpcClient = new ChromeRpcClient(webExtensionId)
-    } else if (browserName === "firefox") {
+    if (browserDescriptor === "chromium") {
+        rpcClient = new ChromiumRpcClient(webExtensionId)
+    } else if (browserDescriptor === "firefox") {
         rpcClient = new FirefoxRpcClient(webExtensionId)
     } else {
-        throw new Error(`Unexpected browser: ${browserName}. Expected either 'chrome' or 'firefox'`)
+        throw new Error(`Unexpected browser: ${browserDescriptor}. Expected either 'chromium' or 'firefox'`)
     }
 
-    window.appStorage = new AppStorage(rpcClient, browserName)
+    window.appStorage = new AppStorage(rpcClient)
 
     if (!extensionContext) { // This is hacky. But when executing in an extension context, this call will fail because there is no listener.
         console.log(`[dom-entrypoint.js] Fetching the votesPageLimit`)

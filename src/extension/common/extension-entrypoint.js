@@ -35,7 +35,7 @@ async function execContentScript(fileName) {
             files: [fileName]
         })
     } else {
-        console.error(`Chrome manifest version not recognized: ${manifestVersion}`)
+        console.error(`Manifest version not recognized: ${manifestVersion}`)
     }
 }
 

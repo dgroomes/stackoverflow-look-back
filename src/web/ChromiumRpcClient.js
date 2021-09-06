@@ -1,18 +1,18 @@
 /**
- * An implementation of the RpcClient interface for the Chrome extension.
+ * An implementation of the RpcClient interface for the Chromium extension.
  */
-class ChromeRpcClient extends RpcClient {
+class ChromiumRpcClient extends RpcClient {
 
-    #chromeExtensionId
+    #webExtensionId
 
-    constructor(chromeExtensionId) {
+    constructor(webExtensionId) {
         super()
-        this.#chromeExtensionId = chromeExtensionId
+        this.#webExtensionId = webExtensionId
     }
 
     execRemoteProcedure(procedureName, procedureArgs) {
         return new Promise((resolve) => {
-            chrome.runtime.sendMessage(this.#chromeExtensionId, {procedureName, procedureArgs},
+            chrome.runtime.sendMessage(this.#webExtensionId, {procedureName, procedureArgs},
                 function (returnValue) {
                     console.log("Got a return value from the remote procedure call:")
                     console.dir(returnValue)
