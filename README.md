@@ -215,6 +215,15 @@ These are the finished items from the Wish List:
   extension APIs themselves, there are significant differences. In fact, porting the extension to FireFox has been one
   of the most challenging software efforts I've done in recent years! In part, because I've been away from JavaScript
   dev for so long but also because the standardization of extension APIs is still a work-in-progress.
+* Drop the Manifest V3 implementation. I originally implemented the Chrome extension using the Manifest V3 format for
+  the simple reason that the Chrome getting started docs for extension development uses Manifest V3. This was my first
+  web extension. Now that I've ported this to Firefox, I know much more about the extension landscape, especially the
+  APIs. For example, Firefox is working on Manifest V3 support and it is a large effort which will take until early 2022
+  at the earliest. See this related blog post at [blog.mozilla.org](https://blog.mozilla.org/addons/2021/05/27/manifest-v3-update/).
+  Firefox will support Manifest V2 for at least another year. So that's early 2023 at the earliest. There is no value
+  proposition for me to support a Manifest V3 version of the extension today when I can pay that implementation cost when
+  the time comes that Manifest V2 support ends. The cost will almost definitely be lower then than now because of the
+  inevitable enrichment of docs, StackOverflow posts, etc over time. So, drop the Manifest V3 support. 
 
 ## Notes
 
@@ -289,4 +298,4 @@ These are the finished items from the Wish List:
 * [MDN Web Docs: browserAction.onClicked](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction/onClicked)
 * [Chrome extension docs: *chrome.browserAction*](https://developer.chrome.com/docs/extensions/reference/browserAction/)
     * It says "Availability: Manifest V2" so does that mean only v2 or v2 and *later* which would include v3? Answer:
-      correct. 
+      correct.
