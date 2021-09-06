@@ -11,7 +11,7 @@ class FirefoxModeStorage extends AppStorage {
     #webExtensionId
 
     constructor(webExtensionId) {
-        super();
+        super()
         this.#webExtensionId = webExtensionId
     }
 
@@ -32,7 +32,7 @@ class FirefoxModeStorage extends AppStorage {
                 if (data.sender === "content-script-messaging-proxy"
                     && data.callerId === callerId) {
 
-                    window.removeEventListener("message", listenForCommandResponse);
+                    window.removeEventListener("message", listenForCommandResponse)
                     resolve(data.payload)
                 }
             })
@@ -44,7 +44,7 @@ class FirefoxModeStorage extends AppStorage {
      * @return {Promise<*>} a promise containing the votesPageLimit value
      */
     getVotesPageLimit() {
-        let callerId = "getVotesPageLimit";
+        let callerId = "getVotesPageLimit"
         let promise = this.#waitForMessage(callerId)
 
         window.postMessage({
@@ -54,7 +54,7 @@ class FirefoxModeStorage extends AppStorage {
                 command: "get",
                 key: "votesPageLimit"
             }
-        }, "*");
+        }, "*")
 
         return promise.then((found) => {
             return found.votesPageLimit

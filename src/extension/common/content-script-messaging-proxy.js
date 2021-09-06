@@ -19,7 +19,7 @@ window.addEventListener("message", ({data}) => {
                     sender: "content-script-messaging-proxy",
                     callerId: data.callerId,
                     payload: found
-                }, "*");
+                }, "*")
             })
     }
 })

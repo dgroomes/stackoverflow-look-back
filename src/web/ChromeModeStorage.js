@@ -11,7 +11,7 @@ class ChromeModeStorage extends AppStorage {
     #chromeExtensionId
 
     constructor(chromeExtensionId) {
-        super();
+        super()
         this.#chromeExtensionId = chromeExtensionId
     }
 
@@ -83,7 +83,7 @@ class ChromeModeStorage extends AppStorage {
                 console.log("Got this response from storage:")
                 console.dir(found)
                 resolve(found.posts)
-            });
+            })
         })
 
         let postsData = await promise

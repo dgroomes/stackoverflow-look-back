@@ -6,7 +6,7 @@
  */
 class ManualModeStorage extends AppStorage {
 
-    #FILE_DOWNLOAD = "File download";
+    #FILE_DOWNLOAD = "File download"
 
     /**
      * This downloads the votes data as a JSON file.

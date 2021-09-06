@@ -20,7 +20,7 @@ class PostExpander {
 
         document.querySelector('.CodeMirror').CodeMirror.setValue(sql) // Set the SQL query
 
-        let runQueryBtn = document.getElementById("submit-query");
+        let runQueryBtn = document.getElementById("submit-query")
         runQueryBtn.click() // Click the 'Run Query' button to prompt the parameters field to show up. The query is not actually run.
         document.querySelector('input[name=PostIds]').value = `'${ids}'` // Set the parameter
         runQueryBtn.click() // Run the query

@@ -79,11 +79,11 @@ class Vote {
 class QuestionVote extends Vote {
 
     constructor(id) {
-        super(id);
+        super(id)
     }
 
     get type() {
-        return "question";
+        return "question"
     }
 
     get ids() {

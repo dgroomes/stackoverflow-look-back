@@ -68,12 +68,12 @@ class Question extends Post {
      * @param htmlBody the rendered HTML of the post body
      */
     constructor(id, title, htmlBody) {
-        super(id, htmlBody);
+        super(id, htmlBody)
         this.title = title
     }
 
     get type() {
-        return "question";
+        return "question"
     }
 
     compare() {
@@ -102,7 +102,7 @@ class Answer extends Post {
      * @param htmlBody the rendered HTML of the post body
      */
     constructor(id, questionId, htmlBody) {
-        super(id, htmlBody);
+        super(id, htmlBody)
         this.questionId = questionId
     }
 

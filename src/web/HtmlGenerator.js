@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  * Fetch the StackOverflow posts data and generate a static HTML document with it.
  */
@@ -11,11 +9,11 @@ class HtmlGenerator {
      */
     async generateHtml() {
         let posts = await appStorage.getPosts()
-        let postsEl = document.getElementById("posts");
+        let postsEl = document.getElementById("posts")
 
         // Sort the posts data. Every question post is followed by its answer posts.
         // See the "compareFn" parameter for "Array.prototype.sort()": https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
-        let sorted = posts.sort((postA, postB) => postA.compare() - postB.compare());
+        let sorted = posts.sort((postA, postB) => postA.compare() - postB.compare())
 
         // Known issue. Reduce down to the problematic entries due to CSS grid issue. See the note in the README.
         sorted = sorted.slice(0, 1500) // the 1501st element isn't rendered correctly
@@ -33,10 +31,10 @@ class HtmlGenerator {
     downloadHtml() {
         // The styles from linked stylesheets will not be serialized without extra effort. The styles must be copied into a
         // <style> tag.
-        let style = document.createElement("style");
+        let style = document.createElement("style")
         style.textContent = Array.from(document.styleSheets[0].cssRules)
             .map(rule => rule.cssText)
-            .join("\n");
+            .join("\n")
         document.head.prepend(style)
 
         // Remove the 'link' elements since the styles are now embedded in a 'style' element
@@ -44,8 +42,8 @@ class HtmlGenerator {
             link.remove()
         }
 
-        let serializer = new XMLSerializer();
-        let html = serializer.serializeToString(document);
+        let serializer = new XMLSerializer()
+        let html = serializer.serializeToString(document)
 
         downloadToFile(html, "stackoverflow-posts.html")
 

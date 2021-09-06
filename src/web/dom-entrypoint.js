@@ -157,7 +157,7 @@ async function configureState() {
 }
 
 function detectAndExecuteFunction() {
-    let {origin, pathname, search} = window.location;
+    let {origin, pathname, search} = window.location
     let searchParams = new URLSearchParams(search)
 
     if (origin === "https://stackoverflow.com" && pathname.startsWith("/users/") && searchParams.get("tab") === "votes") {

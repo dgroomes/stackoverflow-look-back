@@ -100,7 +100,7 @@ row: ${row.outerHTML}
             return
         }
 
-        let el = document.querySelector('a[rel=next]');
+        let el = document.querySelector('a[rel=next]')
         if (el === null) {
             console.log("All pages of the votes tab have been visited. Downloading the votes data to a JSON file...")
             save()
