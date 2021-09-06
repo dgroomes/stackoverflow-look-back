@@ -16,16 +16,25 @@ class FirefoxModeStorage extends AppStorage {
     }
 
     /**
-     * Wait for a response message for the given caller.
+     * Send a message to the extension back-end (the content-script and background scripts).
      *
-     * This function will register a listener on the window and listen for messages sent from the content-script
-     * proxy ("content-script-messaging-proxy.js") until it finds the expected response message for the given "caller ID".
+     * This is effectively a remote procedure call. This function uses the asynchronous broadcast messaging system and
+     * creates a one-for-one request/response procedure call. Honestly, the implementation seems a little strange
+     * but it makes for a great API to the calling code. I think this is an effective pattern.
+     *
+     * This function will send a message to the content-script proxy ("content-script-messaging-proxy.js") and then
+     * register a listener on the window to listen for the eventual expected response message. A "caller ID" and
+     * a "sender" property are used to filter out messages that may have been initiated by invocations of "#message" by
+     * other callers.
      *
      * @param callerId the ID of the caller that originally sent this message. For example, "get", "save"
+     * @param payload the payload of the message to send
      * @return {Promise} a promise containing the response message
      */
-    #waitForMessage(callerId) {
-        return new Promise((resolve => {
+    #message(callerId, payload) {
+        // I'm assuming it's wise to wire up the event listener before posting the message to avoid a race condition.
+        // That's why I've put this before the "window.postMessage". But I don't think it actually matters.
+        let responsePromise = new Promise((resolve => {
             window.addEventListener("message", function listenForCommandResponse({data}) {
                 if (data.sender === "content-script-messaging-proxy"
                     && data.callerId === callerId) {
@@ -35,26 +44,25 @@ class FirefoxModeStorage extends AppStorage {
                 }
             })
         }))
-    }
-
-    /**
-     * This method is only available in the "web-extension" mode
-     * @return {Promise<*>} a promise containing the votesPageLimit value
-     */
-    getVotesPageLimit() {
-        let callerId = "getVotesPageLimit"
-        let promise = this.#waitForMessage(callerId)
 
         window.postMessage({
             sender: "FirefoxModeStorage.js",
             callerId,
-            payload: {
-                command: "get",
-                key: "votesPageLimit"
-            }
+            payload
         }, "*")
 
-        return promise.then((found) => {
+        return responsePromise
+    }
+
+    /**
+     * This method is only available in the "web-extension" mode
+     * @return {Promise<Number>} a promise containing the votesPageLimit value
+     */
+    getVotesPageLimit() {
+        return this.#message("getVotesPageLimit", {
+            command: "get",
+            key: "votesPageLimit"
+        }).then((found) => {
             return found.votesPageLimit
         })
     }
@@ -63,19 +71,10 @@ class FirefoxModeStorage extends AppStorage {
         let that = this
         let votesMapped = votes.map(vote => vote.toJSON())
 
-        let callerId = "saveVotes"
-        let promise = this.#waitForMessage(callerId)
-
-        window.postMessage({
-            sender: "FirefoxModeStorage.js",
-            callerId,
-            payload: {
-                command: "saved",
-                data: {votes: votesMapped}
-            }
-        }, "*")
-
-        return promise.then(() => {
+        return this.#message("saveVotes", {
+            command: "saved",
+            data: {votes: votesMapped}
+        }).then(() => {
             return that.#FIREFOX_STORAGE
         })
     }
