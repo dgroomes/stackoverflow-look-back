@@ -50,13 +50,12 @@ The source code is laid in a directory structure that groups code by the executi
         * `common/`
             * The code in this directory gets loaded into the extension environment (background workers, popups, etc) or
               the Content Script environment (an isolated JavaScript environment with access to the web page DOM)
-        * `chromium-manifest-v3/`
-            * Code that supports a Manifest V3 web extension developed for Chromium browsers.
         * `chromium-manifest-v2/`
             * Code that supports a Manifest V2 web extension developed for Chromium browsers.
         * `firefox-manifest-v2/`
-            * Code that supports a Manifest V2 web extension developed for Firefox. Note that FireFox does not support
-              Manifest V3 as of 2021.
+            * Code that supports a Manifest V2 web extension developed for Firefox.
+
+        This directory layout is inviting for future additions like Manifest V3 support, or a Safari browser extension.   
 
 Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the web
 extension layer and the web page. So, I'm purposely designing the code base to not have any shared common code.
@@ -97,9 +96,7 @@ Follow these instructions to install the tool as a Chrome browser extension and 
     * Enable the *Developer mode* toggle control in the upper right corner of the page
 1. Install the extension
     * Click the *Load unpacked* button
-    * In the file finder window that opens, find the directory `src/extension/chromium-manifest-v3` and click *Select*
-        * Alternatively, install the Chromium Manifest V2 extension in the
-          directory `src/extension/chromium-manifest-v2`
+    * In the file finder window that opens, find the directory `src/extension/chromium-manifest-v2` and click *Select*
     * It's installed!
 1. Open StackOverflow
     * Go to <https://stackoverflow.com/> in your browser
@@ -156,7 +153,7 @@ Follow these instructions to install it in Opera:
     * Toggle on the *Developer mode* control in the top right corner
 1. Load the plugin
     * Click the "Load unpacked" button
-    * In the file finder window that opens, find the directory `src/extension/chromium-manifest-v3` and click *Select*
+    * In the file finder window that opens, find the directory `src/extension/chromium-manifest-v2` and click *Select*
     * It's installed!
 
 ## Wish List
@@ -187,7 +184,7 @@ General clean ups, TODOs and things I wish to implement for this project:
   the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000 and
   when I go to exactly 1501 posts (there will be 2 * 1501 = 3002) the last post doesn't get rendered correctly. I think
   that's the limit. This issue does not happen Safari.
-* IN PROGRESS Drop the Manifest V3 implementation. I originally implemented the Chrome extension using the Manifest V3 format for
+* DONE Drop the Manifest V3 implementation. I originally implemented the Chrome extension using the Manifest V3 format for
   the simple reason that the Chrome getting started docs for extension development uses Manifest V3. This was my first
   web extension. Now that I've ported this to Firefox, I know much more about the extension landscape, especially the
   APIs. For example, Firefox is working on Manifest V3 support and it is a large effort which will take until early 2022

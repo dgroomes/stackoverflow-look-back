@@ -1,8 +1,6 @@
 // Core extension initialization code for the "Chromium Manifest V2" web extension.
 //
-// This declares the permissions that dictate which pages the extension are enabled for. This is a key difference
-// between the extension architectures of Manifest V2 and V3. In V3, we declares these permissions in the manifest file
-// itself.
+// This declares the permissions that dictate which pages the extension are enabled for.
 
 console.log("[chromium-manifest-v2/init.js] Initializing...")
 
