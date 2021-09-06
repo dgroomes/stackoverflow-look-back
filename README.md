@@ -171,7 +171,7 @@ General clean ups, TODOs and things I wish to implement for this project:
   global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is
   kind of a major bummer. Also modules can't be imported in web workers in Safari and FireFox so that is also a bummer
   when considering converting this tool to a browser extension.
-* IN PROGRESS Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post
+* Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post
   data in a similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral
   view. Why? This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab
   over and over again while iterating on the UI.
@@ -187,6 +187,16 @@ General clean ups, TODOs and things I wish to implement for this project:
   the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000 and
   when I go to exactly 1501 posts (there will be 2 * 1501 = 3002) the last post doesn't get rendered correctly. I think
   that's the limit. This issue does not happen Safari.
+* IN PROGRESS Drop the Manifest V3 implementation. I originally implemented the Chrome extension using the Manifest V3 format for
+  the simple reason that the Chrome getting started docs for extension development uses Manifest V3. This was my first
+  web extension. Now that I've ported this to Firefox, I know much more about the extension landscape, especially the
+  APIs. For example, Firefox is working on Manifest V3 support and it is a large effort which will take until early 2022
+  at the earliest. See this related blog post at [blog.mozilla.org](https://blog.mozilla.org/addons/2021/05/27/manifest-v3-update/).
+  Firefox will support Manifest V2 for at least another year. So that's early 2023 at the earliest. There is no value
+  proposition for me to support a Manifest V3 version of the extension today when I can pay that implementation cost when
+  the time comes that Manifest V2 support ends. The cost will almost definitely be lower then than now because of the
+  inevitable enrichment of docs, StackOverflow posts, etc over time. So, drop the Manifest V3 support.
+
 
 ## Finished Wish List items
 
@@ -215,15 +225,6 @@ These are the finished items from the Wish List:
   extension APIs themselves, there are significant differences. In fact, porting the extension to FireFox has been one
   of the most challenging software efforts I've done in recent years! In part, because I've been away from JavaScript
   dev for so long but also because the standardization of extension APIs is still a work-in-progress.
-* Drop the Manifest V3 implementation. I originally implemented the Chrome extension using the Manifest V3 format for
-  the simple reason that the Chrome getting started docs for extension development uses Manifest V3. This was my first
-  web extension. Now that I've ported this to Firefox, I know much more about the extension landscape, especially the
-  APIs. For example, Firefox is working on Manifest V3 support and it is a large effort which will take until early 2022
-  at the earliest. See this related blog post at [blog.mozilla.org](https://blog.mozilla.org/addons/2021/05/27/manifest-v3-update/).
-  Firefox will support Manifest V2 for at least another year. So that's early 2023 at the earliest. There is no value
-  proposition for me to support a Manifest V3 version of the extension today when I can pay that implementation cost when
-  the time comes that Manifest V2 support ends. The cost will almost definitely be lower then than now because of the
-  inevitable enrichment of docs, StackOverflow posts, etc over time. So, drop the Manifest V3 support. 
 
 ## Notes
 
