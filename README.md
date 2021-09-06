@@ -45,6 +45,7 @@ There are two ways–or, *modes*–to use the tool. Choose the mode that you pre
 * *Chrome extension* mode
     * Recommended for Chrome users
 * *Manual* mode
+    * **WARNING**: This does not work anymore (although it could be patched easily) and is going to be removed fully. 
     * Manually run the tool by executing commands in the browser developer tools and by manually moving files
     * Recommended for learning
     * This works for any evergreen browser. This mode relies on standard web APIs.

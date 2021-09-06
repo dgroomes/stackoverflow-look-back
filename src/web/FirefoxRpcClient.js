@@ -45,7 +45,7 @@ class FirefoxRpcClient extends RpcClient {
         }))
 
         window.postMessage({
-            sender: "FirefoxModeStorage.js",
+            sender: "FirefoxRpcClient",
             callerId,
             procedureName,
             procedureArgs

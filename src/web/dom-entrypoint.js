@@ -78,8 +78,6 @@ function detectEnvironment() {
 function downloadScripts() {
     const noDepsScripts = [
         "RpcClient.js",
-        "ChromeRpcClient.js",
-        "FirefoxRpcClient.js",
         "AppStorage.js",
         "VotesScraper.js",
         "PostExpander.js",
@@ -94,9 +92,8 @@ function downloadScripts() {
     // These files depend on another file already having been loaded because they use the "extends" keyword at the
     // top-level. If I used the module system would this not be a problem?
     const oneDepsScripts = [
-        "ManualModeStorage.js",
-        "ChromeModeStorage.js",
-        "FirefoxModeStorage.js"
+        "ChromeRpcClient.js",
+        "FirefoxRpcClient.js"
     ]
 
     /**
@@ -138,13 +135,14 @@ async function configureState() {
     if (mode === "web-extension") {
         if (browserName === "chrome") {
             rpcClient = new ChromeRpcClient(webExtensionId)
-            appStorage = new ChromeModeStorage(rpcClient)
         } else if (browserName === "firefox") {
             rpcClient = new FirefoxRpcClient(webExtensionId)
-            appStorage = new FirefoxModeStorage(rpcClient)
         } else {
             throw new Error(`Unexpected browser: ${browserName}. Expected either 'chrome' or 'firefox'`)
         }
+
+        appStorage = new AppStorage(rpcClient, browserName)
+
         if (!extensionContext) { // This is hacky. But when executing in an extension context, this call will fail because there is no listener.
             console.log(`[dom-entrypoint.js] Fetching the votesPageLimit`)
             window.votesPageLimit = await appStorage.getVotesPageLimit()

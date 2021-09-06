@@ -1,21 +1,25 @@
 /**
- * This is an interface class that defines the API for general storage and retrieval (i.e. reads/writes) of the domain
- * data.
- *
- * This interface must be implemented by concrete implementation classes for each of the "Chrome extension" and "Manual"
- * modes.
- *
- * IN PROGRESS Consider modeling a RemoteProceduralCall class which has two sub-classes: ChromeRemoteProcedureCall and
- * FirefoxRemoteProcedureCall. The implementation of the methods in the AppStorage sub-classes (ChromeModeStorage and
- * FirefoxModeStorage) is too common now. Instead, the main difference is how Firefox and Chrome do remote procedure
- * calls from the web page to the back-end. AppStorage doesn't need to be an interface anymore, but a concrete class.
+ * An API for general storage and retrieval (i.e. reads/writes) of the domain data.
  */
 class AppStorage {
 
-    constructor() {
-        if (this.constructor === AppStorage) {
-            throw new Error("This should never be instantiated directly. Instantiate one of the extending classes.")
-        }
+    #rpcClient
+    #browserName
+
+    constructor(rpcClient, browserName) {
+        this.#rpcClient = rpcClient
+        this.#browserName = browserName
+    }
+
+    /**
+     * @return {Promise<Number>} a promise containing the votesPageLimit value
+     */
+    getVotesPageLimit() {
+        return this.#rpcClient.execRemoteProcedure("get", {
+            key: "votesPageLimit"
+        }).then(found => {
+            return found.votesPageLimit
+        })
     }
 
     /**
@@ -25,6 +29,9 @@ class AppStorage {
      * @return {Promise<String>} a promise that resolves when the votes have been successfully saved. The promise's string value indicates which storage backend was used.
      */
     saveVotes(votes) {
+        let votesMapped = votes.map(vote => vote.toJSON())
+
+        return this.#rpcClient.execRemoteProcedure("save", {votes: votesMapped})
     }
 
     /**
@@ -32,6 +39,10 @@ class AppStorage {
      * @return {Array<Vote>}
      */
     async getVotes() {
+        return this.#rpcClient.execRemoteProcedure("get", {key: "votes"})
+            .then(returnValue => {
+                return returnValue.votes.map(voteData => Vote.deserialize(voteData))
+            })
     }
 
     /**
@@ -40,6 +51,9 @@ class AppStorage {
      * @return {Promise}
      */
     savePosts(posts) {
+        let postsMapped = posts.map(post => post.toJSON())
+
+        return this.#rpcClient.execRemoteProcedure("save", {posts: postsMapped})
     }
 
     /**
@@ -47,6 +61,20 @@ class AppStorage {
      * @return {Array<Post>} posts
      */
     async getPosts() {
+        if (this.#browserName === "chrome") {
+            let promise = new Promise(resolve => {
+                chrome.storage.local.get("posts", (found) => {
+                    console.log("Got this response from storage:")
+                    console.dir(found)
+                    resolve(found.posts)
+                })
+            })
+
+            let postsData = await promise
+            return postsData.map(postData => Post.deserialize(postData))
+        } else {
+            throw new Error("Not yet implemented")
+        }
     }
 }
 
