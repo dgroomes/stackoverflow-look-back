@@ -61,20 +61,16 @@ class AppStorage {
      * @return {Array<Post>} posts
      */
     async getPosts() {
-        if (this.#browserName === "chrome") {
-            let promise = new Promise(resolve => {
-                chrome.storage.local.get("posts", (found) => {
-                    console.log("Got this response from storage:")
-                    console.dir(found)
-                    resolve(found.posts)
-                })
+        let promise = new Promise(resolve => {
+            chrome.storage.local.get("posts", (found) => {
+                console.log("Got this response from storage:")
+                console.dir(found)
+                resolve(found.posts)
             })
+        })
 
-            let postsData = await promise
-            return postsData.map(postData => Post.deserialize(postData))
-        } else {
-            throw new Error("Not yet implemented")
-        }
+        let postsData = await promise
+        return postsData.map(postData => Post.deserialize(postData))
     }
 }
 

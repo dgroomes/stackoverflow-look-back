@@ -231,7 +231,7 @@ General clean ups, TODOs and things I wish to implement for this project:
   similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral view. Why?
   This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab over and
   over again while iterating on the UI.
-* IN PROGRESS Build a FireFox extension for the tool. For the most part, code can be re-used, but when it comes to the
+* DONE Build a FireFox extension for the tool. For the most part, code can be re-used, but when it comes to the
   extension APIs themselves, there are significant differences. In fact, porting the extension to FireFox has been one
   of the most challenging software efforts I've done in recent years! In part, because I've been away from JavaScript
   dev for so long but also because the standardization of extension APIs is still a work-in-progress.
