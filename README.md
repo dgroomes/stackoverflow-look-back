@@ -172,14 +172,17 @@ General clean ups, TODOs and things I wish to implement for this project:
   data in a similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral
   view. Why? This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab
   over and over again while iterating on the UI.
-    * IN PROGRESS Create a browser action to open the "generate-html.html" page
+    * DONE Create a browser action to open the "generate-html.html" page
         * DONE (only implemented "Scrape" and "Expand") Because web extensions are only allowed one UI control in the
           browser, we can't just add a new button to implement this feature. Instead, we need to extend
           the `execute.html` page and remove its "automatic action detection based on URL" logic and replace it with
           explicitly "Scrape Votes", "Expand Post Data", "View", and
           "Download" buttons. This was actually the original implementation a long while back so I can copy from the
           original code.
-    * Next, render the data to the page
+    * Fix the styles
+    * Allow the extension to show the "View posts" button from any page. This should be a "browser action" instead of a
+      "page action" (I'm so glad I dropped the Manifest V3 support because then I'd have to solve for the unified
+      actions way too).  
 * Known issue: The visual elements in the page break after the 1500th post in Chrome. I think this is because of an
   internal limit on CSS Grid sizes. See the note in
   the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000 and

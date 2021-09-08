@@ -38,3 +38,12 @@ document.getElementById("execute-expand-posts")
         await execContentScript("/extension/common/content-script-load-source.js")
         await execContentScript("/extension/common/content-script-expand-posts.js")
     })
+
+document.getElementById("view-posts")
+    .addEventListener("click", async () => {
+        console.log(`[extension-entrypoint.js] Clicked the 'view posts' button`)
+
+        chrome.tabs.create({
+            url: 'web/generate-html.html'
+        })
+    })

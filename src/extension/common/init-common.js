@@ -41,7 +41,7 @@ function addRpcListener() {
             })
         } else if (procedureName === "open-generate-html-page") {
             chrome.tabs.create({
-                url: 'web/generate-html.html'
+                url: 'web/generate-html.html#download'
             })
         } else {
             throw new Error(`Unrecognized procedure name: '${procedureName}'`)

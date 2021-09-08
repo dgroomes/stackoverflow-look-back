@@ -5,9 +5,10 @@ class HtmlGenerator {
 
     /**
      * This is the main function!
+     * @param download whether to download the file or not
      * @return {Promise<void>}
      */
-    async generateHtml() {
+    async generateHtml(download) {
         let posts = await appStorage.getPosts()
         let postsEl = document.getElementById("posts")
 
@@ -22,7 +23,9 @@ class HtmlGenerator {
             postsEl.insertAdjacentHTML("beforeend", post.toHtml())
         }
 
-        this.downloadHtml()
+        if (download) {
+            this.downloadHtml()
+        }
     }
 
     /**
