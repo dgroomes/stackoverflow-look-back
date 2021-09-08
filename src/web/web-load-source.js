@@ -1,14 +1,14 @@
-// This is the entrypoint of the tool that runs in the DOM.
-//
-// This file downloads the other JavaScript source files into the browser, wires up all objects and configuration, then
-// inspects the URL to figure out what to do: either scrape for the votes data or expand the posts data.
+// This code runs on the web page. It downloads all of the other JavaScript source files into the web page by adding
+// "script" tags. It also does some initialization to wire up the main objects and variables.
 
-console.log("[dom-entrypoint.js] Initializing...")
+console.log("[web-load-source.js] Initializing...")
 
 let browserDescriptor // Either "chromium" or "firefox. Firefox and Chromium web extension APIs have differences and we need to know the browser.
 let extensionContext // Is the web page served directly by the extension? I.e. is the web page at a URL starting with "chrome-extension://"
 let webResourcesOrigin // The origin that serves the web resources like the JavaScript files. This origin will be a special Chromium/Firefox extension URL.
 let webExtensionId // This is the ID of the web extension. This is always a super long ID that's generated the browser.
+let _programReadyResolveRef
+programReady = new Promise(resolve => _programReadyResolveRef = resolve) // A promise that will resolve when the program is ready. I.e. all of the JavaScript source files have been loaded and the objects have been wired up
 
 /**
  * Detect the current environment and assign the following global properties:
@@ -27,7 +27,7 @@ function detectEnvironment() {
      *
      * @param url. For example:
      *               - chrome-extension://akidegfimbjmokpejlcnjagogamdiinl/web/generate-html.html
-     *               - moz-extension://df0b610b-995b-9240-8c3b-fcaf155c9005/web/dom-entrypoint.js
+     *               - moz-extension://df0b610b-995b-9240-8c3b-fcaf155c9005/web/web-load-source.js
      */
     function detectFromExtensionUrl(url) {
         let regex = new RegExp("(chrome-extension|moz-extension)://([a-z0-9-]+)")
@@ -56,7 +56,7 @@ function detectEnvironment() {
 
     extensionContext = false
 
-    let script = document.getElementById("dom-entrypoint")
+    let script = document.getElementById("web-load-source")
     detectFromExtensionUrl(script.src)
 }
 
@@ -133,9 +133,9 @@ async function configureState() {
     window.appStorage = new AppStorage(rpcClient)
 
     if (!extensionContext) { // This is hacky. But when executing in an extension context, this call will fail because there is no listener.
-        console.log(`[dom-entrypoint.js] Fetching the votesPageLimit`)
+        console.log(`[web-load-source.js] Fetching the votesPageLimit`)
         window.votesPageLimit = await appStorage.getVotesPageLimit()
-        console.log(`[dom-entrypoint.js] Got the votesPageLimit (${window.votesPageLimit})`)
+        console.log(`[web-load-source.js] Got the votesPageLimit (${window.votesPageLimit})`)
     }
 
     window.votesScraper = new VotesScraper()
@@ -143,27 +143,6 @@ async function configureState() {
     window.htmlGenerator = new HtmlGenerator()
 
     assignPolymorphicGlobals(rpcClient)
-}
-
-function detectAndExecuteFunction() {
-    let {origin, pathname, search} = window.location
-    let searchParams = new URLSearchParams(search)
-
-    if (origin === "https://stackoverflow.com" && pathname.startsWith("/users/") && searchParams.get("tab") === "votes") {
-        // The current page is the user profile page. We are in the context for scraping votes.
-        votesScraper.scrapeVotes()
-    } else if (origin === "https://data.stackexchange.com" && pathname.startsWith("/stackoverflow/query/new")) {
-        // The current page is the Stack Exchange Data Explorer. We are in the context for expanding the posts data.
-        postExpander.expandPosts().then(() => {
-            console.log("Posts were expanded successfully")
-            console.log("Opening a new tab to the 'generate-html.html' page...")
-            rpcClient.execRemoteProcedure("open-generate-html-page", {})
-        })
-    } else if (pathname.includes("/generate-html.html")) {
-        htmlGenerator.generateHtml().then(() => console.log("HTML was generated successfully"))
-    } else {
-        console.error(`Unexpected page: ${window.location}`)
-    }
 }
 
 /**
@@ -174,7 +153,7 @@ async function exec() {
     await downloadScripts()
     console.log("All scripts were included.")
     await configureState()
-    detectAndExecuteFunction()
+    _programReadyResolveRef()
 }
 
 // noinspection JSIgnoredPromiseFromCall

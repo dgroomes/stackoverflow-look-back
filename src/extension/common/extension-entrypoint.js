@@ -1,7 +1,7 @@
 // This is the entrypoint code that should run in the extension's JavaScript environment. This code should NOT run in a
 // content script and should not run in the web page.
 //
-// This code bootstraps the content script which then bootstraps the web page.
+// This code bootstraps the content scripts which then bootstrap the web page.
 
 console.log("[extension-entrypoint.js] Initializing...")
 
@@ -22,6 +22,19 @@ async function execContentScript(fileName) {
     })
 }
 
-execContentScript("/extension/common/content-script-entrypoint.js")
-    .then(() => console.log("[extension-entrypoint.js] Ran to completion"))
-    .catch(e => console.log("[extension-entrypoint.js] Something went wrong", e))
+document.getElementById("execute-scrape-votes")
+    .addEventListener("click", async () => {
+        console.log(`[extension-entrypoint.js] Clicked the 'scrape votes' button`)
+
+        await execContentScript("/extension/common/content-script-load-source.js")
+        await execContentScript("/extension/common/content-script-scrape-votes.js")
+    })
+
+
+document.getElementById("execute-expand-posts")
+    .addEventListener("click", async () => {
+        console.log(`[extension-entrypoint.js] Clicked the 'expand posts' button`)
+
+        await execContentScript("/extension/common/content-script-load-source.js")
+        await execContentScript("/extension/common/content-script-expand-posts.js")
+    })

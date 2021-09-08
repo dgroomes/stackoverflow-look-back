@@ -14,7 +14,7 @@
         * [*How do I search for posts I've interacted on, with a particular word in
           them?*](https://meta.stackoverflow.com/q/302648)
         * [*Search Q or A's I've upvoted*](https://meta.stackoverflow.com/q/394635)
-    * Why scrape the HTML for this data and not get it via
+    * Why *scrape* the HTML for this data and not just *query* it via
       the [Stack Exchange Data Explorer (SEDE)](https://data.stackexchange.com/)? Unfortunately, up-vote and down-vote
       data is private. It is anonymized in SEDE. The StackOverflow API also does not expose this data. So, it must be
       scraped from the HTML.
@@ -55,7 +55,7 @@ The source code is laid in a directory structure that groups code by the executi
         * `firefox-manifest-v2/`
             * Code that supports a Manifest V2 web extension developed for Firefox.
 
-        This directory layout is inviting for future additions like Manifest V3 support, or a Safari browser extension.   
+      This directory layout is inviting for future additions like Manifest V3 support, or a Safari browser extension.
 
 Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the web
 extension layer and the web page. So, I'm purposely designing the code base to not have any shared common code.
@@ -112,14 +112,14 @@ Follow these instructions to install the tool as a Chrome browser extension and 
         * Alternatively, for Firefox, there is NOT an extensions menu and instead you invoke the extension directly by
           clicking a puzzle icon button on the right side of the URL bar.
     * Click the "stackoverflow-static" extension entry
-    * A popup will show up letting you know that the action should have already been executed. Check the console logs!
-      The votes data should have been scraped and saved to browser storage.
+    * A popup will show up with buttons titled "Scrape votes" and "Expand posts". Click "Scrape votes" and check the
+      console logs. The votes data will have been scraped and saved to browser storage.
 1. Expand the post data
     * Go to the [Stack Exchange Data Explorer](https://data.stackexchange.com/stackoverflow/query/new)
         * If not logged in, then log in and navigate back to the original page.
     * Repeat the earlier steps to open the extension entry
-    * The same popup will appear. The post data should have been expanded and saved into browser storage.
-    * Additionally, a new tab will open. Follow the next instructions to generate the HTML.
+    * The same popup will appear. Click "Expand posts". The post data will be expanded and saved into browser storage.
+    * Additionally, a new tab will open.
 1. Generate a static HTML document from the posts data
     * You should be on the new tab that was automatically opened
     * A file download will appear! This is the final result. Save it somewhere easily accessible.
@@ -168,14 +168,15 @@ General clean ups, TODOs and things I wish to implement for this project:
   global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is
   kind of a major bummer. Also modules can't be imported in web workers in Safari and FireFox so that is also a bummer
   when considering converting this tool to a browser extension.
-* Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post
+* IN PROGRESS Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post
   data in a similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral
   view. Why? This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab
   over and over again while iterating on the UI.
-    * Create a browser action to open the "generate-html.html" page
-        * Because web extensions are only allowed one UI control in the browser, we can't just add a new button to
-          implement this feature. Instead, we need to extend the `execute.html` page and remove its "automatic action
-          detection based on URL" logic and replace it with explicity "Scrape Votes", "Expand Post Data", "View", and
+    * IN PROGRESS Create a browser action to open the "generate-html.html" page
+        * DONE (only implemented "Scrape" and "Expand") Because web extensions are only allowed one UI control in the
+          browser, we can't just add a new button to implement this feature. Instead, we need to extend
+          the `execute.html` page and remove its "automatic action detection based on URL" logic and replace it with
+          explicitly "Scrape Votes", "Expand Post Data", "View", and
           "Download" buttons. This was actually the original implementation a long while back so I can copy from the
           original code.
     * Next, render the data to the page
@@ -184,16 +185,30 @@ General clean ups, TODOs and things I wish to implement for this project:
   the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000 and
   when I go to exactly 1501 posts (there will be 2 * 1501 = 3002) the last post doesn't get rendered correctly. I think
   that's the limit. This issue does not happen Safari.
-* DONE Drop the Manifest V3 implementation. I originally implemented the Chrome extension using the Manifest V3 format for
-  the simple reason that the Chrome getting started docs for extension development uses Manifest V3. This was my first
-  web extension. Now that I've ported this to Firefox, I know much more about the extension landscape, especially the
-  APIs. For example, Firefox is working on Manifest V3 support and it is a large effort which will take until early 2022
-  at the earliest. See this related blog post at [blog.mozilla.org](https://blog.mozilla.org/addons/2021/05/27/manifest-v3-update/).
-  Firefox will support Manifest V2 for at least another year. So that's early 2023 at the earliest. There is no value
-  proposition for me to support a Manifest V3 version of the extension today when I can pay that implementation cost when
-  the time comes that Manifest V2 support ends. The cost will almost definitely be lower then than now because of the
-  inevitable enrichment of docs, StackOverflow posts, etc over time. So, drop the Manifest V3 support.
+* DONE Drop the Manifest V3 implementation. I originally implemented the Chrome extension using the Manifest V3 format
+  for the simple reason that the Chrome getting started docs for extension development uses Manifest V3. This was my
+  first web extension. Now that I've ported this to Firefox, I know much more about the extension landscape, especially
+  the APIs. For example, Firefox is working on Manifest V3 support and it is a large effort which will take until early
+  2022 at the earliest. See this related blog post
+  at [blog.mozilla.org](https://blog.mozilla.org/addons/2021/05/27/manifest-v3-update/). Firefox will support Manifest
+  V2 for at least another year. So that's early 2023 at the earliest. There is no value proposition for me to support a
+  Manifest V3 version of the extension today when I can pay that implementation cost when the time comes that Manifest
+  V2 support ends. The cost will almost definitely be lower then than now because of the inevitable enrichment of docs,
+  StackOverflow posts, etc over time. So, drop the Manifest V3 support.
+* Consider adding RPC from the extension to the web page. Currently there is only the other way where the extension
+  background script is the RPC server and the web page is the RPC client. But the other way would create a needed
+  communication channel. Currently, the way that the extension communicates commands to the web page is an awkward "load
+  another tiny script on the page" strategy. The many little content scripts and web scripts added to handle the
+  dispatch of the "scrape votes" or "expand posts" command is verbose. They include:
+    * `content-script-scrape-votes.js`
+    * `content-script-expand-posts.js`
+    * `web-scrape-votes.js`
+    * `web-expand-posts.js`
+    * `web-generate-html.js`
 
+  They could all go removed and replaced with an RPC server (listener) that listens for the "scrape votes" or "expand
+  posts"
+  command from the extension background script.
 
 ## Finished Wish List items
 
