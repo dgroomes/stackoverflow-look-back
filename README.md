@@ -168,7 +168,7 @@ General clean ups, TODOs and things I wish to implement for this project:
   global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is
   kind of a major bummer. Also modules can't be imported in web workers in Safari and FireFox so that is also a bummer
   when considering converting this tool to a browser extension.
-* IN PROGRESS Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post
+* DONE Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post
   data in a similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral
   view. Why? This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab
   over and over again while iterating on the UI.
@@ -179,8 +179,8 @@ General clean ups, TODOs and things I wish to implement for this project:
           explicitly "Scrape Votes", "Expand Post Data", "View", and
           "Download" buttons. This was actually the original implementation a long while back so I can copy from the
           original code.
-    * Fix the styles
-    * Allow the extension to show the "View posts" button from any page. This should be a "browser action" instead of a
+    * ABANDONED (Something strange is up with the extension styles, there's some injected CSS I don't know where it's coming from) Fix the styles
+    * ABANDONED (Chrome only allows either a browser action or page actions, but not both. Oh well. I've figured out I can just bookmark the extension HTML page which works great.). Allow the extension to show the "View posts" button from any page. This should be a "browser action" instead of a
       "page action" (I'm so glad I dropped the Manifest V3 support because then I'd have to solve for the unified
       actions way too).  
 * Known issue: The visual elements in the page break after the 1500th post in Chrome. I think this is because of an
@@ -313,5 +313,3 @@ These are the finished items from the Wish List:
 * [Opera dev docs: *The Basics of Making an Extension*](https://dev.opera.com/extensions/basics/)
 * [MDN Web Docs: browserAction.onClicked](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction/onClicked)
 * [Chrome extension docs: *chrome.browserAction*](https://developer.chrome.com/docs/extensions/reference/browserAction/)
-    * It says "Availability: Manifest V2" so does that mean only v2 or v2 and *later* which would include v3? Answer:
-      correct.

@@ -50,9 +50,3 @@ function addRpcListener() {
         return true // Returning "true" tells FireFox that we plan to invoke the "sendResponse" function later (rather, asynchronously). Otherwise, the "sendResponse" function would become invalid.
     })
 }
-
-// Add a click listener for the ephemeral "Generate HTML" page, where the HTML is generated but not downloaded.
-// When the button is clicked, the "generate-html.html" page is opened.
-function addGenerateHtmlListener() {
-    chrome.browserAction()
-}
