@@ -37,6 +37,13 @@ class Post {
     }
 
     /**
+     * Return the ID of the post's related question.
+     */
+    get questionId() {
+        throw new Error("Must be implemented on sub-classes")
+    }
+
+    /**
      * This function is used by functions like "sort" to sort elements by their natural order.
      * @return {Number}
      */
@@ -76,6 +83,10 @@ class Question extends Post {
         return "question"
     }
 
+    get questionId() {
+        return this.id
+    }
+
     compare() {
         return this.id
     }
@@ -96,6 +107,8 @@ class Question extends Post {
  */
 class Answer extends Post {
 
+    #questionId
+
     /**
      * @param id
      * @param questionId the ID of the answer's question post. The question post is considered the parent of the answer post.
@@ -103,11 +116,15 @@ class Answer extends Post {
      */
     constructor(id, questionId, htmlBody) {
         super(id, htmlBody)
-        this.questionId = questionId
+        this.#questionId = questionId
     }
 
     get type() {
         return "answer"
+    }
+
+    get questionId() {
+        return this.#questionId
     }
 
     compare() {

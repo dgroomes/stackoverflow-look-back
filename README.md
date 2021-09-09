@@ -160,7 +160,7 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* Fix the CSS grid problem
+* DONE (Although this is a memory hog) Fix the CSS grid problem
 * Consider creating a search bar where multiple terms can be search at once. Originally, I was hoping `Cmd + F` would be
   good enough for search but when the search term is SQL or bash, a lot of results come up and it's useful to add a
   second search term to reduce the result. This would add quite a bit of code to the page though.
@@ -168,7 +168,7 @@ General clean ups, TODOs and things I wish to implement for this project:
   global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is
   kind of a major bummer. Also modules can't be imported in web workers in Safari and FireFox so that is also a bummer
   when considering converting this tool to a browser extension.
-* Known issue: The visual elements in the page break after the 1500th post in Chrome. I think this is because of an
+* DONE Known issue: The visual elements in the page break after the 1500th post in Chrome. I think this is because of an
   internal limit on CSS Grid sizes. See the note in
   the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000 and
   when I go to exactly 1501 posts (there will be 2 * 1501 = 3002) the last post doesn't get rendered correctly. I think

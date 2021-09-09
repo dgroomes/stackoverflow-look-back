@@ -40,7 +40,7 @@ pre {
     background-color: rgb(246, 246, 246);
 }
 
-#posts {
+.posts {
     display: grid;
     gap: 10px;
     grid-template-columns: 100px 1fr; /* The first column is the Q or A moniker and the second column is the post content */
