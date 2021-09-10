@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>stackoverflow-static</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="generate-html.css">
 </head>
 <body>
 
@@ -12,6 +12,15 @@
     This page contains a static copy of the StackOverflow questions and answers I've up-voted. See the source code on
     GitHub: <a
         href="https://github.com/dgroomes/stackoverflow-static">https://github.com/dgroomes/stackoverflow-static</a></p>
+
+<hr>
+
+<div id="search-section">
+    <input type="search" id="search-box" aria-label="Search the posts data by a case-insensitive search term">
+    <button id="search-button">Search</button>
+    <p>The search results will include <em>case-insensitive</em> matches for the search term.</p>
+    <p id="search-results-descriptor" style="display: none"></p>
+</div>
 
 <div id="posts"></div>
 

@@ -3,6 +3,8 @@
  */
 class HtmlGenerator {
 
+    #posts
+
     /**
      * This is the main function!
      * Note that because of the browser's size restriction on CSS grids, we can't place all of the posts in one CSS grid
@@ -17,11 +19,39 @@ class HtmlGenerator {
         if (posts.length === 0) {
             throw new Error("Zero posts were found. This is unexpected.")
         }
+
+        this.#posts = posts
+
+        this.render(null)
+
+        if (download) {
+            this.downloadHtml()
+        }
+    }
+
+    /**
+     * Render the posts data into HTML. Optionally, apply a post filtering function.
+     *
+     * @param filterFn an optional filter function that filters the post data. If the filter function returns true for
+     * the post, then the post is included.
+     * @return {Number} the number of posts rendered
+     */
+    render(filterFn) {
         let postsEl = document.getElementById("posts")
+        postsEl.innerHTML = "" // Clear all existing content
+
+        // Filter the posts given the optional filter function
+        let filtered
+        if (filterFn !== null) {
+            filtered = this.#posts.filter(post => filterFn(post))
+            if (filtered.length === 0) return 0
+        } else {
+            filtered = this.#posts
+        }
 
         // Sort the posts data. Every question post is followed by its answer posts.
         // See the "compareFn" parameter for "Array.prototype.sort()": https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
-        let sorted = posts.sort((postA, postB) => postA.compare() - postB.compare())
+        let sorted = filtered.sort((postA, postB) => postA.compare() - postB.compare())
 
         let [first, ...rest] = sorted
 
@@ -47,9 +77,7 @@ class HtmlGenerator {
             postsEl.insertAdjacentHTML("beforeend", html)
         }
 
-        if (download) {
-            this.downloadHtml()
-        }
+        return filtered.length
     }
 
     /**

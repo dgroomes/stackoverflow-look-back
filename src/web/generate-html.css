@@ -54,3 +54,7 @@ pre {
     margin-top: 20px;
     display: table; /* This is a neat trick to center an inline element horizontally without much effort. */
 }
+
+#search-section {
+    text-align: center;
+}

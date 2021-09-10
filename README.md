@@ -160,9 +160,10 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* Consider creating a search bar where multiple terms can be search at once. Originally, I was hoping `Cmd + F` would be
+* DONE (implemented for only a single search term) Consider creating a search bar where multiple terms can be search at once. Originally, I was hoping `Cmd + F` would be
   good enough for search but when the search term is SQL or bash, a lot of results come up and it's useful to add a
   second search term to reduce the result. This would add quite a bit of code to the page though.
+* Include tags data. This would enable the ability to search by tags too.
 * Consider using modules, but also consider to NOT use modules. Modules are modern, but modules aren't exported in the
   global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is
   kind of a major bummer. Also modules can't be imported in web workers in Safari and FireFox so that is also a bummer
