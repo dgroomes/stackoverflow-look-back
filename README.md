@@ -164,11 +164,16 @@ General clean ups, TODOs and things I wish to implement for this project:
   good enough for search but when the search term is SQL or bash, a lot of results come up and it's useful to add a
   second search term to reduce the result. This would add quite a bit of code to the page though.
 * Include tags data. This would enable the ability to search by tags too.
-* Consider using modules, but also consider to NOT use modules. Modules are modern, but modules aren't exported in the
+* SKIPPED Consider using modules, but also consider to NOT use modules. Modules are modern, but modules aren't exported in the
   global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is
   kind of a major bummer. Also modules can't be imported in web workers in Safari and FireFox so that is also a bummer
   when considering converting this tool to a browser extension.
-* Consider adding RPC from the extension to the web page. Currently there is only the other way where the extension
+  * This was SKIPPED because even the official Chrome and Firefox repositories of example extensions do not use modules.
+    I am following by their "lead by example". See: 
+      * <https://github.com/GoogleChrome/chrome-extensions-samples>. Only the "apps" examples use modules but Chrome Apps
+        aren't extension. Chrome Apps are deprecated. 
+      * <https://github.com/mdn/webextensions-examples>
+* IN PROGRESS Consider adding RPC from the extension to the web page. Currently there is only the other way where the extension
   background script is the RPC server and the web page is the RPC client. But the other way would create a needed
   communication channel. Currently, the way that the extension communicates commands to the web page is an awkward "load
   another tiny script on the page" strategy. The many little content scripts and web scripts added to handle the
@@ -182,6 +187,8 @@ General clean ups, TODOs and things I wish to implement for this project:
   They could all go removed and replaced with an RPC server (listener) that listens for the "scrape votes" or "expand
   posts"
   command from the extension background script.
+    * DONE First, start by defining an `RpcServer` interface class and a `BackgroundScriptRpcServer` class. Use the `BackgroundScriptRpcServer`
+      in `init-common.js`.
 
 ## Finished Wish List items
 

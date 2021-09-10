@@ -9,44 +9,37 @@ function setDefaultConfig() {
     })
 }
 
-// Registers a listener in the background script that will receive remote procedure call (RPC) requests from the front-end
-// and then executes those requests.
-function addRpcListener() {
+/**
+ * Create an RPC server in the background script that will receive remote procedure call (RPC) requests from the front-end
+ * and then executes those requests.
+ *
+ * @param rpcClass the concrete sub-classes of AbstractRpcServer that will be created
+ */
+function addRpcServer(rpcClass) {
 
-    // Chromium and FireFox have different message APIs. Use the appropriate API based on the detected browser.
-    let onMessageFn
-    if (browserDescriptor === "chromium") {
-        onMessageFn = chrome.runtime.onMessageExternal
-    } else if (browserDescriptor === "firefox") {
-        onMessageFn = browser.runtime.onMessage
-    } else {
-        throw new Error(`Unrecognized browserDescriptor: ${browserDescriptor}`)
-    }
+    let rpcServer = new rpcClass()
 
-    onMessageFn.addListener(function (message, sender, sendResponse) {
-        console.log(`[init.js] Received a message:`)
-        console.dir(message)
-        let {procedureName, procedureArgs} = message
-
-        if (procedureName === "save") {
-            chrome.storage.local.set(procedureArgs, () => {
-                console.log("The extension successfully saved the data")
-                sendResponse(true)
-            })
-        } else if (procedureName === "get") {
-            let key = procedureArgs.key
-            chrome.storage.local.get(key, (found) => {
-                console.log("The extension successfully read the data")
-                sendResponse(found)
-            })
-        } else if (procedureName === "open-generate-html-page") {
-            chrome.tabs.create({
-                url: 'web/generate-html.html#download'
-            })
-        } else {
-            throw new Error(`Unrecognized procedure name: '${procedureName}'`)
-        }
-
-        return true // Returning "true" tells FireFox that we plan to invoke the "sendResponse" function later (rather, asynchronously). Otherwise, the "sendResponse" function would become invalid.
+    rpcServer.registerCallbackProcedure("save", (procedureArgs, resolve) => {
+        chrome.storage.local.set(procedureArgs, () => {
+            console.log("The extension successfully saved the data")
+            resolve(true)
+        })
     })
+
+    rpcServer.registerCallbackProcedure("get", (procedureArgs, resolve) => {
+        let key = procedureArgs.key
+        chrome.storage.local.get(key, (found) => {
+            console.log("The extension successfully read the data")
+            resolve(found)
+        })
+    })
+
+    rpcServer.registerCallbackProcedure("open-generate-html-page", (_, resolve) => {
+        chrome.tabs.create({
+            url: 'web/generate-html.html#download'
+        })
+        resolve()
+    })
+
+    rpcServer.listen()
 }

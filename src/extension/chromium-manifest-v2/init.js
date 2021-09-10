@@ -4,8 +4,6 @@
 
 console.log("[chromium-manifest-v2/init.js] Initializing...")
 
-browserDescriptor = "chromium"
-
 chrome.runtime.onInstalled.addListener(() => {
 
     setDefaultConfig()
@@ -25,4 +23,4 @@ chrome.runtime.onInstalled.addListener(() => {
     })
 })
 
-addRpcListener()
+addRpcServer(ChromiumBackgroundScriptRpcServer)
