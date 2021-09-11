@@ -189,7 +189,21 @@ General clean ups, TODOs and things I wish to implement for this project:
   command from the extension background script.
     * DONE First, start by defining an `RpcServer` interface class and a `BackgroundScriptRpcServer` class. Use the `BackgroundScriptRpcServer`
       in `init-common.js`.
-    * Next, define a server on the front-end and a client in the background 
+    * IN PROGRESS Next, define a server on the front-end and a client in the background.
+      This is a bit abstract so I need to gather my thoughts. Consider the *direction-specific* messaging channels that already exist:
+        * From web page to background scripts (Chrome; `ChromiumRpcClient.js` `ChromiumBackgroundScriptRpcServer.js`)
+        * From web page to content scripts (Firefox; `FirefoxRpcClient.js` to `content-script-messaging-proxy.js`)
+        * From content script to background (Firefox; `content-script-messaging-proxy.js` to `FirefoxBackgroundScriptRpcServer.js`)
+        
+      The stumbling block that I'll run into when developing a "background to front-end communication channel" is I think
+      the only way to "listen" for messages from the web page is via a `window.addEventListener` listener. Chrome's
+      extension APIs allow a web page to *send* messages to the extension messaging system via `chrome.runtime.sendMessage`
+      but I don't think there is a similar API to listen for messages. Instead we must resort to listening to the window
+      object. And this design requires that we have a messaging component in a content script because content scripts have
+      have access to the window while the background scripts do not. Long story short, we need to incorporate `content-script-messaging-proxy.js`
+      into our Chromium design (before, it was just for Firefox) and then extend `content-script-messaging-proxy.js` to
+      handle both directions. It should transfer messages from the web page to the background scripts and it should do
+      the reverse: transfer messages from the background scripts to the web page. 
 
 ## Finished Wish List items
 
