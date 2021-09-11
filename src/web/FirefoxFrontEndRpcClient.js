@@ -1,5 +1,5 @@
 /**
- * An implementation of the RpcClient for the Firefox extension.
+ * An implementation of the RpcClient for the Firefox extension that runs in the web page.
  *
  * It will initiate remote procedure calls by passing messages to the Firefox content-script and then to the extension
  * background scripts. Unfortunately, Firefox does not support direct page-to-background communication because it does
@@ -7,7 +7,7 @@
  * communication. This is a significant difference between Chromium and Firefox and it is worth encapsulating the
  * implementation details in this class.
  */
-class FirefoxRpcClient extends RpcClient {
+class FirefoxFrontEndRpcClient extends RpcClient {
 
     #webExtensionId
 

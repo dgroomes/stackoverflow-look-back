@@ -1,7 +1,7 @@
 /**
- * An implementation of the RpcClient interface for the Chromium extension.
+ * An implementation of the RpcClient interface for the Chromium extension that runs in the web page
  */
-class ChromiumRpcClient extends RpcClient {
+class ChromiumFrontEndRpcClient extends RpcClient {
 
     #webExtensionId
 

@@ -82,8 +82,8 @@ function downloadScripts() {
     // These files depend on another file already having been loaded because they use the "extends" keyword at the
     // top-level. If I used the module system would this not be a problem?
     const oneDepsScripts = [
-        "ChromiumRpcClient.js",
-        "FirefoxRpcClient.js"
+        "ChromiumFrontEndRpcClient.js",
+        "FirefoxFrontEndRpcClient.js"
     ]
 
     /**
@@ -123,9 +123,9 @@ async function configureState() {
     let rpcClient
 
     if (browserDescriptor === "chromium") {
-        rpcClient = new ChromiumRpcClient(webExtensionId)
+        rpcClient = new ChromiumFrontEndRpcClient(webExtensionId)
     } else if (browserDescriptor === "firefox") {
-        rpcClient = new FirefoxRpcClient(webExtensionId)
+        rpcClient = new FirefoxFrontEndRpcClient(webExtensionId)
     } else {
         throw new Error(`Unexpected browser: ${browserDescriptor}. Expected either 'chromium' or 'firefox'`)
     }
