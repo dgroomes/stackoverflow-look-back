@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Build the web extension for FireFox.
+# Build the web extension for Firefox.
 #
 # Specifically, this will create the directory "build/firefox-web-extension/" in the root of the project. This directory
-# will be ready to install into FireFox as a web extension.
+# will be ready to install into Firefox as a web extension.
 #
-# Why do we need a build script for building the FireFox extension but not the Chromium extension? FireFox does not
+# Why do we need a build script for building the Firefox extension but not the Chromium extension? Firefox does not
 # support symlinks in web extensions but Chromium browsers do. So for the Chromium extension, we use a symlink to the common code
 # and there is no need to "build" anything. After you "git clone" this repo, the Chromium extension is ready to be
-# installed with no extra steps. But for the FireFox plugin, we need a build step that makes physical copies of the
+# installed with no extra steps. But for the Firefox plugin, we need a build step that makes physical copies of the
 # common code because of the symlink restriction.
 #
-# Refer to FireFox's symlink restriction in the Bugzilla bug tracker: https://bugzilla.mozilla.org/show_bug.cgi?id=1420286
+# Refer to Firefox's symlink restriction in the Bugzilla bug tracker: https://bugzilla.mozilla.org/show_bug.cgi?id=1420286
 #
 # Useful trick: run this file automatically as files are changed by monitoring for file changes using the "fswatch" tool.
 # Refer to the documentation: https://github.com/emcrisostomo/fswatch. Use the following command:

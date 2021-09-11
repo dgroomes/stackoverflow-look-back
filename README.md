@@ -124,16 +124,16 @@ Follow these instructions to install the tool as a Chrome browser extension and 
     * You should be on the new tab that was automatically opened
     * A file download will appear! This is the final result. Save it somewhere easily accessible.
 
-## FireFox
+## Firefox
 
-Although this tool was developed as a Chrome extension, it can also be installed as a web extension in FireFox!
+Although this tool was developed as a Chrome extension, it can also be installed as a web extension in Firefox!
 
-Follow these instructions to install it in FireFox:
+Follow these instructions to install it in Firefox:
 
-1. Build the web extension for FireFox
+1. Build the web extension for Firefox
     * `./build-for-firefox.sh`
-1. Open FireFox to the debug page
-    * Open FireFox
+1. Open Firefox to the debug page
+    * Open Firefox
     * Paste and go to this URL: <about:debugging#/runtime/this-firefox>
 1. Load the plugin
     * Click the button with the words *Load Temporary Add-on…*
@@ -166,7 +166,7 @@ General clean ups, TODOs and things I wish to implement for this project:
 * Include tags data. This would enable the ability to search by tags too.
 * SKIPPED Consider using modules, but also consider to NOT use modules. Modules are modern, but modules aren't exported in the
   global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is
-  kind of a major bummer. Also modules can't be imported in web workers in Safari and FireFox so that is also a bummer
+  kind of a major bummer. Also modules can't be imported in web workers in Safari and Firefox so that is also a bummer
   when considering converting this tool to a browser extension.
   * This was SKIPPED because even the official Chrome and Firefox repositories of example extensions do not use modules.
     I am following by their "lead by example". See: 
@@ -189,6 +189,7 @@ General clean ups, TODOs and things I wish to implement for this project:
   command from the extension background script.
     * DONE First, start by defining an `RpcServer` interface class and a `BackgroundScriptRpcServer` class. Use the `BackgroundScriptRpcServer`
       in `init-common.js`.
+    * Next, define a server on the front-end and a client in the background 
 
 ## Finished Wish List items
 
@@ -211,10 +212,10 @@ These are the finished items from the Wish List:
   problem because when I "hard reload and empty caches" it works. But then later it might fail again although I haven't
   even changed the code so I don't understand how the cache could still be stale, and thus still be a problem. Not sure.
   But it's annoying.
-* DONE Create a Chrome Manifest v2 extension. This would enable making a FireFox extension, which is still on v2 but is
+* DONE Create a Chrome Manifest v2 extension. This would enable making a Firefox extension, which is still on v2 but is
   working on supporting v3 sometime in 2022.
-* DONE Build a FireFox extension for the tool. For the most part, code can be re-used, but when it comes to the
-  extension APIs themselves, there are significant differences. In fact, porting the extension to FireFox has been one
+* DONE Build a Firefox extension for the tool. For the most part, code can be re-used, but when it comes to the
+  extension APIs themselves, there are significant differences. In fact, porting the extension to Firefox has been one
   of the most challenging software efforts I've done in recent years! In part, because I've been away from JavaScript
   dev for so long but also because the standardization of extension APIs is still a work-in-progress.
 * DONE Drop the Manifest V3 implementation. I originally implemented the Chrome extension using the Manifest V3 format
@@ -291,28 +292,28 @@ These are the finished items from the Wish List:
     * My own reference project for Chrome extensions
 * [Chrome extension docs: *chrome.webRequest*](https://developer.chrome.com/docs/extensions/reference/webRequest/)
     * Consider using this API to intercept requests instead of using a Proxy object on the web page
-* [FireFox Extension Workshop: *Porting a Google Chrome
+* [Firefox Extension Workshop: *Porting a Google Chrome
   extension*](https://extensionworkshop.com/documentation/develop/porting-a-google-chrome-extension/)
-    * Shoot, FireFox doesn't support Manifest v3 and I spent all this time writing a Chrome extension in Manifest v3. I
-      wish I had implemented in Manifest v2 so that I could compatibility with FireFox.
+    * Shoot, Firefox doesn't support Manifest v3 and I spent all this time writing a Chrome extension in Manifest v3. I
+      wish I had implemented in Manifest v2 so that I could compatibility with Firefox.
 * [Chrome extension docs: Manifest V2 *Getting started*](https://developer.chrome.com/docs/extensions/mv2/getstarted/)
 * [MDN Web docs: "page_action"](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/page_action)
-    * Note that the Manifest property `show_matches` (of `page_actions`) is only supported in FireFox. By default, page
-      actions are hidden in FireFox but by contrast, page actions are shown by default in other browsers. This was a
+    * Note that the Manifest property `show_matches` (of `page_actions`) is only supported in Firefox. By default, page
+      actions are hidden in Firefox but by contrast, page actions are shown by default in other browsers. This was a
       surprising find to me because I couldn't see the page action in the URL bar and I was confused! I need to
       explicitly enable it with the `show_matches` property.
 * [Extension Workshop](https://extensionworkshop.com/documentation/develop/debugging/#developer-tools-toolbox)
-    * A special FireFox site that is focused entirely on extension development.
+    * A special Firefox site that is focused entirely on extension development.
     * > Get help creating and publishing Firefox add-ons that make browsing smarter, safer, and faster.
-* [Bugzilla (FireFox bug tracker)](https://bugzilla.mozilla.org/show_bug.cgi?id=1420286)
+* [Bugzilla (Firefox bug tracker)](https://bugzilla.mozilla.org/show_bug.cgi?id=1420286)
     * You can't use symlinks in web extensions. This works in Chrome, so this type of issue wasn't on my radar and I
-      spent a lot of time trying to track this issue down. I wonder if symlinks might work in FireFox Development
-      version? Update: no, it is the same in FireFox Developer edition.
+      spent a lot of time trying to track this issue down. I wonder if symlinks might work in Firefox Development
+      version? Update: no, it is the same in Firefox Developer edition.
 * [GitHub repo: mozilla/web-ext](https://github.com/mozilla/web-ext)
     * I'm purposely choosing to not use this tool. I want to keep the dependencies to an absolute minimum and this tool
       is not critical.
 * [MDN Web Docs: Manifest property "externally_connectable"](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/externally_connectable)
-    * The `externally_connectable` is not supported in FireFox. An alternative must be used for message passing between
+    * The `externally_connectable` is not supported in Firefox. An alternative must be used for message passing between
       the web page and the extension.
       See <https://github.com/mdn/webextensions-examples/tree/master/page-to-extension-messaging>.
 * [MDN Web Docs: the EventTarget APIs](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget)

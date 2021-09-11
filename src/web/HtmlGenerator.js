@@ -58,7 +58,7 @@ class HtmlGenerator {
         // Group by question. In other words, group each question with all of its answers.
         // Note: this code is a bit silly, I wish I could write a SQL query instead.
         let grouped = rest.reduce((grouped, post) => {
-            let latestGroup = grouped[grouped.length - 1];
+            let latestGroup = grouped[grouped.length - 1]
             let latestQuestionId = latestGroup[0].questionId
             if (post.questionId === latestQuestionId) {
                 latestGroup.push(post)

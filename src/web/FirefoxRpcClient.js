@@ -1,7 +1,7 @@
 /**
  * An implementation of the RpcClient for the Firefox extension.
  *
- * It will initiate remote procedure calls by passing messages to the FireFox content-script and then to the extension
+ * It will initiate remote procedure calls by passing messages to the Firefox content-script and then to the extension
  * background scripts. Unfortunately, Firefox does not support direct page-to-background communication because it does
  * not support the "externally_connectable" Manifest field. So we must resort to page-to-contentscript-to-background
  * communication. This is a significant difference between Chromium and Firefox and it is worth encapsulating the

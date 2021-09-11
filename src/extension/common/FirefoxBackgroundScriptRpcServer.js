@@ -11,7 +11,7 @@ class FirefoxBackgroundScriptRpcServer extends AbstractRpcServer {
             that.dispatch(procedureName, procedureArgs).then(returnValue => {
                 sendResponse(returnValue)
             })
-            return true // Returning "true" tells FireFox that we plan to invoke the "sendResponse" function later (rather, asynchronously). Otherwise, the "sendResponse" function would become invalid.
+            return true // Returning "true" tells Firefox that we plan to invoke the "sendResponse" function later (rather, asynchronously). Otherwise, the "sendResponse" function would become invalid.
         })
     }
 }
