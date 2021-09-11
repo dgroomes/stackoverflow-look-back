@@ -22,10 +22,13 @@ async function execContentScript(fileName) {
     })
 }
 
+let messagingProxyPromise = execContentScript("/extension/common/content-script-messaging-proxy.js")
+
 document.getElementById("execute-scrape-votes")
     .addEventListener("click", async () => {
         console.log(`[extension-entrypoint.js] Clicked the 'scrape votes' button`)
 
+        await messagingProxyPromise
         await execContentScript("/extension/common/content-script-load-source.js")
         await execContentScript("/extension/common/content-script-scrape-votes.js")
     })
@@ -35,6 +38,7 @@ document.getElementById("execute-expand-posts")
     .addEventListener("click", async () => {
         console.log(`[extension-entrypoint.js] Clicked the 'expand posts' button`)
 
+        await messagingProxyPromise
         await execContentScript("/extension/common/content-script-load-source.js")
         await execContentScript("/extension/common/content-script-expand-posts.js")
     })

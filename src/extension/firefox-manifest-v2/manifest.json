@@ -27,17 +27,6 @@
       "https://data.stackexchange.com/*"
     ]
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://stackoverflow.com/*",
-        "https://data.stackexchange.com/*"
-      ],
-      "js": [
-        "extension/common/content-script-messaging-proxy.js"
-      ]
-    }
-  ],
   "options_ui": {
     "page": "extension/common/options.html"
   }
