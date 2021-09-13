@@ -162,20 +162,7 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* DONE (implemented for only a single search term) Consider creating a search bar where multiple terms can be search at once. Originally, I was hoping `Cmd + F` would be
-  good enough for search but when the search term is SQL or bash, a lot of results come up and it's useful to add a
-  second search term to reduce the result. This would add quite a bit of code to the page though.
-* Include tags data. This would enable the ability to search by tags too.
-* SKIPPED Consider using modules, but also consider to NOT use modules. Modules are modern, but modules aren't exported in the
-  global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is
-  kind of a major bummer. Also modules can't be imported in web workers in Safari and Firefox so that is also a bummer
-  when considering converting this tool to a browser extension.
-  * This was SKIPPED because even the official Chrome and Firefox repositories of example extensions do not use modules.
-    I am following by their "lead by example". See: 
-      * <https://github.com/GoogleChrome/chrome-extensions-samples>. Only the "apps" examples use modules but Chrome Apps
-        aren't extension. Chrome Apps are deprecated. 
-      * <https://github.com/mdn/webextensions-examples>
-* HOLD Consider adding RPC from the extension to the web page. Currently there is only the other way where the extension
+* IN PROGRESS Consider adding RPC from the extension to the web page. Currently there is only the other way where the extension
   background script is the RPC server and the web page is the RPC client. But the other way would create a needed
   communication channel. Currently, the way that the extension communicates commands to the web page is an awkward "load
   another tiny script on the page" strategy. The many little content scripts and web scripts added to handle the
@@ -205,17 +192,6 @@ General clean ups, TODOs and things I wish to implement for this project:
       into our Chromium design (before, it was just for Firefox) and then extend `content-script-messaging-proxy.js` to
       handle both directions. It should transfer messages from the web page to the background scripts and it should do
       the reverse: transfer messages from the background scripts to the web page.
-* DONE Use info and debug log levels. I think Firefox and Chrome now have good filtering for that in the dev console so it's
-  pretty useful
-* DONE Remove the automatic trigger of opening the `generate-html.html` page after the post data is expanded and instead go
-  to an only on-demand trigger for this, a la the "View posts" button. This is symmetric to the way we trigger "Scrape votes"
-  and "Expand posts". This is useful for a technical constraint: it's hard to implement a request-request-response-response
-  system when it comes to: 1) trigger "Expand posts" from the extension to the `content-script-messaging-proxy.js` 2)
-  forward the "Expand posts" trigger to the web page 3) execute and wait for the response from `PostExpander.expandPosts`
-  and return the response to the content script and finally 4) the content script returns the response to the extension
-
-  Solidify on a "Posts viewer" name for the `generate-html.html` (do all the code renaming) and create a "download"
-  option as a button on this page. 
 
 ## Finished Wish List items
 
@@ -275,6 +251,30 @@ These are the finished items from the Wish List:
   the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000 and
   when I go to exactly 1501 posts (there will be 2 * 1501 = 3002) the last post doesn't get rendered correctly. I think
   that's the limit. This issue does not happen Safari.
+* DONE (implemented for only a single search term) Consider creating a search bar where multiple terms can be search at once. Originally, I was hoping `Cmd + F` would be
+  good enough for search but when the search term is SQL or bash, a lot of results come up and it's useful to add a
+  second search term to reduce the result. This would add quite a bit of code to the page though.
+* Include tags data. This would enable the ability to search by tags too.
+* SKIPPED Consider using modules, but also consider to NOT use modules. Modules are modern, but modules aren't exported in the
+  global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is
+  kind of a major bummer. Also modules can't be imported in web workers in Safari and Firefox so that is also a bummer
+  when considering converting this tool to a browser extension.
+    * This was SKIPPED because even the official Chrome and Firefox repositories of example extensions do not use modules.
+      I am following by their "lead by example". See:
+        * <https://github.com/GoogleChrome/chrome-extensions-samples>. Only the "apps" examples use modules but Chrome Apps
+          aren't extension. Chrome Apps are deprecated.
+        * <https://github.com/mdn/webextensions-examples>
+* DONE Use info and debug log levels. I think Firefox and Chrome now have good filtering for that in the dev console so it's
+  pretty useful
+* DONE Remove the automatic trigger of opening the `generate-html.html` page after the post data is expanded and instead go
+  to an only on-demand trigger for this, a la the "View posts" button. This is symmetric to the way we trigger "Scrape votes"
+  and "Expand posts". This is useful for a technical constraint: it's hard to implement a request-request-response-response
+  system when it comes to: 1) trigger "Expand posts" from the extension to the `content-script-messaging-proxy.js` 2)
+  forward the "Expand posts" trigger to the web page 3) execute and wait for the response from `PostExpander.expandPosts`
+  and return the response to the content script and finally 4) the content script returns the response to the extension
+
+  Solidify on a "Posts viewer" name for the `generate-html.html` (do all the code renaming) and create a "download"
+  option as a button on this page.
 
 ## Notes
 
