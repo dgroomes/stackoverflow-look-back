@@ -162,11 +162,11 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* IN PROGRESS Consider adding RPC from the extension to the web page. Currently there is only the other way where the extension
-  background script is the RPC server and the web page is the RPC client. But the other way would create a needed
-  communication channel. Currently, the way that the extension communicates commands to the web page is an awkward "load
-  another tiny script on the page" strategy. The many little content scripts and web scripts added to handle the
-  dispatch of the "scrape votes" or "expand posts" command is verbose. They include:
+* IN PROGRESS Consider adding RPC from the extension to the web page. Currently there is only the other way where the
+  extension background script is the RPC server and the web page is the RPC client. But the other way would create a
+  needed communication channel. Currently, the way that the extension communicates commands to the web page is an
+  awkward "load another tiny script on the page" strategy. The many little content scripts and web scripts added to
+  handle the dispatch of the "scrape votes" or "expand posts" command is verbose. They include:
     * `content-script-scrape-votes.js`
     * `content-script-expand-posts.js`
     * `web-scrape-votes.js`
@@ -175,20 +175,24 @@ General clean ups, TODOs and things I wish to implement for this project:
   They could all go removed and replaced with an RPC server (listener) that listens for the "scrape votes" or "expand
   posts"
   command from the extension background script.
-    * DONE First, start by defining an `RpcServer` interface class and a `BackgroundScriptRpcServer` class. Use the `BackgroundScriptRpcServer`
+    * DONE First, start by defining an `RpcServer` interface class and a `BackgroundScriptRpcServer` class. Use
+      the `BackgroundScriptRpcServer`
       in `init-common.js`.
-    * IN PROGRESS Next, define a server on the front-end and a client in the background.
-      This is a bit abstract so I need to gather my thoughts. Consider the *direction-specific* messaging channels that already exist:
+    * IN PROGRESS Next, define a server on the front-end and a client in the background. This is a bit abstract so I
+      need to gather my thoughts. Consider the *direction-specific* messaging channels that already exist:
         * From web page to background scripts (Chrome; `ChromiumRpcClient.js` `ChromiumBackgroundScriptRpcServer.js`)
         * From web page to content scripts (Firefox; `FirefoxRpcClient.js` to `content-script-messaging-proxy.js`)
-        * From content script to background (Firefox; `content-script-messaging-proxy.js` to `FirefoxBackgroundScriptRpcServer.js`)
-        
-      The stumbling block that I'll run into when developing a "background to front-end communication channel" is I think
-      the only way to "listen" for messages from the web page is via a `window.addEventListener` listener. Chrome's
-      extension APIs allow a web page to *send* messages to the extension messaging system via `chrome.runtime.sendMessage`
+        * From content script to background (Firefox; `content-script-messaging-proxy.js`
+          to `FirefoxBackgroundScriptRpcServer.js`)
+
+      The stumbling block that I'll run into when developing a "background to front-end communication channel" is I
+      think the only way to "listen" for messages from the web page is via a `window.addEventListener` listener.
+      Chrome's extension APIs allow a web page to *send* messages to the extension messaging system
+      via `chrome.runtime.sendMessage`
       but I don't think there is a similar API to listen for messages. Instead we must resort to listening to the window
-      object. And this design requires that we have a messaging component in a content script because content scripts have
-      have access to the window while the background scripts do not. Long story short, we need to incorporate `content-script-messaging-proxy.js`
+      object. And this design requires that we have a messaging component in a content script because content scripts
+      have have access to the window while the background scripts do not. Long story short, we need to
+      incorporate `content-script-messaging-proxy.js`
       into our Chromium design (before, it was just for Firefox) and then extend `content-script-messaging-proxy.js` to
       handle both directions. It should transfer messages from the web page to the background scripts and it should do
       the reverse: transfer messages from the background scripts to the web page.
@@ -229,11 +233,11 @@ These are the finished items from the Wish List:
   V2 for at least another year. So that's early 2023 at the earliest. There is no value proposition for me to support a
   Manifest V3 version of the extension today when I can pay that implementation cost when the time comes that Manifest
   V2 support ends. The cost will almost definitely be lower then than now because of the inevitable enrichment of docs,
-  StackOverflow posts, etc over time. So, drop the Manifest V3 support. 
-* DONE Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post
-  data in a similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral
-  view. Why? This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab
-  over and over again while iterating on the UI.
+  StackOverflow posts, etc over time. So, drop the Manifest V3 support.
+* DONE Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post data in a
+  similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral view. Why?
+  This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab over and
+  over again while iterating on the UI.
     * DONE Create a browser action to open the "generate-html.html" page
         * DONE (only implemented "Scrape" and "Expand") Because web extensions are only allowed one UI control in the
           browser, we can't just add a new button to implement this feature. Instead, we need to extend
@@ -241,8 +245,11 @@ These are the finished items from the Wish List:
           explicitly "Scrape Votes", "Expand Post Data", "View", and
           "Download" buttons. This was actually the original implementation a long while back so I can copy from the
           original code.
-    * ABANDONED (Something strange is up with the extension styles, there's some injected CSS I don't know where it's coming from) Fix the styles
-    * ABANDONED (Chrome only allows either a browser action or page actions, but not both. Oh well. I've figured out I can just bookmark the extension HTML page which works great.). Allow the extension to show the "View posts" button from any page. This should be a "browser action" instead of a
+    * ABANDONED (Something strange is up with the extension styles, there's some injected CSS I don't know where it's
+      coming from) Fix the styles
+    * ABANDONED (Chrome only allows either a browser action or page actions, but not both. Oh well. I've figured out I
+      can just bookmark the extension HTML page which works great.). Allow the extension to show the "View posts" button
+      from any page. This should be a "browser action" instead of a
       "page action" (I'm so glad I dropped the Manifest V3 support because then I'd have to solve for the unified
       actions way too).
 * DONE (Although this is a memory hog) Fix the CSS grid problem
@@ -251,26 +258,30 @@ These are the finished items from the Wish List:
   the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000 and
   when I go to exactly 1501 posts (there will be 2 * 1501 = 3002) the last post doesn't get rendered correctly. I think
   that's the limit. This issue does not happen Safari.
-* DONE (implemented for only a single search term) Consider creating a search bar where multiple terms can be search at once. Originally, I was hoping `Cmd + F` would be
-  good enough for search but when the search term is SQL or bash, a lot of results come up and it's useful to add a
-  second search term to reduce the result. This would add quite a bit of code to the page though.
+* DONE (implemented for only a single search term) Consider creating a search bar where multiple terms can be search at
+  once. Originally, I was hoping `Cmd + F` would be good enough for search but when the search term is SQL or bash, a
+  lot of results come up and it's useful to add a second search term to reduce the result. This would add quite a bit of
+  code to the page though.
 * Include tags data. This would enable the ability to search by tags too.
-* SKIPPED Consider using modules, but also consider to NOT use modules. Modules are modern, but modules aren't exported in the
-  global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight". This is
-  kind of a major bummer. Also modules can't be imported in web workers in Safari and Firefox so that is also a bummer
-  when considering converting this tool to a browser extension.
-    * This was SKIPPED because even the official Chrome and Firefox repositories of example extensions do not use modules.
-      I am following by their "lead by example". See:
-        * <https://github.com/GoogleChrome/chrome-extensions-samples>. Only the "apps" examples use modules but Chrome Apps
-          aren't extension. Chrome Apps are deprecated.
+* SKIPPED Consider using modules, but also consider to NOT use modules. Modules are modern, but modules aren't exported
+  in the global context therefore we forego the usual luxury of "executing code ad-hoc on the console to our delight".
+  This is kind of a major bummer. Also modules can't be imported in web workers in Safari and Firefox so that is also a
+  bummer when considering converting this tool to a browser extension.
+    * This was SKIPPED because even the official Chrome and Firefox repositories of example extensions do not use
+      modules. I am following by their "lead by example". See:
+        * <https://github.com/GoogleChrome/chrome-extensions-samples>. Only the "apps" examples use modules but Chrome
+          Apps aren't extension. Chrome Apps are deprecated.
         * <https://github.com/mdn/webextensions-examples>
-* DONE Use info and debug log levels. I think Firefox and Chrome now have good filtering for that in the dev console so it's
-  pretty useful
-* DONE Remove the automatic trigger of opening the `generate-html.html` page after the post data is expanded and instead go
-  to an only on-demand trigger for this, a la the "View posts" button. This is symmetric to the way we trigger "Scrape votes"
-  and "Expand posts". This is useful for a technical constraint: it's hard to implement a request-request-response-response
-  system when it comes to: 1) trigger "Expand posts" from the extension to the `content-script-messaging-proxy.js` 2)
-  forward the "Expand posts" trigger to the web page 3) execute and wait for the response from `PostExpander.expandPosts`
+* DONE Use info and debug log levels. I think Firefox and Chrome now have good filtering for that in the dev console so
+  it's pretty useful
+* DONE Remove the automatic trigger of opening the `generate-html.html` page after the post data is expanded and instead
+  go to an only on-demand trigger for this, a la the "View posts" button. This is symmetric to the way we trigger "
+  Scrape votes"
+  and "Expand posts". This is useful for a technical constraint: it's hard to implement a
+  request-request-response-response system when it comes to: 1) trigger "Expand posts" from the extension to
+  the `content-script-messaging-proxy.js` 2)
+  forward the "Expand posts" trigger to the web page 3) execute and wait for the response
+  from `PostExpander.expandPosts`
   and return the response to the content script and finally 4) the content script returns the response to the extension
 
   Solidify on a "Posts viewer" name for the `generate-html.html` (do all the code renaming) and create a "download"
