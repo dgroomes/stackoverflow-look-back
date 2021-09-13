@@ -1,20 +1,16 @@
 /**
- * Fetch the StackOverflow posts data and generate a static HTML document with it.
+ * View the posts data on the page.
  */
-class HtmlGenerator {
+class PostsViewer {
 
     #posts
 
     /**
-     * This is the main function!
-     * Note that because of the browser's size restriction on CSS grids, we can't place all of the posts in one CSS grid
-     * so we have to work around that. Instead, I've chosen to group each question into its own small CSS grid.
-     * Unfortunately this is slower (it takes a couple of seconds to render the page) and seems to use more memory. Also,
-     * the added bloat in lines of code is unfortunate.
-     * @param download whether to download the file or not
+     * This is the main function! Get the posts data and render it to the page.
+     *
      * @return {Promise<void>}
      */
-    async generateHtml(download) {
+    async init() {
         let posts = await appStorage.getPosts()
         if (posts.length === 0) {
             throw new Error("Zero posts were found. This is unexpected.")
@@ -23,14 +19,15 @@ class HtmlGenerator {
         this.#posts = posts
 
         this.render(null)
-
-        if (download) {
-            this.downloadHtml()
-        }
     }
 
     /**
      * Render the posts data into HTML. Optionally, apply a post filtering function.
+     *
+     * Note that because of the browser's size restriction on CSS grids, we can't place all of the posts in one CSS grid
+     * so we have to work around that. Instead, I've chosen to group each question into its own small CSS grid.
+     * Unfortunately this is slower (it takes a couple of seconds to render the page) and seems to use more memory. Also,
+     * the added bloat in lines of code is unfortunate.
      *
      * @param filterFn an optional filter function that filters the post data. If the filter function returns true for
      * the post, then the post is included.
@@ -100,8 +97,6 @@ class HtmlGenerator {
         let serializer = new XMLSerializer()
         let html = serializer.serializeToString(document)
 
-        downloadToFile(html, "stackoverflow-posts.html")
-
-        document.body.innerHTML = "<p>This page generated a static HTML document with the given StackOverflow data and downloaded it to a file. See the README.md for more information.</p>"
+        downloadToFile(html, "stackoverflow-static.html")
     }
 }

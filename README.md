@@ -38,7 +38,7 @@ The overall flow of the tool breaks down like this:
 
 1. Scrape your votes data from <https://stackoverflow.com>
 1. Expand the votes data into posts data using <https://data.stackexchange.com>
-1. Generate a static HTML page from the posts data
+1. View, search and download a copy of the posts data
 
 The source code is laid in a directory structure that groups code by the execution context that the code runs in:
 
@@ -119,10 +119,12 @@ Follow these instructions to install the tool as a Chrome browser extension and 
         * If not logged in, then log in and navigate back to the original page.
     * Repeat the earlier steps to open the extension entry
     * The same popup will appear. Click "Expand posts". The post data will be expanded and saved into browser storage.
-    * Additionally, a new tab will open.
-1. Generate a static HTML document from the posts data
-    * You should be on the new tab that was automatically opened
-    * A file download will appear! This is the final result. Save it somewhere easily accessible.
+1. View the posts
+    * While on the same StackExchange page, repeat the earlier steps to open the extension entry
+    * Click the "View posts" button
+    * Explore the data!
+    * Optionally, save the page to a static HTML file with the "Download" button. A file download will appear! Save it
+      somewhere easily accessible for quick answers.
 
 ## Firefox
 
@@ -173,7 +175,7 @@ General clean ups, TODOs and things I wish to implement for this project:
       * <https://github.com/GoogleChrome/chrome-extensions-samples>. Only the "apps" examples use modules but Chrome Apps
         aren't extension. Chrome Apps are deprecated. 
       * <https://github.com/mdn/webextensions-examples>
-* IN PROGRESS Consider adding RPC from the extension to the web page. Currently there is only the other way where the extension
+* HOLD Consider adding RPC from the extension to the web page. Currently there is only the other way where the extension
   background script is the RPC server and the web page is the RPC client. But the other way would create a needed
   communication channel. Currently, the way that the extension communicates commands to the web page is an awkward "load
   another tiny script on the page" strategy. The many little content scripts and web scripts added to handle the
@@ -182,7 +184,6 @@ General clean ups, TODOs and things I wish to implement for this project:
     * `content-script-expand-posts.js`
     * `web-scrape-votes.js`
     * `web-expand-posts.js`
-    * `web-generate-html.js`
 
   They could all go removed and replaced with an RPC server (listener) that listens for the "scrape votes" or "expand
   posts"
@@ -206,6 +207,15 @@ General clean ups, TODOs and things I wish to implement for this project:
       the reverse: transfer messages from the background scripts to the web page.
 * DONE Use info and debug log levels. I think Firefox and Chrome now have good filtering for that in the dev console so it's
   pretty useful
+* DONE Remove the automatic trigger of opening the `generate-html.html` page after the post data is expanded and instead go
+  to an only on-demand trigger for this, a la the "View posts" button. This is symmetric to the way we trigger "Scrape votes"
+  and "Expand posts". This is useful for a technical constraint: it's hard to implement a request-request-response-response
+  system when it comes to: 1) trigger "Expand posts" from the extension to the `content-script-messaging-proxy.js` 2)
+  forward the "Expand posts" trigger to the web page 3) execute and wait for the response from `PostExpander.expandPosts`
+  and return the response to the content script and finally 4) the content script returns the response to the extension
+
+  Solidify on a "Posts viewer" name for the `generate-html.html` (do all the code renaming) and create a "download"
+  option as a button on this page. 
 
 ## Finished Wish List items
 

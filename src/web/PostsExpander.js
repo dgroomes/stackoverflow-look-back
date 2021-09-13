@@ -1,7 +1,7 @@
 // Given a collection of post IDs, expand the posts into the HTML body content and titles by querying the data from
 // the Stack Exchange Data Explorer. See the README for more info.
 
-class PostExpander {
+class PostsExpander {
 
     /**
      * Expand a list of post IDs into post objects by querying from the Stack Exchange Data Explorer

@@ -26,7 +26,7 @@ function detectEnvironment() {
      * character.
      *
      * @param url. For example:
-     *               - chrome-extension://akidegfimbjmokpejlcnjagogamdiinl/web/generate-html.html
+     *               - chrome-extension://akidegfimbjmokpejlcnjagogamdiinl/web/posts-viewer.html
      *               - moz-extension://df0b610b-995b-9240-8c3b-fcaf155c9005/web/web-load-source.js
      */
     function detectFromExtensionUrl(url) {
@@ -46,7 +46,7 @@ function detectEnvironment() {
         webExtensionId = matches[2]
     }
 
-    // The "generate-html.html" page itself is served by the web extension and so the URL protocol will be
+    // The "posts-viewer.html" page itself is served by the web extension and so the URL protocol will be
     // "chrome-extension://" or "moz-extension://"
     if (window.origin.startsWith("chrome-extension://") || window.origin.startsWith("moz-extension://")) {
         extensionContext = true
@@ -70,8 +70,8 @@ function downloadScripts() {
         "RpcClient.js",
         "AppStorage.js",
         "VotesScraper.js",
-        "PostExpander.js",
-        "HtmlGenerator.js",
+        "PostsExpander.js",
+        "PostsViewer.js",
         "vote.js",
         "post.js",
         "util/download-to-file.js",
@@ -139,8 +139,8 @@ async function configureState() {
     }
 
     window.votesScraper = new VotesScraper()
-    window.postExpander = new PostExpander()
-    window.htmlGenerator = new HtmlGenerator()
+    window.postsExpander = new PostsExpander()
+    window.postsViewer = new PostsViewer()
 
     assignPolymorphicGlobals(rpcClient)
 }

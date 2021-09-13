@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>stackoverflow-static</title>
-    <link rel="stylesheet" type="text/css" href="generate-html.css">
+    <link rel="stylesheet" type="text/css" href="posts-viewer.css">
 </head>
 <body>
 
@@ -11,7 +11,10 @@
 <p>
     This page contains a static copy of the StackOverflow questions and answers I've up-voted. See the source code on
     GitHub: <a
-        href="https://github.com/dgroomes/stackoverflow-static">https://github.com/dgroomes/stackoverflow-static</a></p>
+        href="https://github.com/dgroomes/stackoverflow-static">https://github.com/dgroomes/stackoverflow-static</a>.
+    Optionally, download the data into a static HTML page:
+    <button id="download">Download</button>
+</p>
 
 <hr>
 
@@ -25,7 +28,7 @@
 <div id="posts"></div>
 
 <script src="web-load-source.js"></script>
-<script src="web-generate-html.js"></script>
+<script src="posts-viewer.js"></script>
 
 </body>
 </html>

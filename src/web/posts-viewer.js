@@ -1,9 +1,8 @@
-console.debug("[web-generate-html.js] Running...")
+console.debug("[posts-viewer.js] Running...")
 
 programReady.then(() => {
-    let download = "download" === location.hash.substring(1)
-    htmlGenerator.generateHtml(download)
-        .then(() => console.info("HTML was generated successfully"))
+    postsViewer.init()
+        .then(() => console.info("Posts were rendered to HTML successfully"))
 })
 
 { // Register the search handlers for click events and 'Enter' key presses
@@ -14,6 +13,11 @@ programReady.then(() => {
     })
     document.getElementById("search-button").addEventListener("click", () => {
         search()
+    })
+
+    document.getElementById("download").addEventListener("click", () => {
+        console.log("hello")
+        postsViewer.downloadHtml()
     })
 }
 
@@ -26,7 +30,7 @@ function search() {
 
     // If there is no search term, then render all posts and hide the search results descriptor
     if (searchTerm.trim() === "") {
-        htmlGenerator.render(null)
+        postsViewer.render(null)
         searchResultsDescriptor.style.display = "none"
         return
     }
@@ -34,7 +38,7 @@ function search() {
     console.info(`Searching by the search term: ${searchTerm}`)
 
     let regex = new RegExp(searchTerm, "i")
-    let postsRendered = htmlGenerator.render(post => {
+    let postsRendered = postsViewer.render(post => {
         if (post instanceof Question && regex.test(post.title)) {
             return true
         }

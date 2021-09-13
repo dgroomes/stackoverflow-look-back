@@ -34,12 +34,5 @@ function addRpcServer(rpcClass) {
         })
     })
 
-    rpcServer.registerCallbackProcedure("open-generate-html-page", (_, resolve) => {
-        chrome.tabs.create({
-            url: 'web/generate-html.html#download'
-        })
-        resolve()
-    })
-
     rpcServer.listen()
 }
