@@ -7,7 +7,7 @@ form.addEventListener("submit", async event => {
     let newValue = votesPageLimitEl.value
     await new Promise(resolve => {
         chrome.storage.local.set({votesPageLimit: newValue}, () => {
-            console.log(`Saved value '${newValue}'`)
+            console.debug(`Saved value '${newValue}'`)
             resolve()
         })
     })
@@ -17,10 +17,10 @@ form.addEventListener("submit", async event => {
 async function init() {
     votesPageLimitEl.value = await new Promise((resolve) => {
         chrome.storage.local.get("votesPageLimit", (data) => {
-            console.log(`Read the following value from storage for 'votesPageLimit': ${data.votesPageLimit}`)
+            console.debug(`Read the following value from storage for 'votesPageLimit': ${data.votesPageLimit}`)
             resolve(data.votesPageLimit)
         })
     })
 }
 
-init().then(() => console.log("[options.js] Initialized."))
+init().then(() => console.debug("[options.js] Initialized."))

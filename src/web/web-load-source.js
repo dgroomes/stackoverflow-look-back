@@ -1,7 +1,7 @@
 // This code runs on the web page. It downloads all of the other JavaScript source files into the web page by adding
 // "script" tags. It also does some initialization to wire up the main objects and variables.
 
-console.log("[web-load-source.js] Initializing...")
+console.debug("[web-load-source.js] Initializing...")
 
 let browserDescriptor // Either "chromium" or "firefox. Firefox and Chromium web extension APIs have differences and we need to know the browser.
 let extensionContext // Is the web page served directly by the extension? I.e. is the web page at a URL starting with "chrome-extension://"
@@ -133,9 +133,9 @@ async function configureState() {
     window.appStorage = new AppStorage(rpcClient)
 
     if (!extensionContext) { // This is hacky. But when executing in an extension context, this call will fail because there is no listener.
-        console.log(`[web-load-source.js] Fetching the votesPageLimit`)
+        console.debug(`[web-load-source.js] Fetching the votesPageLimit`)
         window.votesPageLimit = await appStorage.getVotesPageLimit()
-        console.log(`[web-load-source.js] Got the votesPageLimit (${window.votesPageLimit})`)
+        console.debug(`[web-load-source.js] Got the votesPageLimit (${window.votesPageLimit})`)
     }
 
     window.votesScraper = new VotesScraper()
@@ -151,7 +151,7 @@ async function configureState() {
 async function exec() {
     detectEnvironment()
     await downloadScripts()
-    console.log("All scripts were included.")
+    console.debug("All scripts were included.")
     await configureState()
     _programReadyResolveRef()
 }

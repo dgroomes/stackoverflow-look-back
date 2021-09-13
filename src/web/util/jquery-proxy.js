@@ -23,15 +23,15 @@ function instrumentJQuery() {
 
     let handler = {
         get: function (target, prop, receiver) {
-            console.log(`Property '${prop}' was accessed on the jQuery object ($)`)
+            console.debug(`Property '${prop}' was accessed on the jQuery object ($)`)
             let resolvedProp = Reflect.get(...arguments) // Get the "actual" property on the underlying proxied object.
 
             if (prop === "ajax") {
-                console.log(`Instrumenting a pointcut/aspect around 'ajax'`)
+                console.debug(`Instrumenting a pointcut/aspect around 'ajax'`)
 
                 return function instrumented() {
-                    console.log("'ajax' was invoked with: ")
-                    console.log({...arguments})
+                    console.debug("'ajax' was invoked with: ")
+                    console.debug({...arguments})
 
                     // The 'ajax' function may take a variable amount of arguments. See the jQuery docs for the complete details: https://api.jquery.com/jquery.ajax/
                     // But for our sake, we only expect it to be called with exactly one argument, the "settings" object.

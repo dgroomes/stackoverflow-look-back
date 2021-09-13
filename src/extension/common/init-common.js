@@ -5,7 +5,7 @@
 function setDefaultConfig() {
     const defaultInitialVotesPageLimit = 1 // a default value for the "votes page limit" configuration.
     chrome.storage.local.set({votesPageLimit: defaultInitialVotesPageLimit}, () => {
-        console.log(`[init.js] Saved default value for 'votesPageLimit': '${defaultInitialVotesPageLimit}'`)
+        console.debug(`[init.js] Saved default value for 'votesPageLimit': '${defaultInitialVotesPageLimit}'`)
     })
 }
 
@@ -21,7 +21,7 @@ function addRpcServer(rpcClass) {
 
     rpcServer.registerCallbackProcedure("save", (procedureArgs, resolve) => {
         chrome.storage.local.set(procedureArgs, () => {
-            console.log("The extension successfully saved the data")
+            console.debug("The extension successfully saved the data")
             resolve(true)
         })
     })
@@ -29,7 +29,7 @@ function addRpcServer(rpcClass) {
     rpcServer.registerCallbackProcedure("get", (procedureArgs, resolve) => {
         let key = procedureArgs.key
         chrome.storage.local.get(key, (found) => {
-            console.log("The extension successfully read the data")
+            console.debug("The extension successfully read the data")
             resolve(found)
         })
     })

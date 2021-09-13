@@ -23,7 +23,7 @@ class AbstractRpcServer {
     }
 
     dispatch(procedureName, procedureArgs) {
-        console.log(`[AbstractRpcServer.js] Dispatching RPC call for '${procedureName}'...`)
+        console.debug(`[AbstractRpcServer.js] Dispatching RPC call for '${procedureName}'...`)
         if (this.#promiseProcedures.has(procedureName)) {
             let procedure = this.#promiseProcedures.get(procedureName)
             return procedure(procedureArgs)

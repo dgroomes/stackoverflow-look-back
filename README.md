@@ -203,7 +203,9 @@ General clean ups, TODOs and things I wish to implement for this project:
       have access to the window while the background scripts do not. Long story short, we need to incorporate `content-script-messaging-proxy.js`
       into our Chromium design (before, it was just for Firefox) and then extend `content-script-messaging-proxy.js` to
       handle both directions. It should transfer messages from the web page to the background scripts and it should do
-      the reverse: transfer messages from the background scripts to the web page. 
+      the reverse: transfer messages from the background scripts to the web page.
+* DONE Use info and debug log levels. I think Firefox and Chrome now have good filtering for that in the dev console so it's
+  pretty useful
 
 ## Finished Wish List items
 

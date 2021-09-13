@@ -61,8 +61,8 @@ class AppStorage {
     async getPosts() {
         let promise = new Promise(resolve => {
             chrome.storage.local.get("posts", (found) => {
-                console.log("Got this response from storage:")
-                console.dir(found)
+                console.debug("Got this response from storage:")
+                console.debug({found})
                 resolve(found.posts)
             })
         })

@@ -17,7 +17,7 @@ class VotesScraper {
      * This is the main function
      */
     scrapeVotes() {
-        console.log(`Scraping votes...  [limit=${votesPageLimit}]`)
+        console.info(`Scraping votes...  [limit=${votesPageLimit}]`)
         this.votesTab = document.getElementById("user-tab-votes")
         let that = this // Accommodate the awkwardness of ES6 classes
 
@@ -79,7 +79,7 @@ row: ${row.outerHTML}
             let vote = Vote.parseFromUrl(anchor.href, postType)
             this.votes.push(vote)
         }
-        console.log(`Found ${this.votes.length} total votes!`)
+        console.info(`Found ${this.votes.length} total votes!`)
     }
 
     /**
@@ -91,7 +91,7 @@ row: ${row.outerHTML}
 
         function save() {
             appStorage.saveVotes(votes)
-                .then(() => console.log(`The votes data has been saved successfully`))
+                .then(() => console.info(`The votes data has been saved successfully`))
         }
 
         if (++this.attempts > votesPageLimit) {
@@ -102,7 +102,7 @@ row: ${row.outerHTML}
 
         let el = document.querySelector('a[rel=next]')
         if (el === null) {
-            console.log("All pages of the votes tab have been visited. Downloading the votes data to a JSON file...")
+            console.info("All pages of the votes tab have been visited. Saving the votes data to storage...")
             save()
             return
         }

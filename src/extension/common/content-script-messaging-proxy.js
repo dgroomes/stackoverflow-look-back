@@ -1,6 +1,6 @@
 // This code runs in a content-script and proxies messages between the web page and the extension's background scripts.
 
-console.log("[content-script-messaging-proxy.js] Initializing...")
+console.debug("[content-script-messaging-proxy.js] Initializing...")
 
 // Listen for messages from the web page and forward them to the background scripts.
 window.addEventListener("message", (message) => {
@@ -13,7 +13,7 @@ window.addEventListener("message", (message) => {
             message.data,
             null,
             function (returnValue) {
-                console.log(`[content-script-messaging-proxy.js] Got a response via callback from the extension messaging system: ${jsonify(returnValue)}`)
+                console.debug(`[content-script-messaging-proxy.js] Got a response via callback from the extension messaging system: ${jsonify(returnValue)}`)
 
                 // Finally, send the response message back to the web page  to the background script, and register a
                 // handler that forwards the response to the web page.

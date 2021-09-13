@@ -7,7 +7,7 @@
 // See the "My Bias Against Content Scripts" section in the README for more information.
 
 {
-    console.log("[content-script-load-source.js] Running...")
+    console.debug("[content-script-load-source.js] Running...")
 
     let scriptEl = document.createElement("script")
     scriptEl.src = chrome.runtime.getURL("web/web-load-source.js")

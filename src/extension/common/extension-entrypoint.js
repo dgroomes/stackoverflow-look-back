@@ -3,7 +3,7 @@
 //
 // This code bootstraps the content scripts which then bootstrap the web page.
 
-console.log("[extension-entrypoint.js] Initializing...")
+console.debug("[extension-entrypoint.js] Initializing...")
 
 /**
  * Execute a content script.
@@ -12,7 +12,7 @@ console.log("[extension-entrypoint.js] Initializing...")
  * @return {Promise} that resolves when the content script has been loaded/executed(?)
  */
 async function execContentScript(fileName) {
-    console.log(`[extension-entrypoint.js] Executing content script: ${fileName}`)
+    console.debug(`[extension-entrypoint.js] Executing content script: ${fileName}`)
     return new Promise(resolve => {
         chrome.tabs.executeScript({
             file: fileName
@@ -26,7 +26,7 @@ let messagingProxyPromise = execContentScript("/extension/common/content-script-
 
 document.getElementById("execute-scrape-votes")
     .addEventListener("click", async () => {
-        console.log(`[extension-entrypoint.js] Clicked the 'scrape votes' button`)
+        console.info(`[extension-entrypoint.js] Clicked the 'scrape votes' button`)
 
         await messagingProxyPromise
         await execContentScript("/extension/common/content-script-load-source.js")
@@ -36,7 +36,7 @@ document.getElementById("execute-scrape-votes")
 
 document.getElementById("execute-expand-posts")
     .addEventListener("click", async () => {
-        console.log(`[extension-entrypoint.js] Clicked the 'expand posts' button`)
+        console.info(`[extension-entrypoint.js] Clicked the 'expand posts' button`)
 
         await messagingProxyPromise
         await execContentScript("/extension/common/content-script-load-source.js")
@@ -45,7 +45,7 @@ document.getElementById("execute-expand-posts")
 
 document.getElementById("view-posts")
     .addEventListener("click", async () => {
-        console.log(`[extension-entrypoint.js] Clicked the 'view posts' button`)
+        console.info(`[extension-entrypoint.js] Clicked the 'view posts' button`)
 
         chrome.tabs.create({
             url: 'web/generate-html.html'

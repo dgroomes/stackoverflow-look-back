@@ -1,9 +1,9 @@
-console.log("[web-generate-html.js] Running...")
+console.debug("[web-generate-html.js] Running...")
 
 programReady.then(() => {
     let download = "download" === location.hash.substring(1)
     htmlGenerator.generateHtml(download)
-        .then(() => console.log("HTML was generated successfully"))
+        .then(() => console.info("HTML was generated successfully"))
 })
 
 { // Register the search handlers for click events and 'Enter' key presses
@@ -31,7 +31,7 @@ function search() {
         return
     }
 
-    console.log(`Searching by the search term: ${searchTerm}`)
+    console.info(`Searching by the search term: ${searchTerm}`)
 
     let regex = new RegExp(searchTerm, "i")
     let postsRendered = htmlGenerator.render(post => {

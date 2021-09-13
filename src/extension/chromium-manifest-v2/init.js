@@ -2,7 +2,7 @@
 //
 // This declares the permissions that dictate which pages the extension are enabled for.
 
-console.log("[chromium-manifest-v2/init.js] Initializing...")
+console.debug("[chromium-manifest-v2/init.js] Initializing...")
 
 chrome.runtime.onInstalled.addListener(() => {
 

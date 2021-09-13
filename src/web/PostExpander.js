@@ -9,7 +9,7 @@ class PostExpander {
      * @param {Array<Number>} ids the list of post IDs
      */
     async expandByIds(ids) {
-        console.log({
+        console.debug({
             message: "Querying for post information for posts with IDs",
             id: ids
         })

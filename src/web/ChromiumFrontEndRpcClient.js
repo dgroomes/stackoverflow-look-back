@@ -14,8 +14,8 @@ class ChromiumFrontEndRpcClient extends RpcClient {
         return new Promise((resolve) => {
             chrome.runtime.sendMessage(this.#webExtensionId, {procedureName, procedureArgs},
                 function (returnValue) {
-                    console.log("Got a return value from the remote procedure call:")
-                    console.dir(returnValue)
+                    console.debug("Got a return value from the remote procedure call:")
+                    console.debug({returnValue})
                     resolve(returnValue)
                 })
         })
