@@ -1,7 +1,8 @@
 /**
- * This is a concrete implementation of AbstractRpcServer that is used in a background script in Chromium browsers.
+ * This is a concrete implementation of RpcServer for Chromium browsers that runs in a background script and services
+ * RPC requests.
  */
-class ChromiumBackgroundScriptRpcServer extends AbstractRpcServer {
+class ChromiumBackgroundRpcServer extends RpcServer {
 
     listen() {
         let that = this

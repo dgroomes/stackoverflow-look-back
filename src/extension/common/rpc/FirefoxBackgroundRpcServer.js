@@ -1,7 +1,7 @@
 /**
- * This is a concrete implementation of AbstractRpcServer that is used in a background script in Firefox.
+ * This is a concrete implementation of RpcServer for Firefox that runs in a background script and services RPC requests.
  */
-class FirefoxBackgroundScriptRpcServer extends AbstractRpcServer {
+class FirefoxBackgroundRpcServer extends RpcServer {
 
     listen() {
         let that = this

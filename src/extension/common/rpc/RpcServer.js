@@ -1,15 +1,17 @@
 /**
  * This is a partially implemented class (in Java it would be called an "abstract" class) that defines the base
- * functionality of the server component of a Remote Procedure Call (RPC) system. The unimplemented method "listen()" must
- * be implemented by the concrete sub-classes.
+ * functionality of the server component of a Remote Procedure Call (RPC) system. Instances of this class service RPC
+ * requests initiated by RPC clients.
+ *
+ * The unimplemented method "listen()" must be implemented by the concrete sub-classes.
  */
-class AbstractRpcServer {
+class RpcServer {
 
     #promiseProcedures = new Map()
     #callbackProcedures = new Map()
 
     constructor() {
-        if (this.constructor === AbstractRpcServer) {
+        if (this.constructor === RpcServer) {
             throw new Error("This should never be instantiated directly. Instantiate one of the extending classes.")
         }
     }
@@ -23,7 +25,7 @@ class AbstractRpcServer {
     }
 
     dispatch(procedureName, procedureArgs) {
-        console.debug(`[AbstractRpcServer.js] Dispatching RPC call for '${procedureName}'...`)
+        console.debug(`[RpcServer.js] Dispatching RPC call for '${procedureName}'...`)
         if (this.#promiseProcedures.has(procedureName)) {
             let procedure = this.#promiseProcedures.get(procedureName)
             return procedure(procedureArgs)
@@ -33,7 +35,7 @@ class AbstractRpcServer {
                 procedure(procedureArgs, resolve)
             })
         } else {
-            throw new Error(`[AbstractRpcServer.js] This RPC request can't be executed. No procedure was registered with the name '${procedureName}'`)
+            throw new Error(`[RpcServer.js] This RPC request can't be executed. No procedure was registered with the name '${procedureName}'`)
         }
     }
 

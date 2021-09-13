@@ -197,6 +197,11 @@ General clean ups, TODOs and things I wish to implement for this project:
       handle both directions. It should transfer messages from the web page to the background scripts and it should do
       the reverse: transfer messages from the background scripts to the web page.
 * Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like that.
+* DONE Standardize on RPC class naming convention.
+    * For clients, the name should follow: 1) BrowserDescriptor 2) SourceDescription 3) DestinationDescriptor 4) "RpcClient"
+    * For servers, the name should follow: 1) BrowserDescriptor 2) DestinationDescriptor 3) "RpcServer"
+
+  The class comments should follow the same order.
 
 ## Finished Wish List items
 

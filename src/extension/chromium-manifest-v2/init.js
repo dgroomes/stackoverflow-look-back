@@ -23,4 +23,4 @@ chrome.runtime.onInstalled.addListener(() => {
     })
 })
 
-addRpcServer(ChromiumBackgroundScriptRpcServer)
+addRpcServer(ChromiumBackgroundRpcServer)

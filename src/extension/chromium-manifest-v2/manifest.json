@@ -5,8 +5,8 @@
   "manifest_version": 2,
   "background": {
     "scripts": [
-      "extension/common/AbstractRpcServer.js",
-      "extension/common/ChromiumBackgroundScriptRpcServer.js",
+      "extension/common/rpc/RpcServer.js",
+      "extension/common/rpc/ChromiumBackgroundRpcServer.js",
       "extension/common/init-common.js",
       "init.js"
     ],

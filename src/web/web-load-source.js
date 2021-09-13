@@ -67,7 +67,7 @@ function detectEnvironment() {
  */
 function downloadScripts() {
     const noDepsScripts = [
-        "RpcClient.js",
+        "rpc/RpcClient.js",
         "AppStorage.js",
         "VotesScraper.js",
         "PostsExpander.js",
@@ -82,8 +82,8 @@ function downloadScripts() {
     // These files depend on another file already having been loaded because they use the "extends" keyword at the
     // top-level. If I used the module system would this not be a problem?
     const oneDepsScripts = [
-        "ChromiumFrontEndRpcClient.js",
-        "FirefoxFrontEndRpcClient.js"
+        "rpc/ChromiumWebPageToBackgroundRpcClient.js",
+        "rpc/FirefoxWebPageToContentScriptRpcClient.js"
     ]
 
     /**
@@ -123,9 +123,9 @@ async function configureState() {
     let rpcClient
 
     if (browserDescriptor === "chromium") {
-        rpcClient = new ChromiumFrontEndRpcClient(webExtensionId)
+        rpcClient = new ChromiumWebPageToBackgroundRpcClient(webExtensionId)
     } else if (browserDescriptor === "firefox") {
-        rpcClient = new FirefoxFrontEndRpcClient(webExtensionId)
+        rpcClient = new FirefoxWebPageToContentScriptRpcClient(webExtensionId)
     } else {
         throw new Error(`Unexpected browser: ${browserDescriptor}. Expected either 'chromium' or 'firefox'`)
     }

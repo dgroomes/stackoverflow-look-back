@@ -1,7 +1,8 @@
 /**
- * An implementation of the RpcClient interface for the Chromium extension that runs in the web page
+ * An implementation of the RpcClient interface for Chromium browsers that runs in the web page and sends RPC requests
+ * to an RPC server in a background script.
  */
-class ChromiumFrontEndRpcClient extends RpcClient {
+class ChromiumWebPageToBackgroundRpcClient extends RpcClient {
 
     #webExtensionId
 
@@ -14,7 +15,7 @@ class ChromiumFrontEndRpcClient extends RpcClient {
         return new Promise((resolve) => {
             chrome.runtime.sendMessage(this.#webExtensionId, {procedureName, procedureArgs},
                 function (returnValue) {
-                    console.debug("Got a return value from the remote procedure call:")
+                    console.debug("[ChromiumWebPageToBackgroundRpcClient] Got a return value from the remote procedure call:")
                     console.debug({returnValue})
                     resolve(returnValue)
                 })

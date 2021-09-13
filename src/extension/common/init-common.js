@@ -13,7 +13,7 @@ function setDefaultConfig() {
  * Create an RPC server in the background script that will receive remote procedure call (RPC) requests from the front-end
  * and then executes those requests.
  *
- * @param rpcClass the concrete sub-classes of AbstractRpcServer that will be created
+ * @param rpcClass the concrete sub-classes of RpcServer that will be created
  */
 function addRpcServer(rpcClass) {
 
