@@ -1,6 +1,6 @@
 # stackoverflow-static
 
-🛠 Scrape a static copy of your own StackOverflow votes data.
+🛠 Extract and search the posts you've up-voted on StackOverflow.
 
 ## Why?
 
