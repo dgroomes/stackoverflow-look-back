@@ -196,6 +196,7 @@ General clean ups, TODOs and things I wish to implement for this project:
       into our Chromium design (before, it was just for Firefox) and then extend `content-script-messaging-proxy.js` to
       handle both directions. It should transfer messages from the web page to the background scripts and it should do
       the reverse: transfer messages from the background scripts to the web page.
+* Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like that.
 
 ## Finished Wish List items
 
