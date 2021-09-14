@@ -7,30 +7,60 @@
 
 console.debug("[content-script-rpc-proxy.js] Initializing...")
 
-// Listen for messages from the web page via "window" messages, forward them to the background script, wait for the
-// response, and send the response to the window as another message. The web page should be expecting this message.
+// Connect web page RPC clients to background RPC servers.
+//
+// Listen for "RPC request" messages on the window and forward them to an RPC server via the extension messaging system.
+// Wait for a return value and then broadcast it to the window as another message. The web page should be expecting this
+// message.
+//
+// This is only needed for Firefox. Chromium browsers, by contrast, give the web page special access to the extension
+// messaging API thanks to the "externally_connectable" Manifest field.
+//
+// In the future, a similar listener will be implemented which connects RPC clients and servers in the opposite
+// direction: background RPC clients will make RPC requests to web page RPC servers. All procedure request objects include
+// a "procedureTargetReceiver" field to make it unambiguously clear where the RPC request is intended for.
 window.addEventListener("message", ({data}) => {
     console.debug(`[content-script-rpc-proxy.js] Received a message on the 'window'. Here is the 'data':`)
-    console.debug({data})
-    if (data.procedureTargetReceiver === "content-script-rpc-proxy") {
-        data.procedureTargetReceiver = "background"
-        let {procedureName} = data
+    console.debug(JSON.stringify({data}, null, 2))
 
-        // Send the message to the background script, and register a handler that forwards the response to the web page.
-        chrome.runtime.sendMessage(null,
-            data,
-            null,
-            function (returnValue) {
-                console.debug(`[content-script-rpc-proxy.js] Got a response via callback from the extension messaging system:`)
-                console.debug({returnValue})
+    if (data.procedureTargetReceiver !== "content-script-rpc-proxy") return
 
-                // Finally, send the response message back to the web page  to the background script, and register a
-                // handler that forwards the response to the web page.
-                window.postMessage({
-                    procedureTargetReceiver: "web-page",
-                    procedureName,
-                    returnValue
-                }, "*")
-            })
+    let {procedureName, procedureArgs} = data
+
+    // Send the message to the background script, and register a handler that forwards the response to the web page.
+    let messageToMessagingSystem = {
+        procedureTargetReceiver: "background-server",
+        procedureName,
+        procedureArgs
     }
+    console.debug("[content-script-rpc-proxy.js] Sending an RPC request message to the extension messaging system:")
+    console.debug(JSON.stringify(messageToMessagingSystem, null, 2))
+    chrome.runtime.sendMessage(null,
+        messageToMessagingSystem,
+        null,
+        function (returnValue) {
+            console.debug(`[content-script-rpc-proxy.js] Got a response via callback from the extension messaging system:`)
+            console.debug({returnValue})
+
+            // While technically not necessary, I've found this error handling and logging useful. While developing the
+            // RPC framework, I frequently get an "undefined" here and so the nicer logging makes for a less frustrating
+            // development experience.
+            if (typeof returnValue === "undefined") {
+                let errorMsg = `[content-script-rpc-proxy.js] Something went wrong. This is likely a programmer error. Got an 'undefined' return value from the extension messaging system for an RPC request for '${procedureName}'.`
+
+                // It is not enough to just throw the error on the next line. The error actually gets silently swallowed
+                // by the browser's extension framework and you will never see the error in the logs. Instead we
+                // manually log an error message to the console.
+                console.error(errorMsg)
+                throw new Error(errorMsg)
+            }
+
+            // Finally, send the return value to the window so that it may be received by the web page
+            let messageToWindow = {
+                procedureTargetReceiver: "web-page-client",
+                procedureName,
+                returnValue
+            }
+            window.postMessage(messageToWindow, "*")
+        })
 })

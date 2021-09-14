@@ -4,20 +4,17 @@
 class FirefoxBackgroundRpcServer extends RpcServer {
 
     constructor() {
-        super("background")
+        super("background-server")
     }
 
     listen() {
         let that = this
         browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-            console.debug("[FirefoxBackgroundScriptRpcServer] received a message from the extension messaging system:")
-            console.debug({message})
+            if (!that.intake(message)) {
+                return false
+            }
 
-            if (!message.procedureTargetReceiver) return
-
-            let {procedureTargetReceiver, procedureName, procedureArgs} = message
-
-            that.dispatch(procedureTargetReceiver, procedureName, procedureArgs).then(returnValue => {
+            that.dispatch(message).then(returnValue => {
                 sendResponse(returnValue)
             })
             return true // Returning "true" tells Firefox that we plan to invoke the "sendResponse" function later (rather, asynchronously). Otherwise, the "sendResponse" function would become invalid.

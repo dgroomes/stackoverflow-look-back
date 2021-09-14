@@ -26,13 +26,11 @@ class FirefoxWebPageToContentScriptRpcClient extends RpcClient {
      * register a listener on the window to listen for the eventual expected response message.
      */
     execRemoteProcedure(procedureName, procedureArgs) {
-        let {procedureTargetReceiver} = this
-
         // I'm assuming it's wise to wire up the event listener before posting the message to avoid a race condition.
         // That's why I've put this before the "window.postMessage". But I don't think it actually matters.
         let returnValuePromise = new Promise((resolve => {
             window.addEventListener("message", function listenForRpcResponse({data}) {
-                if (data.procedureTargetReceiver === "web-page"
+                if (data.procedureTargetReceiver === "web-page-client"
                     && data.procedureName === procedureName) {
 
                     window.removeEventListener("message", listenForRpcResponse)
@@ -41,11 +39,8 @@ class FirefoxWebPageToContentScriptRpcClient extends RpcClient {
             })
         }))
 
-        window.postMessage({
-            procedureTargetReceiver,
-            procedureName,
-            procedureArgs
-        }, "*")
+        let rpcRequest = this.createRequest(procedureName, procedureArgs)
+        window.postMessage(rpcRequest, "*")
 
         return returnValuePromise
     }

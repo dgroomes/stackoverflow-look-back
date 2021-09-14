@@ -30,15 +30,39 @@ class RpcServer {
 
     /**
      * Sub-classes must implement this method to register the necessary "listener" to listen for remote procedure
-     * requests. The listener must invoke "dispatch" for each request and send the return value of the procedure
-     * to the client.
+     * requests. The listener must invoke the "intake" method to determine if the message is indeed an RPC request
+     * intended for this server or not. If it is, then this function must invoke "dispatch" and then send the return
+     * value of the procedure to the client.
      */
     listen() {
     }
 
-    dispatch(procedureTargetReceiver, procedureName, procedureArgs) {
-        if (this.#descriptor !== procedureTargetReceiver) return // If the RPC request is destined for a different RPC server (receiver), then ignore this request.
 
+    /**
+     * Should this request be processed or not? In some cases, a message will be intended for a different RPC receiver,
+     * or the message is not even an RPC message at all. The "intake" function logs the message and determines if it
+     * should be processed as a remote procedure call by the server.
+     *
+     * @param message
+     * @return {boolean} true if the request should be handled by the server or false if not.
+     */
+    intake(message) {
+        console.debug(`[RpcServer|${this.#descriptor}] Received message:`)
+        console.debug(JSON.stringify({message}, null, 2))
+
+        if (this.#descriptor !== message.procedureTargetReceiver) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    /**
+     * Dispatches the RPC request.
+     * @param rpcRequest
+     * @return {Promise} a promise that resolves with the return value of the procedure
+     */
+    dispatch({procedureName, procedureArgs}) {
         console.debug(`[RpcServer|${this.#descriptor}] Dispatching RPC call for '${procedureName}'...`)
 
         if (this.#promiseProcedures.has(procedureName)) {

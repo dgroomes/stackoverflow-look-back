@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Scrape your own StackOverflow votes data from your profile page. See the README.
  *

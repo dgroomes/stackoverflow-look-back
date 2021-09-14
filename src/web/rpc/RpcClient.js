@@ -5,7 +5,7 @@
  */
 class RpcClient {
 
-    procedureTargetReceiver
+    #procedureTargetReceiver
 
     /**
      * @param procedureTargetReceiver the destination RPC server for RPC requests. This is needed to make sure the right RPC
@@ -20,11 +20,31 @@ class RpcClient {
             throw new Error(`Expected a truthy value for 'procedureTargetReceiver' but found ${procedureTargetReceiver}`)
         }
 
-        this.procedureTargetReceiver = procedureTargetReceiver
+        this.#procedureTargetReceiver = procedureTargetReceiver
     }
 
     /**
+     * Create an RPC request object with the configured "target receiver".
+     *
+     * Note: This is a "protected" method and should only be called by sub-classes.
+     *
+     * @return {Object} a correctly formatted RPC request message
+     */
+    createRequest(procedureName, procedureArgs) {
+        return {
+            procedureTargetReceiver: this.#procedureTargetReceiver,
+            procedureName,
+            procedureArgs
+        }
+    }
+
+
+    /**
      * Execute a remote procedure call by sending a message to a receiving RPC server and waiting for the response.
+     *
+     * In implementations of this method, make sure to call the "createRequest" function to create the RPC request object
+     * before sending the request to the RPC server.
+     *
      * @param procedureName the "procedure name" of the remote procedure call.
      * @param procedureArgs the "procedure arguments" of the remote procedure call.
      * @return {Promise} a promise containing the return value of the remote procedure call
