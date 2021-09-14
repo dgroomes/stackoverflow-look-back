@@ -4,12 +4,18 @@
  */
 class ChromiumBackgroundRpcServer extends RpcServer {
 
+    constructor() {
+        super("background")
+    }
+
     listen() {
         let that = this
         chrome.runtime.onMessageExternal.addListener(function (message, sender, sendResponse) {
-            let {procedureName, procedureArgs} = message
+            if (!message.procedureTargetReceiver) return
 
-            that.dispatch(procedureName, procedureArgs).then(returnValue => {
+            let {procedureTargetReceiver, procedureName, procedureArgs} = message
+
+            that.dispatch(procedureTargetReceiver, procedureName, procedureArgs).then(returnValue => {
                 sendResponse(returnValue)
             })
         })

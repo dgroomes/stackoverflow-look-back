@@ -83,6 +83,27 @@ actually executes on the web page, where standard Web APIs can be used. This cod
 data scraping and HTML generation. As such, this code is perfectly portable to other "evergreen" browsers because it
 just relies on standard web APIs instead of non-standard browser extension APIs (i.e. Manifest V2 and V3).
 
+### RPC
+
+A significant portion of a non-trivial web extension is often dedicated to *Message Passing* between the four components of an extension:
+1) a background script 2) a popup script 3) a content-script 4) the web page. Message passing is a fundamental and useful
+programming feature, but unfortunately in a web extension environment the complexity of the code for message passing is
+exacerbated by the number of components (the aforementioned four) and the sometimes stark differences in APIs between
+browsers (Chromium vs Firefox). It's desirable to encapsulate the complexity of message passing behind an easy-to-use
+API that takes a message, does all of the behind the scenes work, and then returns a response. This description looks
+like a *Remote Procedure Call* system.
+
+In this codebase, I've implemented a Remote Procedure Call (RPC) API.
+
+It could be extracted into it's own project. And honestly, it's not a great implementation, but I came to it out of
+necessity.
+
+One thing I'm omitting with the RPC implementation is an "absolute unique identifier" to associate with each message.
+Without this uniqueness, it's potentially possible to "cross beams" and, for example, have an RPC client process a
+message that was not intended for it. I think this is virtually impossible though because we are in a browser
+environment where we exercise almost complete control of the environment. By contrast, an RPC system in a distributed
+system spanning different networks would need to handle these cases. 
+
 ## Instructions
 
 Follow these instructions to install the tool as a Chrome browser extension and use it:
@@ -198,10 +219,19 @@ General clean ups, TODOs and things I wish to implement for this project:
       the reverse: transfer messages from the background scripts to the web page.
 * Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like that.
 * DONE Standardize on RPC class naming convention.
-    * For clients, the name should follow: 1) BrowserDescriptor 2) SourceDescription 3) DestinationDescriptor 4) "RpcClient"
+    * For clients, the name should follow: 1) BrowserDescriptor 2) SourceDescription 3) DestinationDescriptor 4) "
+      RpcClient"
     * For servers, the name should follow: 1) BrowserDescriptor 2) DestinationDescriptor 3) "RpcServer"
 
   The class comments should follow the same order.
+* Defect. If you click the extension button more than once, it is problematic because it runs the content scripts every
+  time, which mean multiple window listeners are added because of `content-script-messaging-proxy.js`.
+* This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
+  finding basic problems. For example, I changed the signature of the RPC client, and it's pretty easy to miss a call
+  site and update the args.
+* DONE Consider turning `content-script-messaging-proxy.js` into a specific component of the RPC system. The genericness of
+  it is becoming more confusing I think. This work will include baking in the "procedure target RPC" in the RpcClient
+  and RpcServer classes and also handling it in the content script proxy.
 
 ## Finished Wish List items
 
@@ -365,3 +395,6 @@ These are the finished items from the Wish List:
 * [Opera dev docs: *The Basics of Making an Extension*](https://dev.opera.com/extensions/basics/)
 * [MDN Web Docs: browserAction.onClicked](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction/onClicked)
 * [Chrome extension docs: *chrome.browserAction*](https://developer.chrome.com/docs/extensions/reference/browserAction/)
+* [MDN Web Docs: tabs.sendMessage()](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/sendMessage)
+    * Send messages from backround scripts to content scripts
+    * [Chrome equivalent](https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage) 

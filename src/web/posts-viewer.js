@@ -16,7 +16,6 @@ programReady.then(() => {
     })
 
     document.getElementById("download").addEventListener("click", () => {
-        console.log("hello")
         postsViewer.downloadHtml()
     })
 }

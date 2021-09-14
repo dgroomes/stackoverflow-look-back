@@ -9,11 +9,23 @@ class RpcServer {
 
     #promiseProcedures = new Map()
     #callbackProcedures = new Map()
+    #descriptor
 
-    constructor() {
+    /**
+     * @param descriptor The descriptor describes this particular RPC server. Specifically, the descriptor should be either
+     * of: "background", "content-script", or "web-page". It's possible that this range will be expanded in the future
+     * but for now that's it.
+     */
+    constructor(descriptor) {
         if (this.constructor === RpcServer) {
             throw new Error("This should never be instantiated directly. Instantiate one of the extending classes.")
         }
+
+        if (!descriptor) {
+            throw new Error(`Expected a truthy value for 'descriptor' but found ${descriptor}`)
+        }
+
+        this.#descriptor = descriptor
     }
 
     /**
@@ -24,8 +36,11 @@ class RpcServer {
     listen() {
     }
 
-    dispatch(procedureName, procedureArgs) {
-        console.debug(`[RpcServer.js] Dispatching RPC call for '${procedureName}'...`)
+    dispatch(procedureTargetReceiver, procedureName, procedureArgs) {
+        if (this.#descriptor !== procedureTargetReceiver) return // If the RPC request is destined for a different RPC server (receiver), then ignore this request.
+
+        console.debug(`[RpcServer|${this.#descriptor}] Dispatching RPC call for '${procedureName}'...`)
+
         if (this.#promiseProcedures.has(procedureName)) {
             let procedure = this.#promiseProcedures.get(procedureName)
             return procedure(procedureArgs)
@@ -35,7 +50,7 @@ class RpcServer {
                 procedure(procedureArgs, resolve)
             })
         } else {
-            throw new Error(`[RpcServer.js] This RPC request can't be executed. No procedure was registered with the name '${procedureName}'`)
+            throw new Error(`[RpcServer] This RPC request can't be executed. No procedure was registered with the name '${procedureName}'`)
         }
     }
 

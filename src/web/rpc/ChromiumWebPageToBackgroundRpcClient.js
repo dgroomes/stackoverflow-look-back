@@ -7,13 +7,14 @@ class ChromiumWebPageToBackgroundRpcClient extends RpcClient {
     #webExtensionId
 
     constructor(webExtensionId) {
-        super()
+        super("background")
         this.#webExtensionId = webExtensionId
     }
 
     execRemoteProcedure(procedureName, procedureArgs) {
+        let {procedureTargetReceiver} = this
         return new Promise((resolve) => {
-            chrome.runtime.sendMessage(this.#webExtensionId, {procedureName, procedureArgs},
+            chrome.runtime.sendMessage(this.#webExtensionId, {procedureTargetReceiver, procedureName, procedureArgs},
                 function (returnValue) {
                     console.debug("[ChromiumWebPageToBackgroundRpcClient] Got a return value from the remote procedure call:")
                     console.debug({returnValue})

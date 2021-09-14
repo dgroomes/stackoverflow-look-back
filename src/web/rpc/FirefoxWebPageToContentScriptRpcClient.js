@@ -13,41 +13,36 @@ class FirefoxWebPageToContentScriptRpcClient extends RpcClient {
     #webExtensionId
 
     constructor(webExtensionId) {
-        super()
+        super("content-script-rpc-proxy")
         this.#webExtensionId = webExtensionId
     }
-
-    #callerIdSequence = 0
 
     /**
      * This function uses the asynchronous broadcast messaging system of the "window" object plus Firefox's "runtime.sendMessage"
      * extension API to make a one-for-one request/response procedure call. Honestly, the implementation seems a little
      * strange but it makes for a great API to the calling code. I think this is an effective pattern.
      *
-     * This function will send a message to the content-script proxy ("content-script-messaging-proxy.js") and then
-     * register a listener on the window to listen for the eventual expected response message. A "caller ID" and
-     * a "sender" property are used to filter out messages that may have been initiated by invocations of "#message" by
-     * other callers.
+     * This function will send a message to the content-script RPC proxy ("content-script-rpc-proxy.js") and then
+     * register a listener on the window to listen for the eventual expected response message.
      */
     execRemoteProcedure(procedureName, procedureArgs) {
-        let callerId = this.#callerIdSequence++
+        let {procedureTargetReceiver} = this
 
         // I'm assuming it's wise to wire up the event listener before posting the message to avoid a race condition.
         // That's why I've put this before the "window.postMessage". But I don't think it actually matters.
         let returnValuePromise = new Promise((resolve => {
-            window.addEventListener("message", function listenForCommandResponse({data}) {
-                if (data.sender === "content-script-messaging-proxy"
-                    && data.callerId === callerId) {
+            window.addEventListener("message", function listenForRpcResponse({data}) {
+                if (data.procedureTargetReceiver === "web-page"
+                    && data.procedureName === procedureName) {
 
-                    window.removeEventListener("message", listenForCommandResponse)
+                    window.removeEventListener("message", listenForRpcResponse)
                     resolve(data.returnValue)
                 }
             })
         }))
 
         window.postMessage({
-            sender: "FirefoxRpcClient",
-            callerId,
+            procedureTargetReceiver,
             procedureName,
             procedureArgs
         }, "*")
