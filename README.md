@@ -40,24 +40,22 @@ The overall flow of the tool breaks down like this:
 1. Expand the votes data into posts data using <https://data.stackexchange.com>
 1. View, search and download a copy of the posts data
 
-The source code is laid in a directory structure that groups code by the execution context that the code runs in:
+The source code is laid out in a directory structure that generally groups code by the execution context that the code
+runs in and is inviting for future additions like Manifest V3 support, or a Safari browser extension.
 
 * `src/web-page/`
     * The code in this directory will all be loaded on the web page.
-* `src/extension/`
-    * The directories in this directory are for web extensions. It breaks down into these sub-directories:
-        * `common/`
-            * The code in this directory gets loaded into the extension environment (background workers, popups, etc) or
-              the Content Script environment (an isolated JavaScript environment with access to the web page DOM)
-        * `chromium-manifest-v2/`
-            * Code that supports a Manifest V2 web extension developed for Chromium browsers.
-        * `firefox-manifest-v2/`
-            * Code that supports a Manifest V2 web extension developed for Firefox.
-
-      This directory layout is inviting for future additions like Manifest V3 support, or a Safari browser extension.
+* `src/extension/common`
+    * The code in this directory gets loaded into the extension environment (background workers, popups, etc) or the
+      Content Script environment (an isolated JavaScript environment with access to the web page DOM).
 * `src/rpc/`
     * The code in this directory implements a generic Remote Procedure Call (RPC) framework for browser extensions. This
-      code has components that run in all contexts: background scripts, popup scripts, content scripts, and the web page.
+      code has components that run in all contexts: background scripts, popup scripts, content scripts, and the web
+      page.
+* `src/chromium-manifest-v2/`
+    * Code that supports a Manifest V2 web extension developed for Chromium browsers.
+* `src/firefox-manifest-v2/`
+    * Code that supports a Manifest V2 web extension developed for Firefox.
 
 Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the web
 extension layer and the web page. So, I'm purposely designing the code base to not have minimal shared common code. The
