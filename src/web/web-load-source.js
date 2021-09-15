@@ -153,6 +153,8 @@ async function exec() {
     await downloadScripts()
     console.debug("All scripts were included.")
     await configureState()
+    console.debug(`[web-load-source.js] [${Date.now()}] Fully initialized.`)
+    window.postMessage("web-page-initialized", "*")
     _programReadyResolveRef()
 }
 

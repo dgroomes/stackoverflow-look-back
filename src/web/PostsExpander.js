@@ -28,7 +28,7 @@ class PostsExpander {
 
     /**
      * This is the main function.
-     * @return {Promise<void>} a promise that resolves when the posts data is successfully expanded
+     * @return {Promise<void>} a promise that resolves when the posts data is successfully expanded and saved to storage
      */
     async expandPosts() {
 
@@ -71,7 +71,7 @@ class PostsExpander {
         let idsUnique = new Set(votes.flatMap(vote => vote.ids))
         let idsSorted = Array.from(idsUnique).sort() // Sorting the IDs is not needed, but helps for reproduce-ability and debugging.
         await this.expandByIds(idsSorted)
-        console.info(`The posts data has been successfully expanded for ${idsSorted.length} posts`)
+        console.info(`The posts data has been successfully expanded for ${idsSorted.length} posts and saved to storage!`)
         await promise
     }
 }

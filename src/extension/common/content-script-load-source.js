@@ -6,11 +6,24 @@
 // content scripts for any domain logic that could be implemented instead in the background scripts or on the web page.
 // See the "My Bias Against Content Scripts" section in the README for more information.
 
-{
-    console.debug("[content-script-load-source.js] Running...")
+console.debug("[content-script-load-source.js] Running...")
 
-    let scriptEl = document.createElement("script")
-    scriptEl.src = chrome.runtime.getURL("web/web-load-source.js")
-    scriptEl.id = "web-load-source"
-    document.head.append(scriptEl)
-}
+let scriptEl = document.createElement("script")
+scriptEl.src = chrome.runtime.getURL("web/web-load-source.js")
+scriptEl.id = "web-load-source"
+document.head.append(scriptEl)
+
+// Register a window listener for the "web-page-initialized" message which the web page will send when it has finished
+// loading the extension JavaScript source code and running initialization code.
+window.addEventListener("message", function webPageInitializedListener({data}) {
+    console.debug(`[content-script-load-source.js] Received a message on the 'window'. Here is the 'data':`)
+    console.debug(JSON.stringify({data}, null, 2))
+    if (data === "web-page-initialized") {
+        console.debug("[content-script-load-source.js] Sending the 'web-page-initialized' message")
+        chrome.runtime.sendMessage(null,
+            "web-page-initialized",
+            null)
+
+        window.removeEventListener("message", webPageInitializedListener)
+    }
+})
