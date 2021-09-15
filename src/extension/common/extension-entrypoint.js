@@ -87,6 +87,6 @@ document.getElementById("view-posts")
         console.info(`[extension-entrypoint.js] Clicked the 'view posts' button`)
 
         chrome.tabs.create({
-            url: '/web/posts-viewer.html'
+            url: '/web-page/posts-viewer.html'
         })
     })

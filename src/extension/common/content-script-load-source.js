@@ -9,7 +9,7 @@
 console.debug("[content-script-load-source.js] Running...")
 
 let scriptEl = document.createElement("script")
-scriptEl.src = chrome.runtime.getURL("web/web-load-source.js")
+scriptEl.src = chrome.runtime.getURL("web-page/web-load-source.js")
 scriptEl.id = "web-load-source"
 document.head.append(scriptEl)
 

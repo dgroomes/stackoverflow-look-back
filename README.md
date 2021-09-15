@@ -42,9 +42,8 @@ The overall flow of the tool breaks down like this:
 
 The source code is laid in a directory structure that groups code by the execution context that the code runs in:
 
-* `src/web/`
-    * The code in this directory will all be loaded on the web page. This directory might be more accurately named as
-      `web-page/`.
+* `src/web-page/`
+    * The code in this directory will all be loaded on the web page.
 * `src/extension/`
     * The directories in this directory are for web extensions. It breaks down into these sub-directories:
         * `common/`

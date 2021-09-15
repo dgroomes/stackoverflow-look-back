@@ -20,7 +20,7 @@
     "https://data.stackexchange.com/*"
   ],
   "web_accessible_resources": [
-    "web/*",
+    "web-page/*",
     "rpc/*"
   ],
   "externally_connectable": {

@@ -26,8 +26,8 @@ function detectEnvironment() {
      * character.
      *
      * @param url. For example:
-     *               - chrome-extension://akidegfimbjmokpejlcnjagogamdiinl/web/posts-viewer.html
-     *               - moz-extension://df0b610b-995b-9240-8c3b-fcaf155c9005/web/web-load-source.js
+     *               - chrome-extension://akidegfimbjmokpejlcnjagogamdiinl/web-page/posts-viewer.html
+     *               - moz-extension://df0b610b-995b-9240-8c3b-fcaf155c9005/web-page/web-load-source.js
      */
     function detectFromExtensionUrl(url) {
         let regex = new RegExp("(chrome-extension|moz-extension)://([a-z0-9-]+)")
@@ -69,15 +69,15 @@ function downloadScripts() {
     const noDepsScripts = [
         "rpc/RpcClient.js",
         "rpc/RpcServer.js",
-        "web/AppStorage.js",
-        "web/VotesScraper.js",
-        "web/PostsExpander.js",
-        "web/PostsViewer.js",
-        "web/vote.js",
-        "web/post.js",
-        "web/util/download-to-file.js",
-        "web/util/jquery-proxy.js",
-        "web/util/to-json.js"
+        "web-page/AppStorage.js",
+        "web-page/VotesScraper.js",
+        "web-page/PostsExpander.js",
+        "web-page/PostsViewer.js",
+        "web-page/vote.js",
+        "web-page/post.js",
+        "web-page/util/download-to-file.js",
+        "web-page/util/jquery-proxy.js",
+        "web-page/util/to-json.js"
     ]
 
     // These files depend on another file already having been loaded because they use the "extends" keyword at the
