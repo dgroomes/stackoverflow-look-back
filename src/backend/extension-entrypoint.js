@@ -47,7 +47,7 @@ async function initializeWebPage() {
         })
     })
 
-    await execContentScript("/extension/common/content-script-load-source.js")
+    await execContentScript("/backend/content-script-load-source.js")
     await webPageInitialized
 }
 

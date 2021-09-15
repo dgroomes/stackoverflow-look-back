@@ -7,7 +7,7 @@
     "scripts": [
       "rpc/RpcServer.js",
       "rpc/ChromiumBackgroundRpcServer.js",
-      "extension/common/init-common.js",
+      "backend/init-common.js",
       "init.js"
     ],
     "persistent": false
@@ -30,7 +30,7 @@
     ]
   },
   "page_action": {
-    "default_popup": "extension/common/execute.html"
+    "default_popup": "backend/execute.html"
   },
-  "options_page": "extension/common/options.html"
+  "options_page": "backend/options.html"
 }

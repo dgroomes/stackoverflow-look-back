@@ -44,10 +44,10 @@ The source code is laid out in a directory structure that generally groups code 
 runs in and is inviting for future additions like Manifest V3 support, or a Safari browser extension.
 
 * `src/web-page/`
-    * The code in this directory will all be loaded on the web page.
-* `src/extension/common`
-    * The code in this directory gets loaded into the extension environment (background workers, popups, etc) or the
-      Content Script environment (an isolated JavaScript environment with access to the web page DOM).
+    * The code in this directory runs on the web page.
+* `src/backend/`
+    * The code in this directory runs in the extension *backend* contexts: background workers, popups, and content
+      scripts.
 * `src/rpc/`
     * The code in this directory implements a generic Remote Procedure Call (RPC) framework for browser extensions. This
       code has components that run in all contexts: background scripts, popup scripts, content scripts, and the web
