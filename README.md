@@ -62,11 +62,13 @@ extension layer and the web page. So, I'm purposely designing the code base to h
 `src/rpc/` code is an exception. It is a generic browser RPC framework and so it does not co-mingle with the domain code
 and doesn't cause as much confusion. It's a lot of code too so it's nice to sequester it in its own directory.
 
-The extension has been verified to work in these browsers:
+The extension has been verified to work in the checked `[x]` browsers:
 
 * [x] Firefox (version 91)
 * [x] Chrome (version 92)
 * [x] Opera (version 78)
+* [ ] Edge (coming soon)
+* [ ] Safari
 
 ### My Bias Against Content Scripts
 
@@ -123,6 +125,8 @@ extension and web page contexts:
 
 Follow these instructions to install the tool as a Chrome browser extension and use it:
 
+1. Build the extension distributions:
+    * `./build.sh`
 1. Open Chrome's extension settings page
     * Open Chrome to the URL: `chrome://extensions`
     * Alternatively, follow the instructions in the [Firefox](#firefox) section below to install the extension in
@@ -132,7 +136,9 @@ Follow these instructions to install the tool as a Chrome browser extension and 
     * Enable the *Developer mode* toggle control in the upper right corner of the page
 1. Install the extension
     * Click the *Load unpacked* button
-    * In the file finder window that opens, find the directory `src/extension/chromium-manifest-v2` and click *Select*
+    * In the file finder window that opens, find the extension distribution
+      directory `build/chromium-manifest-v2-web-extension/`, single click it to highlight it, and click the *Select*
+      button.
     * It's installed!
 1. Open StackOverflow
     * Go to <https://stackoverflow.com/> in your browser
@@ -175,7 +181,8 @@ Follow these instructions to install it in Firefox:
     * Paste and go to this URL: <about:debugging#/runtime/this-firefox>
 1. Load the plugin
     * Click the button with the words *Load Temporary Add-on…*
-    * In the file finder window that opens, find the file `build/firefox-web-extension/manifest.json` and click *Open*
+    * In the file finder window that opens, find the file `build/firefox-manifest-v2-web-extension/manifest.json` and
+      click *Open*
     * It's installed!
 
 ## Opera
@@ -207,8 +214,10 @@ General clean ups, TODOs and things I wish to implement for this project:
 * This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
   finding basic problems. For example, I changed the signature of the RPC client, and it's pretty easy to miss a call
   site and update the args.
-* Get rid of the symlinks. It doesn't work on Windows. I think I need a build script, like the Firefox build script. It
-  be should be pretty easy to make a Windows bat script or maybe Powershell.
+* DONE Get rid of the symlinks. It doesn't work on Windows. I think I need a build script, like the Firefox build
+  script. It be should be pretty easy to make a Windows bat script or maybe Powershell.
+* Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
+  thing to do. Add instructions as needed.
 * Clean up the References. Organize MDN links together.
 
 ## Finished Wish List items
