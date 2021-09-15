@@ -58,9 +58,9 @@ runs in and is inviting for future additions like Manifest V3 support, or a Safa
     * Code that supports a Manifest V2 web extension developed for Firefox.
 
 Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the web
-extension layer and the web page. So, I'm purposely designing the code base to not have minimal shared common code. The
-`src/rpc/` code is an exception. It is a generic browser RPC framework and so it does not co-mingle with the domain
-code.
+extension layer and the web page. So, I'm purposely designing the code base to have minimal shared common code. The
+`src/rpc/` code is an exception. It is a generic browser RPC framework and so it does not co-mingle with the domain code
+and doesn't cause as much confusion. It's a lot of code too so it's nice to sequester it in its own directory.
 
 The extension has been verified to work in these browsers:
 
@@ -88,14 +88,12 @@ just relies on standard web APIs instead of non-standard browser extension APIs 
 ### RPC
 
 A significant portion of a non-trivial web extension is often dedicated to *Message Passing* between the four components
-of an extension:
-
-1) a background script 2) a popup script 3) a content-script 4) the web page. Message passing is a fundamental and
-   useful programming feature, but unfortunately in a web extension environment the complexity of the code for message
-   passing is exacerbated by the number of components (the aforementioned four) and the sometimes stark differences in
-   APIs between browsers (Chromium vs Firefox). It's desirable to encapsulate the complexity of message passing behind
-   an easy-to-use API that takes a message, does all of the behind the scenes work, and then returns a response. This
-   description looks like a *Remote Procedure Call* system.
+of an extension: (1) a background script (2) a popup script (3) a content script (4) the web page. Message passing is a
+fundamental and useful programming feature, but unfortunately in a web extension environment the complexity of the code
+for message passing is exacerbated by the number of components (the aforementioned four) and the sometimes stark
+differences in APIs between browsers (Chromium vs Firefox). It's desirable to encapsulate the complexity of message
+passing behind an easy-to-use API that takes a message, does all of the behind the scenes work, and then returns a
+response. This description looks like a *Remote Procedure Call* system.
 
 In this codebase, I've implemented a Remote Procedure Call (RPC) API.
 
@@ -187,6 +185,10 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
+* Consider how to move the generic RPC code in `extension-entrypoint.js` (specifically the `initializeWebPage()` function)
+  and the generic RPC code in `web-load-source.js` into the `src/rpc/` directory. Ideally, all generic RPC code should
+  live separately from the other code. It should be such that the RPC framework is good enough to use by even another
+  project!
 * Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like that.
 * Defect. If you click the extension button more than once, it is problematic because it runs the content scripts every
   time, which mean multiple window listeners are added because of `content-script-messaging-proxy.js`.
@@ -195,6 +197,7 @@ General clean ups, TODOs and things I wish to implement for this project:
   site and update the args.
 * Get rid of the symlinks. It doesn't work on Windows. I think I need a build script, like the Firefox build script. It
   be should be pretty easy to make a Windows bat script or maybe Powershell.
+* Clean up the References. Organize MDN links together.
 
 ## Finished Wish List items
 
