@@ -15,10 +15,6 @@ console.debug("[content-script-rpc-proxy.js] Initializing...")
 //
 // This is only needed for Firefox. Chromium browsers, by contrast, give the web page special access to the extension
 // messaging API thanks to the "externally_connectable" Manifest field.
-//
-// In the future, a similar listener will be implemented which connects RPC clients and servers in the opposite
-// direction: background RPC clients will make RPC requests to web page RPC servers. All procedure request objects include
-// a "procedureTargetReceiver" field to make it unambiguously clear where the RPC request is intended for.
 window.addEventListener("message", ({data}) => {
     console.debug(`[content-script-rpc-proxy.js] Received a message on the 'window'. Here is the 'data':`)
     console.debug(JSON.stringify({data}, null, 2))
