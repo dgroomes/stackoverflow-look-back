@@ -15,7 +15,7 @@
 # Useful trick: run this file automatically as files are changed by monitoring for file changes using the "fswatch" tool.
 # Refer to the documentation: https://github.com/emcrisostomo/fswatch. Use the following command:
 #
-#   fswatch -0 src/extension/firefox-manifest-v2/ src/extension/common/ src/web/ | while read -d "" event; do echo "Got an event: ${event}"; ./build-for-firefox.sh; done
+#   fswatch -0 src/extension/firefox-manifest-v2/ src/extension/common/ src/web/ src/rpc | while read -d "" event; do echo "Got an event: ${event}"; ./build-for-firefox.sh; done
 #
 set -eu
 
@@ -34,3 +34,4 @@ mkdir -p "$EXTENSION_DIR/extension"
 cp -r "$PROJECT_DIR/src/extension/common" "$EXTENSION_DIR/extension"
 
 cp -r "$PROJECT_DIR/src/web" "$EXTENSION_DIR"
+cp -r "$PROJECT_DIR/src/rpc" "$EXTENSION_DIR"

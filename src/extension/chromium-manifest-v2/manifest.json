@@ -5,8 +5,8 @@
   "manifest_version": 2,
   "background": {
     "scripts": [
-      "web/rpc/RpcServer.js",
-      "extension/common/rpc/ChromiumBackgroundRpcServer.js",
+      "rpc/RpcServer.js",
+      "rpc/ChromiumBackgroundRpcServer.js",
       "extension/common/init-common.js",
       "init.js"
     ],
@@ -20,7 +20,8 @@
     "https://data.stackexchange.com/*"
   ],
   "web_accessible_resources": [
-    "web/*"
+    "web/*",
+    "rpc/*"
   ],
   "externally_connectable": {
     "matches": [

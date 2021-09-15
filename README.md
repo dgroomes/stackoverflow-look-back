@@ -56,9 +56,14 @@ The source code is laid in a directory structure that groups code by the executi
             * Code that supports a Manifest V2 web extension developed for Firefox.
 
       This directory layout is inviting for future additions like Manifest V3 support, or a Safari browser extension.
+* `src/rpc/`
+    * The code in this directory implements a generic Remote Procedure Call (RPC) framework for browser extensions. This
+      code has components that run in all contexts: background scripts, popup scripts, content scripts, and the web page.
 
 Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the web
-extension layer and the web page. So, I'm purposely designing the code base to not have any shared common code.
+extension layer and the web page. So, I'm purposely designing the code base to not have minimal shared common code. The
+`src/rpc/` code is an exception. It is a generic browser RPC framework and so it does not co-mingle with the domain
+code.
 
 The extension has been verified to work in these browsers:
 
@@ -85,13 +90,15 @@ just relies on standard web APIs instead of non-standard browser extension APIs 
 
 ### RPC
 
-A significant portion of a non-trivial web extension is often dedicated to *Message Passing* between the four components of an extension:
-1) a background script 2) a popup script 3) a content-script 4) the web page. Message passing is a fundamental and useful
-programming feature, but unfortunately in a web extension environment the complexity of the code for message passing is
-exacerbated by the number of components (the aforementioned four) and the sometimes stark differences in APIs between
-browsers (Chromium vs Firefox). It's desirable to encapsulate the complexity of message passing behind an easy-to-use
-API that takes a message, does all of the behind the scenes work, and then returns a response. This description looks
-like a *Remote Procedure Call* system.
+A significant portion of a non-trivial web extension is often dedicated to *Message Passing* between the four components
+of an extension:
+
+1) a background script 2) a popup script 3) a content-script 4) the web page. Message passing is a fundamental and
+   useful programming feature, but unfortunately in a web extension environment the complexity of the code for message
+   passing is exacerbated by the number of components (the aforementioned four) and the sometimes stark differences in
+   APIs between browsers (Chromium vs Firefox). It's desirable to encapsulate the complexity of message passing behind
+   an easy-to-use API that takes a message, does all of the behind the scenes work, and then returns a response. This
+   description looks like a *Remote Procedure Call* system.
 
 In this codebase, I've implemented a Remote Procedure Call (RPC) API.
 
@@ -102,7 +109,7 @@ One thing I'm omitting with the RPC implementation is an "absolute unique identi
 Without this uniqueness, it's potentially possible to "cross beams" and, for example, have an RPC client process a
 message that was not intended for it. I think this is virtually impossible though because we are in a browser
 environment where we exercise almost complete control of the environment. By contrast, an RPC system in a distributed
-system spanning different networks would need to handle these cases. 
+system spanning different networks would need to handle these cases.
 
 ## Instructions
 
@@ -189,6 +196,8 @@ General clean ups, TODOs and things I wish to implement for this project:
 * This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
   finding basic problems. For example, I changed the signature of the RPC client, and it's pretty easy to miss a call
   site and update the args.
+* Get rid of the symlinks. It doesn't work on Windows. I think I need a build script, like the Firefox build script. It
+  be should be pretty easy to make a Windows bat script or maybe Powershell.
 
 ## Finished Wish List items
 
@@ -279,11 +288,11 @@ These are the finished items from the Wish List:
 
   Solidify on a "Posts viewer" name for the `generate-html.html` (do all the code renaming) and create a "download"
   option as a button on this page.
-* DONE Consider adding RPC from the extension to the web page. Currently there is only the other way where the
-  extension background script is the RPC server and the web page is the RPC client. But the other way would create a
-  needed communication channel. Currently, the way that the extension communicates commands to the web page is an
-  awkward "load another tiny script on the page" strategy. The many little content scripts and web scripts added to
-  handle the dispatch of the "scrape votes" or "expand posts" command is verbose. They include:
+* DONE Consider adding RPC from the extension to the web page. Currently there is only the other way where the extension
+  background script is the RPC server and the web page is the RPC client. But the other way would create a needed
+  communication channel. Currently, the way that the extension communicates commands to the web page is an awkward "load
+  another tiny script on the page" strategy. The many little content scripts and web scripts added to handle the
+  dispatch of the "scrape votes" or "expand posts" command is verbose. They include:
     * (DONE Converted to RPC) `content-script-scrape-votes.js`
     * (DONE Converted to RPC) `content-script-expand-posts.js`
     * (DONE Converted to RPC) `web-scrape-votes.js`
@@ -295,8 +304,8 @@ These are the finished items from the Wish List:
     * DONE First, start by defining an `RpcServer` interface class and a `BackgroundScriptRpcServer` class. Use
       the `BackgroundScriptRpcServer`
       in `init-common.js`.
-    * DONE Next, define a server on the front-end and a client in the background. This is a bit abstract so I
-      need to gather my thoughts. Consider the *direction-specific* messaging channels that already exist:
+    * DONE Next, define a server on the front-end and a client in the background. This is a bit abstract so I need to
+      gather my thoughts. Consider the *direction-specific* messaging channels that already exist:
         * From web page to background scripts (Chrome; `ChromiumRpcClient.js` `ChromiumBackgroundScriptRpcServer.js`)
         * From web page to content scripts (Firefox; `FirefoxRpcClient.js` to `content-script-messaging-proxy.js`)
         * From content script to background (Firefox; `content-script-messaging-proxy.js`
@@ -322,8 +331,8 @@ These are the finished items from the Wish List:
     * For servers, the name should follow: 1) BrowserDescriptor 2) DestinationDescriptor 3) "RpcServer"
 
   The class comments should follow the same order.
-* DONE Consider turning `content-script-messaging-proxy.js` into a specific component of the RPC system. The genericness of
-  it is becoming more confusing I think. This work will include baking in the "procedure target RPC" in the RpcClient
+* DONE Consider turning `content-script-messaging-proxy.js` into a specific component of the RPC system. The genericness
+  of it is becoming more confusing I think. This work will include baking in the "procedure target RPC" in the RpcClient
   and RpcServer classes and also handling it in the content script proxy.
 
 ## Notes

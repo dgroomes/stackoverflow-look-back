@@ -69,15 +69,15 @@ function downloadScripts() {
     const noDepsScripts = [
         "rpc/RpcClient.js",
         "rpc/RpcServer.js",
-        "AppStorage.js",
-        "VotesScraper.js",
-        "PostsExpander.js",
-        "PostsViewer.js",
-        "vote.js",
-        "post.js",
-        "util/download-to-file.js",
-        "util/jquery-proxy.js",
-        "util/to-json.js"
+        "web/AppStorage.js",
+        "web/VotesScraper.js",
+        "web/PostsExpander.js",
+        "web/PostsViewer.js",
+        "web/vote.js",
+        "web/post.js",
+        "web/util/download-to-file.js",
+        "web/util/jquery-proxy.js",
+        "web/util/to-json.js"
     ]
 
     // These files depend on another file already having been loaded because they use the "extends" keyword at the
@@ -99,7 +99,7 @@ function downloadScripts() {
      */
     function includeScript(fileName) {
         let el = document.createElement("script")
-        el.src = `${webResourcesOrigin}/web/${fileName}`
+        el.src = `${webResourcesOrigin}/${fileName}`
         document.head.append(el)
 
         return new Promise((res, rej) => {
