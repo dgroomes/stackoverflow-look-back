@@ -68,6 +68,7 @@ function detectEnvironment() {
 function downloadScripts() {
     const noDepsScripts = [
         "rpc/RpcClient.js",
+        "rpc/RpcServer.js",
         "AppStorage.js",
         "VotesScraper.js",
         "PostsExpander.js",
@@ -83,7 +84,9 @@ function downloadScripts() {
     // top-level. If I used the module system would this not be a problem?
     const oneDepsScripts = [
         "rpc/ChromiumWebPageToBackgroundRpcClient.js",
-        "rpc/FirefoxWebPageToContentScriptRpcClient.js"
+        "rpc/FirefoxWebPageToContentScriptRpcClient.js",
+        "rpc/ChromiumWebPageRpcServer.js",
+        "rpc/FirefoxWebPageRpcServer.js"
     ]
 
     /**
@@ -115,20 +118,33 @@ async function configureState() {
     /**
      * This just exists to help intellisense in the IDE
      * @param {RpcClient} rpcClient
+     * @param {RpcServer} rpcServer
      */
-    function assignPolymorphicGlobals(rpcClient) {
+    function assignPolymorphicGlobals(rpcClient, rpcServer) {
         window.rpcClient = rpcClient
+        window.rpcServer = rpcServer
     }
 
     let rpcClient
+    let rpcServer
 
     if (browserDescriptor === "chromium") {
         rpcClient = new ChromiumWebPageToBackgroundRpcClient(webExtensionId)
+        rpcServer = new ChromiumWebPageRpcServer()
     } else if (browserDescriptor === "firefox") {
         rpcClient = new FirefoxWebPageToContentScriptRpcClient(webExtensionId)
+        rpcServer = new FirefoxWebPageRpcServer()
     } else {
         throw new Error(`Unexpected browser: ${browserDescriptor}. Expected either 'chromium' or 'firefox'`)
     }
+
+    rpcServer.registerCallbackProcedure("scrape-votes", (_procedureArgs, _resolve) => {
+        votesScraper.scrapeVotes()
+    })
+    rpcServer.registerPromiseProcedure("expand-posts", (_procedureArgs) => {
+        return postsExpander.expandPosts()
+    })
+    rpcServer.listen()
 
     window.appStorage = new AppStorage(rpcClient)
 
@@ -142,7 +158,7 @@ async function configureState() {
     window.postsExpander = new PostsExpander()
     window.postsViewer = new PostsViewer()
 
-    assignPolymorphicGlobals(rpcClient)
+    assignPolymorphicGlobals(rpcClient, rpcServer)
 }
 
 /**

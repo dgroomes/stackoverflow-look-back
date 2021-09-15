@@ -64,3 +64,28 @@ window.addEventListener("message", ({data}) => {
             window.postMessage(messageToWindow, "*")
         })
 })
+
+// Connect background RPC clients to web page RPC servers.
+//
+// Listen for "RPC request" messages from the extension messaging system and forward them to an RPC server on the web
+// page via a window message.
+//
+// This implementation does *not* collect the response (i.e. return value) from the remote procedure call. I have decided
+// not to implement that due to the high complexity and low need. If needed, I can implement this.
+chrome.runtime.onMessage.addListener(function (message, _sender, _sendResponse) {
+    console.debug("[content-script-rpc-proxy.js] Received a message via the extension messaging system:")
+    console.debug(JSON.stringify({message}, null, 2))
+
+    if (message.procedureTargetReceiver !== "content-script-rpc-proxy") return
+
+    let {procedureName, procedureArgs} = message
+
+    console.debug("[content-script-rpc-proxy.js] Broadcasting the RPC request to the window so that it may be received by the web page:")
+    let messageOutgoing = {
+        procedureTargetReceiver: "web-page-server",
+        procedureName,
+        procedureArgs
+    }
+    console.debug(JSON.stringify(messageOutgoing, null, 2))
+    window.postMessage(messageOutgoing, "*")
+})

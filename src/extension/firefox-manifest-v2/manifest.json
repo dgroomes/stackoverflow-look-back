@@ -5,7 +5,7 @@
   "manifest_version": 2,
   "background": {
     "scripts": [
-      "extension/common/rpc/RpcServer.js",
+      "web/rpc/RpcServer.js",
       "extension/common/rpc/FirefoxBackgroundRpcServer.js",
       "extension/common/init-common.js",
       "init.js"

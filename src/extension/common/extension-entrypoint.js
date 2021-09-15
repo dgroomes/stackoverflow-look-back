@@ -51,11 +51,27 @@ async function initializeWebPage() {
     await webPageInitialized
 }
 
+/**
+ * Execute a remote procedure on the web page.
+ *
+ * Warning: this codes to Firefox-specific APIs. There should be a Chrome equivalent API for getting the tab ID.
+ */
+async function execProcedureInWebPage(procedureName) {
+    let rpcClient = await new Promise(resolve => {
+        chrome.tabs.query({active: true}, results => {
+            let activeTab = results[0] // The "query" function returns an array of results, but when searching for the "active" tab there of course can only be one. It is the first element in the array.
+            resolve(new BackgroundToContentScriptRpcClient(activeTab.id))
+        })
+    })
+
+    rpcClient.execRemoteProcedure(procedureName)
+}
+
 document.getElementById("execute-scrape-votes")
     .addEventListener("click", async () => {
         console.info(`[extension-entrypoint.js] Clicked the 'scrape votes' button`)
         await initializeWebPage()
-        await execContentScript("/extension/common/content-script-scrape-votes.js")
+        await execProcedureInWebPage("scrape-votes")
     })
 
 
@@ -63,7 +79,7 @@ document.getElementById("execute-expand-posts")
     .addEventListener("click", async () => {
         console.info(`[extension-entrypoint.js] Clicked the 'expand posts' button`)
         await initializeWebPage()
-        await execContentScript("/extension/common/content-script-expand-posts.js")
+        await execProcedureInWebPage("expand-posts")
     })
 
 document.getElementById("view-posts")

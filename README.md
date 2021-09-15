@@ -183,15 +183,15 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* IN PROGRESS Consider adding RPC from the extension to the web page. Currently there is only the other way where the
+* DONE Consider adding RPC from the extension to the web page. Currently there is only the other way where the
   extension background script is the RPC server and the web page is the RPC client. But the other way would create a
   needed communication channel. Currently, the way that the extension communicates commands to the web page is an
   awkward "load another tiny script on the page" strategy. The many little content scripts and web scripts added to
   handle the dispatch of the "scrape votes" or "expand posts" command is verbose. They include:
-    * `content-script-scrape-votes.js`
-    * `content-script-expand-posts.js`
-    * `web-scrape-votes.js`
-    * `web-expand-posts.js`
+    * (DONE Converted to RPC) `content-script-scrape-votes.js`
+    * (DONE Converted to RPC) `content-script-expand-posts.js`
+    * (DONE Converted to RPC) `web-scrape-votes.js`
+    * (DONE Converted to RPC) `web-expand-posts.js`
 
   They could all go removed and replaced with an RPC server (listener) that listens for the "scrape votes" or "expand
   posts"
@@ -199,7 +199,7 @@ General clean ups, TODOs and things I wish to implement for this project:
     * DONE First, start by defining an `RpcServer` interface class and a `BackgroundScriptRpcServer` class. Use
       the `BackgroundScriptRpcServer`
       in `init-common.js`.
-    * IN PROGRESS Next, define a server on the front-end and a client in the background. This is a bit abstract so I
+    * DONE Next, define a server on the front-end and a client in the background. This is a bit abstract so I
       need to gather my thoughts. Consider the *direction-specific* messaging channels that already exist:
         * From web page to background scripts (Chrome; `ChromiumRpcClient.js` `ChromiumBackgroundScriptRpcServer.js`)
         * From web page to content scripts (Firefox; `FirefoxRpcClient.js` to `content-script-messaging-proxy.js`)
@@ -217,6 +217,9 @@ General clean ups, TODOs and things I wish to implement for this project:
       into our Chromium design (before, it was just for Firefox) and then extend `content-script-messaging-proxy.js` to
       handle both directions. It should transfer messages from the web page to the background scripts and it should do
       the reverse: transfer messages from the background scripts to the web page.
+        * DONE Prototype a "server to front-end" RPC for Firefox. Why Firefox? Because it already incorporates the
+          `content-script-messaging-proxy.js` so it will be easier. And if the prototype works, there's a much clearer
+          path for a general implementation and/or a Chromium implementation.
 * Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like that.
 * DONE Standardize on RPC class naming convention.
     * For clients, the name should follow: 1) BrowserDescriptor 2) SourceDescription 3) DestinationDescriptor 4) "
