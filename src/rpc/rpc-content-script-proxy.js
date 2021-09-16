@@ -5,7 +5,7 @@
 // First of all, it's not consistent in general because it's not using a class, but to be honest, classes are often not
 // the right tool for the job.
 
-console.debug("[content-script-rpc-proxy.js] Initializing...")
+console.debug("[rpc-content-script-proxy.js] Initializing...")
 
 // Connect web page RPC clients to background RPC servers.
 //
@@ -16,7 +16,7 @@ console.debug("[content-script-rpc-proxy.js] Initializing...")
 // This is only needed for Firefox. Chromium browsers, by contrast, give the web page special access to the extension
 // messaging API thanks to the "externally_connectable" Manifest field.
 window.addEventListener("message", ({data}) => {
-    console.debug(`[content-script-rpc-proxy.js] Received a message on the 'window'. Here is the 'data':`)
+    console.debug(`[rpc-content-script-proxy.js] Received a message on the 'window'. Here is the 'data':`)
     console.debug(JSON.stringify({data}, null, 2))
 
     if (data.procedureTargetReceiver !== "content-script-rpc-proxy") return
@@ -29,20 +29,20 @@ window.addEventListener("message", ({data}) => {
         procedureName,
         procedureArgs
     }
-    console.debug("[content-script-rpc-proxy.js] Sending an RPC request message to the extension messaging system:")
+    console.debug("[rpc-content-script-proxy.js] Sending an RPC request message to the extension messaging system:")
     console.debug(JSON.stringify(messageToMessagingSystem, null, 2))
     chrome.runtime.sendMessage(null,
         messageToMessagingSystem,
         null,
         function (returnValue) {
-            console.debug(`[content-script-rpc-proxy.js] Got a response via callback from the extension messaging system:`)
+            console.debug(`[rpc-content-script-proxy.js] Got a response via callback from the extension messaging system:`)
             console.debug({returnValue})
 
             // While technically not necessary, I've found this error handling and logging useful. While developing the
             // RPC framework, I frequently get an "undefined" here and so the nicer logging makes for a less frustrating
             // development experience.
             if (typeof returnValue === "undefined") {
-                let errorMsg = `[content-script-rpc-proxy.js] Something went wrong. This is likely a programmer error. Got an 'undefined' return value from the extension messaging system for an RPC request for '${procedureName}'.`
+                let errorMsg = `[rpc-content-script-proxy.js] Something went wrong. This is likely a programmer error. Got an 'undefined' return value from the extension messaging system for an RPC request for '${procedureName}'.`
 
                 // It is not enough to just throw the error on the next line. The error actually gets silently swallowed
                 // by the browser's extension framework and you will never see the error in the logs. Instead we
@@ -69,14 +69,14 @@ window.addEventListener("message", ({data}) => {
 // This implementation does *not* collect the response (i.e. return value) from the remote procedure call. I have decided
 // not to implement that due to the high complexity and low need. If needed, I can implement this.
 chrome.runtime.onMessage.addListener(function (message, _sender, _sendResponse) {
-    console.debug("[content-script-rpc-proxy.js] Received a message via the extension messaging system:")
+    console.debug("[rpc-content-script-proxy.js] Received a message via the extension messaging system:")
     console.debug(JSON.stringify({message}, null, 2))
 
     if (message.procedureTargetReceiver !== "content-script-rpc-proxy") return
 
     let {procedureName, procedureArgs} = message
 
-    console.debug("[content-script-rpc-proxy.js] Broadcasting the RPC request to the window so that it may be received by the web page:")
+    console.debug("[rpc-content-script-proxy.js] Broadcasting the RPC request to the window so that it may be received by the web page:")
     let messageOutgoing = {
         procedureTargetReceiver: "web-page-server",
         procedureName,

@@ -66,9 +66,7 @@ function detectEnvironment() {
  * elements will have called their 'onload' functions.
  */
 function downloadScripts() {
-    const noDepsScripts = [
-        "rpc/RpcClient.js",
-        "rpc/RpcServer.js",
+    const scripts = [
         "web-page/AppStorage.js",
         "web-page/VotesScraper.js",
         "web-page/PostsExpander.js",
@@ -78,15 +76,6 @@ function downloadScripts() {
         "web-page/util/download-to-file.js",
         "web-page/util/jquery-proxy.js",
         "web-page/util/to-json.js"
-    ]
-
-    // These files depend on another file already having been loaded because they use the "extends" keyword at the
-    // top-level. If I used the module system would this not be a problem?
-    const oneDepsScripts = [
-        "rpc/ChromiumWebPageToBackgroundRpcClient.js",
-        "rpc/FirefoxWebPageToContentScriptRpcClient.js",
-        "rpc/ChromiumWebPageRpcServer.js",
-        "rpc/FirefoxWebPageRpcServer.js"
     ]
 
     /**
@@ -109,34 +98,12 @@ function downloadScripts() {
         })
     }
 
-    return Promise.all(noDepsScripts.map(fileName => includeScript(fileName)))
-        .then(_ => Promise.all(oneDepsScripts.map(fileName => includeScript(fileName))))
+    return Promise.all(scripts.map(fileName => includeScript(fileName)))
 }
 
 async function configureState() {
 
-    /**
-     * This just exists to help intellisense in the IDE
-     * @param {RpcClient} rpcClient
-     * @param {RpcServer} rpcServer
-     */
-    function assignPolymorphicGlobals(rpcClient, rpcServer) {
-        window.rpcClient = rpcClient
-        window.rpcServer = rpcServer
-    }
-
-    let rpcClient
-    let rpcServer
-
-    if (browserDescriptor === "chromium") {
-        rpcClient = new ChromiumWebPageToBackgroundRpcClient(webExtensionId)
-        rpcServer = new ChromiumWebPageRpcServer()
-    } else if (browserDescriptor === "firefox") {
-        rpcClient = new FirefoxWebPageToContentScriptRpcClient(webExtensionId)
-        rpcServer = new FirefoxWebPageRpcServer()
-    } else {
-        throw new Error(`Unexpected browser: ${browserDescriptor}. Expected either 'chromium' or 'firefox'`)
-    }
+    initRpc(browserDescriptor, webExtensionId)
 
     rpcServer.registerCallbackProcedure("scrape-votes", (_procedureArgs, _resolve) => {
         votesScraper.scrapeVotes()
@@ -157,8 +124,6 @@ async function configureState() {
     window.votesScraper = new VotesScraper()
     window.postsExpander = new PostsExpander()
     window.postsViewer = new PostsViewer()
-
-    assignPolymorphicGlobals(rpcClient, rpcServer)
 }
 
 /**
@@ -167,7 +132,6 @@ async function configureState() {
 async function exec() {
     detectEnvironment()
     await downloadScripts()
-    console.debug("All scripts were included.")
     await configureState()
     console.debug(`[web-load-source.js] [${Date.now()}] Fully initialized.`)
     window.postMessage("web-page-initialized", "*")

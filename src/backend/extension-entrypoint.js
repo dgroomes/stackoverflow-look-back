@@ -32,7 +32,8 @@ async function execContentScript(fileName) {
  * @return {Promise} a promise that resolves when the web page is fully loaded and initialized with the extension source code.
  */
 async function initializeWebPage() {
-    await execContentScript("/rpc/content-script-rpc-proxy.js")
+    await execContentScript("/rpc/rpc-content-script-proxy.js")
+    await execContentScript("/rpc/rpc-content-script-load-source.js")
 
     let webPageInitialized = new Promise(resolve => {
         console.debug(`[extension-entrypoint.js] [${Date.now()}] Registering listener for 'web-page-initialized'`)

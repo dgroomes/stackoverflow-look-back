@@ -85,7 +85,7 @@ actually executes on the web page, where standard Web APIs can be used. This cod
 data scraping and HTML generation. As such, this code is perfectly portable to other "evergreen" browsers because it
 just relies on standard web APIs instead of non-standard browser extension APIs (i.e. Manifest V2 and V3).
 
-### RPC
+### Browser Extension RPC Framework
 
 A significant portion of a non-trivial web extension is often dedicated to *Message Passing* between the four components
 of an extension: (1) a background script (2) a popup script (3) a content script (4) the web page. Message passing is a
@@ -105,6 +105,19 @@ Without this uniqueness, it's potentially possible to "cross beams" and, for exa
 message that was not intended for it. I think this is virtually impossible though because we are in a browser
 environment where we exercise almost complete control of the environment. By contrast, an RPC system in a distributed
 system spanning different networks would need to handle these cases.
+
+#### RPC Framework Usage Instructions
+
+Browser extensions that use the RPC Framework must follow these steps to depend on and initialize the framework in the
+extension and web page contexts:
+
+1. Manifest changes
+    * The `manifest.json` file must allow access to the RPC JavaScript source code files as needed.
+1. Load the content scripts
+    * The content scripts `/rpc/rpc-content-script-proxy.js` and `/rpc/rpc-content-script-load-source.js` must be
+      executed.
+1. Initialize objects in the web page
+    * The web page must initialize the RPC objects on the web page by calling `initRpc(...)`
 
 ## Instructions
 
@@ -185,10 +198,9 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* Consider how to move the generic RPC code in `extension-entrypoint.js` (specifically the `initializeWebPage()` function)
-  and the generic RPC code in `web-load-source.js` into the `src/rpc/` directory. Ideally, all generic RPC code should
-  live separately from the other code. It should be such that the RPC framework is good enough to use by even another
-  project!
+* DONE Consider how to move the generic RPC code in `extension-entrypoint.js` and the generic RPC code in
+  `web-load-source.js` into the `src/rpc/` directory. Ideally, all generic RPC code should live separately from the
+  other code. It should be such that the RPC framework is good enough to use by even another project!
 * Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like that.
 * Defect. If you click the extension button more than once, it is problematic because it runs the content scripts every
   time, which mean multiple window listeners are added because of `content-script-messaging-proxy.js`.

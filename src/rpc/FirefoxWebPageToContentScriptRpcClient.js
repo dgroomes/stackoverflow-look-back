@@ -22,7 +22,7 @@ class FirefoxWebPageToContentScriptRpcClient extends RpcClient {
      * extension API to make a one-for-one request/response procedure call. Honestly, the implementation seems a little
      * strange but it makes for a great API to the calling code. I think this is an effective pattern.
      *
-     * This function will send a message to the content-script RPC proxy ("content-script-rpc-proxy.js") and then
+     * This function will send a message to the content-script RPC proxy ("rpc-content-script-proxy.js") and then
      * register a listener on the window to listen for the eventual expected response message.
      */
     execRemoteProcedure(procedureName, procedureArgs) {
