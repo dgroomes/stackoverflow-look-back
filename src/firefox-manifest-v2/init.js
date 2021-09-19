@@ -2,10 +2,8 @@
 
 console.debug("[firefox-manifest-v2/init.js] Initializing...")
 
-browserDescriptor = "firefox"
-
 browser.runtime.onInstalled.addListener(() => {
-    setDefaultConfig()
+    setConfig()
+    // noinspection JSIgnoredPromiseFromCall
+    initRpcBackground("firefox")
 })
-
-addRpcServer(FirefoxBackgroundRpcServer)

@@ -115,11 +115,13 @@ extension and web page contexts:
 
 1. Manifest changes
     * The `manifest.json` file must allow access to the RPC JavaScript source code files as needed.
+1. Initialize configuration in the background
+    * The background script must invoke `initRpcBackground(...)`  
 1. Load the content scripts
     * The content scripts `/rpc/rpc-content-script-proxy.js` and `/rpc/rpc-content-script-load-source.js` must be
       executed.
 1. Initialize objects in the web page
-    * The web page must initialize the RPC objects on the web page by calling `initRpc(...)`
+    * The web page must initialize the RPC objects on the web page by calling `initRpcWebPage(...)`
 
 ## Instructions
 
@@ -219,6 +221,15 @@ General clean ups, TODOs and things I wish to implement for this project:
 * Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
 * Clean up the References. Organize MDN links together.
+* DONE Embed the "browserDescriptor" into the RPC Framework so that it may use it to instantiate the correct
+  concrete sub-classes of RpcServer and RpcClient. Because there are multiple contexts (background, popup, content
+  script, and web page), I think its useful to save the browserDescriptor in storage.
+    * DONE Create an `rpc-background-init.js` file. This should have a function to take the browserDescriptor as a parameter
+      and save it to storage with some name like "rpc-browser-descriptor". The "rpc-" prefix should be used as a convention
+      to make it clear that this property is owned and operated by the RPC framework and not by the app code. There should
+      be another function to instantiate the `BackgroundToContentScriptRpcClient`. This would be a "factory" function. I
+      assume there will be a Chromium-specific and Firefox-specific versions of this client in the near future.    
+      * DONE Create an `rpc-storage.js` file that has functions to get and save the browserDescriptor  
 
 ## Finished Wish List items
 
@@ -429,5 +440,7 @@ These are the finished items from the Wish List:
 * [MDN Web Docs: browserAction.onClicked](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction/onClicked)
 * [Chrome extension docs: *chrome.browserAction*](https://developer.chrome.com/docs/extensions/reference/browserAction/)
 * [MDN Web Docs: tabs.sendMessage()](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/sendMessage)
-    * Send messages from backround scripts to content scripts
+    * Send messages from background scripts to content scripts
     * [Chrome equivalent](https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage) 
+* [MDN Web Docs: extension storage API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage)
+    * > Enables extensions to store and retrieve data, and listen for changes to stored items.

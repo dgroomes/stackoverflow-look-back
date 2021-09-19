@@ -5,6 +5,35 @@
 
 console.debug("[extension-entrypoint.js] Initializing...")
 
+let _initRpcServer = false
+
+/**
+ * Create an RPC server in the background script that will receive remote procedure call (RPC) requests from the front-end
+ * and then executes those requests.
+ */
+async function initRpcServer() {
+    if (_initRpcServer) return
+    _initRpcServer = true
+    let rpcServer = await getRpcServer()
+
+    rpcServer.registerCallbackProcedure("save", (procedureArgs, resolve) => {
+        chrome.storage.local.set(procedureArgs, () => {
+            console.debug("The extension successfully saved the data")
+            resolve(true)
+        })
+    })
+
+    rpcServer.registerCallbackProcedure("get", (procedureArgs, resolve) => {
+        let key = procedureArgs.key
+        chrome.storage.local.get(key, (found) => {
+            console.debug("The extension successfully read the data")
+            resolve(found)
+        })
+    })
+
+    rpcServer.listen()
+}
+
 /**
  * Execute a content script.
  *
@@ -22,6 +51,8 @@ async function execContentScript(fileName) {
     })
 }
 
+let _initWebPage = false
+
 /**
  * Load the web page with the extension JavaScript source code and wait for it's initialization.
  *
@@ -31,7 +62,9 @@ async function execContentScript(fileName) {
  *
  * @return {Promise} a promise that resolves when the web page is fully loaded and initialized with the extension source code.
  */
-async function initializeWebPage() {
+async function initWebPage() {
+    if (_initWebPage) return
+    _initWebPage = true
     await execContentScript("/rpc/rpc-content-script-proxy.js")
     await execContentScript("/rpc/rpc-content-script-load-source.js")
 
@@ -54,24 +87,17 @@ async function initializeWebPage() {
 
 /**
  * Execute a remote procedure on the web page.
- *
- * Warning: this codes to Firefox-specific APIs. There should be a Chrome equivalent API for getting the tab ID.
  */
 async function execProcedureInWebPage(procedureName) {
-    let rpcClient = await new Promise(resolve => {
-        chrome.tabs.query({active: true}, results => {
-            let activeTab = results[0] // The "query" function returns an array of results, but when searching for the "active" tab there of course can only be one. It is the first element in the array.
-            resolve(new BackgroundToContentScriptRpcClient(activeTab.id))
-        })
-    })
-
+    await initRpcServer()
+    await initWebPage()
+    let rpcClient = await getRpcClient()
     rpcClient.execRemoteProcedure(procedureName)
 }
 
 document.getElementById("execute-scrape-votes")
     .addEventListener("click", async () => {
         console.info(`[extension-entrypoint.js] Clicked the 'scrape votes' button`)
-        await initializeWebPage()
         await execProcedureInWebPage("scrape-votes")
     })
 
@@ -79,7 +105,6 @@ document.getElementById("execute-scrape-votes")
 document.getElementById("execute-expand-posts")
     .addEventListener("click", async () => {
         console.info(`[extension-entrypoint.js] Clicked the 'expand posts' button`)
-        await initializeWebPage()
         await execProcedureInWebPage("expand-posts")
     })
 

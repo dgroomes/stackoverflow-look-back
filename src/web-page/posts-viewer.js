@@ -1,4 +1,4 @@
-console.debug("[posts-viewer.js] Running...")
+console.debug("[posts-viewer.js] Initializing...")
 
 programReady.then(() => {
     postsViewer.init()

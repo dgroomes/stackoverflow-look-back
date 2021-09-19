@@ -103,7 +103,7 @@ function downloadScripts() {
 
 async function configureState() {
 
-    initRpc(browserDescriptor, webExtensionId)
+    initRpcWebPage(browserDescriptor, webExtensionId)
 
     rpcServer.registerCallbackProcedure("scrape-votes", (_procedureArgs, _resolve) => {
         votesScraper.scrapeVotes()

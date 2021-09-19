@@ -10,7 +10,7 @@
  *  @param browserDescriptor either "chromium" or "firefox" are supported
  *  @param webExtensionId
  */
-function initRpc(browserDescriptor, webExtensionId) {
+function initRpcWebPage(browserDescriptor, webExtensionId) {
     console.debug("[rpc-web-page-init.js] Initializing...")
     let rpcClient
     let rpcServer
@@ -22,7 +22,7 @@ function initRpc(browserDescriptor, webExtensionId) {
         rpcClient = new FirefoxWebPageToContentScriptRpcClient(webExtensionId)
         rpcServer = new FirefoxWebPageRpcServer()
     } else {
-        throw new Error(`Unexpected browser: ${browserDescriptor}. Expected either 'chromium' or 'firefox'`)
+        throw new Error(`Unexpected browser: '${browserDescriptor}'. Expected either 'chromium' or 'firefox'`)
     }
 
     /**

@@ -1,6 +1,6 @@
 // This code should run in a content script and will load the web page with the web page components of the RPC framework.
 
-console.debug("[rpc-content-script-load-source.js] Running...")
+console.debug("[rpc-content-script-load-source.js] Initializing...")
 
 /**
  * Include a script dependency.

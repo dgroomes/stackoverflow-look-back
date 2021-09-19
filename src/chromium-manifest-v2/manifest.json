@@ -5,8 +5,8 @@
   "manifest_version": 2,
   "background": {
     "scripts": [
-      "rpc/RpcServer.js",
-      "rpc/ChromiumBackgroundRpcServer.js",
+      "rpc/rpc-storage.js",
+      "rpc/rpc-background-init.js",
       "backend/init-common.js",
       "init.js"
     ],
