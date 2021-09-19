@@ -1,6 +1,6 @@
-# stackoverflow-static
+# StackOverflow *Look Back Tool*
 
-🛠 Extract and search the posts you've up-voted on StackOverflow.
+🛠 Extract and search the posts you've up-voted on StackOverflow. ***Look back*** on your data.
 
 ## Why?
 
@@ -155,7 +155,7 @@ Follow these instructions to install the tool as a Chrome browser extension and 
         * Alternatively, for Opera, it is a cube button
         * Alternatively, for Firefox, there is NOT an extensions menu and instead you invoke the extension directly by
           clicking a puzzle icon button on the right side of the URL bar.
-    * Click the "stackoverflow-static" extension entry
+    * Click the "stackoverflow-look-back" extension entry
     * A popup will show up with buttons titled "Scrape votes" and "Expand posts". Click "Scrape votes" and check the
       console logs. The votes data will have been scraped and saved to browser storage.
 1. Expand the post data
@@ -207,7 +207,7 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like that.
+* DONE Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like that.
 * Defect. If you click the extension button more than once, it is problematic because it runs the content scripts every
   time, which mean multiple window listeners are added because of `content-script-messaging-proxy.js`.
 * This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
@@ -216,6 +216,9 @@ General clean ups, TODOs and things I wish to implement for this project:
 * Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
 * Clean up the References. Organize MDN links together.
+* Remove the 'votesPageLimit' from storage and instead use an input box in the extension popup. The storage is not worth
+  the code complexity. Plus the feature is not even really useful. Might as well remove the code and make the limit even
+  more obvious by putting it right next to the "Scrape votes" button. This removes the discovery problem for that config.
 
 ## Finished Wish List items
 

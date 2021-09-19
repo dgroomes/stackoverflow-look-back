@@ -1,6 +1,6 @@
 {
-  "name": "stackoverflow-static",
-  "description": "Scrape a static copy of your own StackOverflow votes data",
+  "name": "stackoverflow-look-back",
+  "description": "Extract and search the posts you've up-voted on StackOverflow. *Look back* on your data.",
   "version": "0.1",
   "manifest_version": 2,
   "background": {

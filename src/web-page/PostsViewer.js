@@ -97,6 +97,6 @@ class PostsViewer {
         let serializer = new XMLSerializer()
         let html = serializer.serializeToString(document)
 
-        downloadToFile(html, "stackoverflow-static.html")
+        downloadToFile(html, "stackoverflow-look-back.html")
     }
 }
