@@ -1,7 +1,7 @@
 // This code runs in the popup. It bootstraps the content scripts which then bootstrap the web page. It waits for user
 // input when any of the "Scrape votes", "Expand posts", or "View posts" buttons are clicked in the popup.
 
-console.debug("[extension-entrypoint.js] Initializing...")
+console.debug("[popup.js] Initializing...")
 
 /**
  * Initialize everything.
@@ -37,12 +37,12 @@ let initPromise = (async function () {
     await execContentScript("/rpc/rpc-content-script-load-source.js")
 
     let webPageInitialized = new Promise(resolve => {
-        console.debug(`[extension-entrypoint.js] [${Date.now()}] Registering listener for 'web-page-initialized'`)
+        console.debug(`[popup.js] [${Date.now()}] Registering listener for 'web-page-initialized'`)
         chrome.runtime.onMessage.addListener(function webPageInitializedListener(message, _sender, _sendResponse) {
-            console.debug("[extension-entrypoint.js] Received a message from the extension messaging system:")
+            console.debug("[popup.js] Received a message from the extension messaging system:")
             console.debug(JSON.stringify({message}, null, 2))
             if (message === "web-page-initialized") {
-                console.debug(`[extension-entrypoint.js] Detected that the extension source has been loaded into the web page and fully initialized `)
+                console.debug(`[popup.js] Detected that the extension source has been loaded into the web page and fully initialized `)
                 resolve()
                 chrome.runtime.onMessage.removeListener(webPageInitializedListener)
             }
@@ -60,7 +60,7 @@ let initPromise = (async function () {
  * @return {Promise} that resolves when the content script has been loaded/executed(?)
  */
 async function execContentScript(fileName) {
-    console.debug(`[extension-entrypoint.js] Executing content script: ${fileName}`)
+    console.debug(`[popup.js] Executing content script: ${fileName}`)
     return new Promise(resolve => {
         chrome.tabs.executeScript({
             file: fileName
@@ -72,7 +72,7 @@ async function execContentScript(fileName) {
 
 document.getElementById("execute-scrape-votes")
     .addEventListener("click", async () => {
-        console.info(`[extension-entrypoint.js] Clicked the 'scrape votes' button`)
+        console.info(`[popup.js] Clicked the 'scrape votes' button`)
         await initPromise
 
         let votesPageLimit = await new Promise(resolve => {
@@ -83,22 +83,22 @@ document.getElementById("execute-scrape-votes")
 
         let rpcClient = await getRpcClient()
         let votesScraped = await rpcClient.execRemoteProcedure("scrape-votes", { votesPageLimit })
-        console.info(`[extension-entrypoint.js] ${votesScraped} votes scraped!`)
+        console.info(`[popup.js] ${votesScraped} votes scraped!`)
     })
 
 
 document.getElementById("execute-expand-posts")
     .addEventListener("click", async () => {
-        console.info(`[extension-entrypoint.js] Clicked the 'expand posts' button`)
+        console.info(`[popup.js] Clicked the 'expand posts' button`)
         await initPromise
         let rpcClient = await getRpcClient()
         let postsExpanded = await rpcClient.execRemoteProcedure("expand-posts")
-        console.info(`[extension-entrypoint.js] ${postsExpanded} posts expanded!`)
+        console.info(`[popup.js] ${postsExpanded} posts expanded!`)
     })
 
 document.getElementById("view-posts")
     .addEventListener("click", async () => {
-        console.info(`[extension-entrypoint.js] Clicked the 'view posts' button`)
+        console.info(`[popup.js] Clicked the 'view posts' button`)
 
         chrome.tabs.create({
             url: '/web-page/posts-viewer.html'

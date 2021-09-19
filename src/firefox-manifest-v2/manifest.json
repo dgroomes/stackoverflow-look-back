@@ -22,7 +22,7 @@
     "rpc/*"
   ],
   "page_action": {
-    "default_popup": "backend/execute.html",
+    "default_popup": "backend/popup.html",
     "show_matches": [
       "https://stackoverflow.com/*",
       "https://data.stackexchange.com/*"

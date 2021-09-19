@@ -30,7 +30,7 @@
     ]
   },
   "page_action": {
-    "default_popup": "backend/execute.html"
+    "default_popup": "backend/popup.html"
   },
   "options_page": "backend/options.html"
 }
