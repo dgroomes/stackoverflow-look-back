@@ -10,17 +10,6 @@ class AppStorage {
     }
 
     /**
-     * @return {Promise<Number>} a promise containing the votesPageLimit value
-     */
-    getVotesPageLimit() {
-        return this.#rpcClient.execRemoteProcedure("get", {
-            key: "votesPageLimit"
-        }).then(found => {
-            return found.votesPageLimit
-        })
-    }
-
-    /**
      * Save the votes data to storage
      *
      * @param {Array<Vote>} votes

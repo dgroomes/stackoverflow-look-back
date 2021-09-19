@@ -74,8 +74,15 @@ document.getElementById("execute-scrape-votes")
     .addEventListener("click", async () => {
         console.info(`[extension-entrypoint.js] Clicked the 'scrape votes' button`)
         await initPromise
+
+        let votesPageLimit = await new Promise(resolve => {
+            chrome.storage.local.get("votesPageLimit", (found) => {
+                resolve(found.votesPageLimit)
+            })
+        })
+
         let rpcClient = await getRpcClient()
-        let votesScraped = await rpcClient.execRemoteProcedure("scrape-votes")
+        let votesScraped = await rpcClient.execRemoteProcedure("scrape-votes", { votesPageLimit })
         console.info(`[extension-entrypoint.js] ${votesScraped} votes scraped!`)
     })
 

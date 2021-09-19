@@ -6,7 +6,7 @@
  * Set a default value for the 'votesPageLimit' configuration
  */
 function setConfig() {
-    const defaultInitialVotesPageLimit = 1 // a default value for the "votes page limit" configuration.
+    const defaultInitialVotesPageLimit = 2 // a default value for the "votes page limit" configuration.
     chrome.storage.local.set({votesPageLimit: defaultInitialVotesPageLimit}, () => {
         console.debug(`[init.js] Saved default value for 'votesPageLimit': '${defaultInitialVotesPageLimit}'`)
     })

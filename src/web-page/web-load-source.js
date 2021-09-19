@@ -4,7 +4,6 @@
 console.debug("[web-load-source.js] Initializing...")
 
 let browserDescriptor // Either "chromium" or "firefox. Firefox and Chromium web extension APIs have differences and we need to know the browser.
-let extensionContext // Is the web page served directly by the extension? I.e. is the web page at a URL starting with "chrome-extension://"
 let webResourcesOrigin // The origin that serves the web resources like the JavaScript files. This origin will be a special Chromium/Firefox extension URL.
 let webExtensionId // This is the ID of the web extension. This is always a super long ID that's generated the browser.
 let _programReadyResolveRef
@@ -49,12 +48,9 @@ function detectEnvironment() {
     // The "posts-viewer.html" page itself is served by the web extension and so the URL protocol will be
     // "chrome-extension://" or "moz-extension://"
     if (window.origin.startsWith("chrome-extension://") || window.origin.startsWith("moz-extension://")) {
-        extensionContext = true
         detectFromExtensionUrl(window.origin)
         return
     }
-
-    extensionContext = false
 
     let script = document.getElementById("web-load-source")
     detectFromExtensionUrl(script.src)
@@ -105,7 +101,8 @@ async function configureState() {
 
     initRpcWebPage(browserDescriptor, webExtensionId)
 
-    rpcServer.registerPromiseProcedure("scrape-votes", (_procedureArgs) => {
+    rpcServer.registerPromiseProcedure("scrape-votes", (procedureArgs) => {
+        let votesScraper = new VotesScraper(procedureArgs.votesPageLimit)
         return votesScraper.scrapeVotes()
     })
     rpcServer.registerPromiseProcedure("expand-posts", (_procedureArgs) => {
@@ -114,14 +111,6 @@ async function configureState() {
     rpcServer.listen()
 
     window.appStorage = new AppStorage(rpcClient)
-
-    if (!extensionContext) { // This is hacky. But when executing in an extension context, this call will fail because there is no listener.
-        console.debug(`[web-load-source.js] Fetching the votesPageLimit`)
-        window.votesPageLimit = await appStorage.getVotesPageLimit()
-        console.debug(`[web-load-source.js] Got the votesPageLimit (${window.votesPageLimit})`)
-    }
-
-    window.votesScraper = new VotesScraper()
     window.postsExpander = new PostsExpander()
     window.postsViewer = new PostsViewer()
 }

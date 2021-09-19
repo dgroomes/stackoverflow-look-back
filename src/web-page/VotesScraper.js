@@ -7,16 +7,24 @@
  */
 class VotesScraper {
 
+    #votesPageLimit
     votesTab // Get a handle on the "Votes tab" HTML element
     votes = [] // The votes data will be scraped from the HTML and collected into this array as instances of the "Vote" class
     attempts = 0
+
+    /**
+     * @param votesPageLimit the scraping process will be limited to this many pages of the votes data
+     */
+    constructor(votesPageLimit) {
+        this.#votesPageLimit = votesPageLimit
+    }
 
     /**
      * This is the main function
      * @return {Promise} a promise that resolves when the scraping has completed. The promise value is the number of votes scraped.
      */
     scrapeVotes() {
-        console.info(`Scraping votes...  [limit=${votesPageLimit}]`)
+        console.info(`Scraping votes...  [limit=${this.#votesPageLimit}]`)
         this.votesTab = document.getElementById("user-tab-votes")
         let that = this // Accommodate the awkwardness of ES6 classes
 
@@ -51,6 +59,7 @@ class VotesScraper {
      * Scrape the current page of votes data.
      */
     scrapeCurrentPage() {
+        this.attempts++
 
         // Get all row elements of the "Votes cast" table.
         //
@@ -105,7 +114,7 @@ row: ${row.outerHTML}
                 })
         }
 
-        if (++this.attempts > votesPageLimit) {
+        if (this.attempts >= this.#votesPageLimit) {
             console.info(`The limit has been reached for 'next page' attempts. attempts=${this.attempts}`)
             save()
             return

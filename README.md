@@ -235,7 +235,7 @@ General clean ups, TODOs and things I wish to implement for this project:
   anymore to verify if it the tool is working or not.
     * DONE Implement for Chrome.
     * DONE Implement for Firefox
-* There is no need to fetch the votes page limit from the web page. It can be passed as an argument of the remote
+* DONE There is no need to fetch the votes page limit from the web page. It can be passed as an argument of the remote
   procedure call from the background.
 
 ## Finished Wish List items
