@@ -207,36 +207,15 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* DONE Consider how to move the generic RPC code in `extension-entrypoint.js` and the generic RPC code in
-  `web-load-source.js` into the `src/rpc/` directory. Ideally, all generic RPC code should live separately from the
-  other code. It should be such that the RPC framework is good enough to use by even another project!
 * Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like that.
 * Defect. If you click the extension button more than once, it is problematic because it runs the content scripts every
   time, which mean multiple window listeners are added because of `content-script-messaging-proxy.js`.
 * This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
   finding basic problems. For example, I changed the signature of the RPC client, and it's pretty easy to miss a call
   site and update the args.
-* DONE Get rid of the symlinks. It doesn't work on Windows. I think I need a build script, like the Firefox build
-  script. It be should be pretty easy to make a Windows bat script or maybe Powershell.
 * Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
 * Clean up the References. Organize MDN links together.
-* DONE Embed the "browserDescriptor" into the RPC Framework so that it may use it to instantiate the correct
-  concrete sub-classes of RpcServer and RpcClient. Because there are multiple contexts (background, popup, content
-  script, and web page), I think its useful to save the browserDescriptor in storage.
-    * DONE Create an `rpc-background-init.js` file. This should have a function to take the browserDescriptor as a parameter
-      and save it to storage with some name like "rpc-browser-descriptor". The "rpc-" prefix should be used as a convention
-      to make it clear that this property is owned and operated by the RPC framework and not by the app code. There should
-      be another function to instantiate the `BackgroundToContentScriptRpcClient`. This would be a "factory" function. I
-      assume there will be a Chromium-specific and Firefox-specific versions of this client in the near future.    
-      * DONE Create an `rpc-storage.js` file that has functions to get and save the browserDescriptor  
-* DONE Send a response from the web page RPC server to the popup client. With this feature, it enables the popup to give feedback
-  in the UI, like "Scraping..." and "120 votes scraped so far...". There won't be as much a need to open the dev tools
-  anymore to verify if it the tool is working or not.
-    * DONE Implement for Chrome.
-    * DONE Implement for Firefox
-* DONE There is no need to fetch the votes page limit from the web page. It can be passed as an argument of the remote
-  procedure call from the background.
 
 ## Finished Wish List items
 
@@ -373,6 +352,27 @@ These are the finished items from the Wish List:
 * DONE Consider turning `content-script-messaging-proxy.js` into a specific component of the RPC system. The genericness
   of it is becoming more confusing I think. This work will include baking in the "procedure target RPC" in the RpcClient
   and RpcServer classes and also handling it in the content script proxy.
+* DONE Consider how to move the generic RPC code in `extension-entrypoint.js` and the generic RPC code in
+  `web-load-source.js` into the `src/rpc/` directory. Ideally, all generic RPC code should live separately from the
+  other code. It should be such that the RPC framework is good enough to use by even another project!
+* DONE Get rid of the symlinks. It doesn't work on Windows. I think I need a build script, like the Firefox build
+  script. It be should be pretty easy to make a Windows bat script or maybe Powershell.
+* DONE Embed the "browserDescriptor" into the RPC Framework so that it may use it to instantiate the correct
+  concrete sub-classes of RpcServer and RpcClient. Because there are multiple contexts (background, popup, content
+  script, and web page), I think its useful to save the browserDescriptor in storage.
+    * DONE Create an `rpc-background-init.js` file. This should have a function to take the browserDescriptor as a parameter
+      and save it to storage with some name like "rpc-browser-descriptor". The "rpc-" prefix should be used as a convention
+      to make it clear that this property is owned and operated by the RPC framework and not by the app code. There should
+      be another function to instantiate the `BackgroundToContentScriptRpcClient`. This would be a "factory" function. I
+      assume there will be a Chromium-specific and Firefox-specific versions of this client in the near future.
+        * DONE Create an `rpc-storage.js` file that has functions to get and save the browserDescriptor
+* DONE Send a response from the web page RPC server to the popup client. With this feature, it enables the popup to give feedback
+  in the UI, like "Scraping..." and "120 votes scraped so far...". There won't be as much a need to open the dev tools
+  anymore to verify if it the tool is working or not.
+    * DONE Implement for Chrome.
+    * DONE Implement for Firefox
+* DONE There is no need to fetch the votes page limit from the web page. It can be passed as an argument of the remote
+  procedure call from the background.
 
 ## Notes
 
