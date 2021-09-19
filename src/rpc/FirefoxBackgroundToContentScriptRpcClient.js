@@ -11,12 +11,9 @@ class FirefoxBackgroundToContentScriptRpcClient extends RpcClient {
         this.#tabId = tabId
     }
 
-    // This returns a dummy value. It will take quite a bit of work to implement a return value because Firefox doesn't
-    // have the "externally_connectable" feature that Chromium browsers have which allows the web page to send messages
-    // directly to a background listener.
     async execRemoteProcedure(procedureName, procedureArgs) {
         let rpcRequest = this.createRequest(procedureName, procedureArgs)
-        await chrome.tabs.sendMessage(this.#tabId, rpcRequest)
-        return "'Not implemented for Firefox'"
+        rpcRequest.procedureCaptureReturnValue = true
+        return await browser.tabs.sendMessage(this.#tabId, rpcRequest)
     }
 }

@@ -38,7 +38,7 @@ let initPromise = (async function () {
 
     let webPageInitialized = new Promise(resolve => {
         console.debug(`[extension-entrypoint.js] [${Date.now()}] Registering listener for 'web-page-initialized'`)
-        chrome.runtime.onMessage.addListener(function webPageInitializedListener(message, sender, sendResponse) {
+        chrome.runtime.onMessage.addListener(function webPageInitializedListener(message, _sender, _sendResponse) {
             console.debug("[extension-entrypoint.js] Received a message from the extension messaging system:")
             console.debug(JSON.stringify({message}, null, 2))
             if (message === "web-page-initialized") {

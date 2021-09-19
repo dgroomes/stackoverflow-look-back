@@ -1,8 +1,5 @@
 /**
  * This is a concrete implementation of RpcServer for Firefox that runs in the web page and services RPC requests.
- *
- * Note: This RpcServer implementation does *not* send responses to the caller. I have decided not to implement that due
- * to the high complexity and low need. If needed, I can implement this.
  */
 class FirefoxWebPageRpcServer extends RpcServer {
 
@@ -12,12 +9,23 @@ class FirefoxWebPageRpcServer extends RpcServer {
 
     listen() {
         let that = this
-        window.addEventListener("message", ({data}) => {
+        window.addEventListener("message", async ({data}) => {
             if (!that.intake(data)) {
                 return false
             }
 
-            that.dispatch(data)
+            let procedureReturnValue = await that.dispatch(data)
+
+            let {procedureName} = data
+            // Send the procedure return value to the RPC client by way of the RPC proxy.
+            let returnMessage = {
+                procedureTargetReceiver: "content-script-rpc-proxy",
+                procedureName,
+                procedureReturnValue
+            }
+            console.debug(`[FirefoxWebPageRpcServer] sending message:`)
+            console.debug(JSON.stringify(returnMessage, null, 2))
+            window.postMessage(returnMessage)
         })
     }
 }
