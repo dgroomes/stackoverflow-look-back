@@ -13,19 +13,21 @@ class VotesScraper {
 
     /**
      * This is the main function
+     * @return {Promise} a promise that resolves when the scraping has completed. The promise value is the number of votes scraped.
      */
     scrapeVotes() {
         console.info(`Scraping votes...  [limit=${votesPageLimit}]`)
         this.votesTab = document.getElementById("user-tab-votes")
         let that = this // Accommodate the awkwardness of ES6 classes
 
+        let _resolve
         let observer = new MutationObserver(function (mutations) {
             for (let mutation of mutations) {
                 if (!that.votesTab.isConnected) {
                     // The votes tab was disconnected! It must have been replaced by a new.
                     that.votesTab = document.getElementById("user-tab-votes")
                     that.scrapeCurrentPage()
-                    setTimeout(() => that.nextVotesPage(), 1000) // Trigger the next votes page, but with rate limiting
+                    setTimeout(() => that.nextVotesPage(_resolve), 1000) // Trigger the next votes page, but with rate limiting
                     return
                 }
             }
@@ -36,8 +38,13 @@ class VotesScraper {
             childList: true, // Monitor for the addition and removal of elements on the target element,
         })
 
+        let scrapeCompletedPromise = new Promise(resolve => {
+            _resolve = resolve
+        })
+
         this.scrapeCurrentPage()
-        this.nextVotesPage()
+        this.nextVotesPage(_resolve)
+        return scrapeCompletedPromise
     }
 
     /**
@@ -83,13 +90,19 @@ row: ${row.outerHTML}
     /**
      * Navigate to the next page in the votes tab. This function is instrumented with a volume limiter so that we don't
      * accidentally trigger a barrage of page loads due to programming error.
+     *
+     * @param resolve This is a Promise's "resolved" function. It will be invoked when the nextVotePage has scraped the
+     * last page and saved the data. This is a pretty awkward design! Consider how to restructure it.
      */
-    nextVotesPage() {
+    nextVotesPage(resolve) {
         let votes = this.votes
 
         function save() {
             appStorage.saveVotes(votes)
-                .then(() => console.info(`The votes data has been saved successfully`))
+                .then(() => {
+                    console.info(`The votes data has been saved successfully`)
+                    resolve(votes.length)
+                })
         }
 
         if (++this.attempts > votesPageLimit) {

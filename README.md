@@ -230,6 +230,13 @@ General clean ups, TODOs and things I wish to implement for this project:
       be another function to instantiate the `BackgroundToContentScriptRpcClient`. This would be a "factory" function. I
       assume there will be a Chromium-specific and Firefox-specific versions of this client in the near future.    
       * DONE Create an `rpc-storage.js` file that has functions to get and save the browserDescriptor  
+* IN PROGRESS Send a response from the web page RPC server to the popup client. With this feature, it enables the popup to give feedback
+  in the UI, like "Scraping..." and "120 votes scraped so far...". There won't be as much a need to open the dev tools
+  anymore to verify if it the tool is working or not.
+    * DONE Implement for Chrome.
+    * Implement for Firefox
+* There is no need to fetch the votes page limit from the web page. It can be passed as an argument of the remote
+  procedure call from the background.
 
 ## Finished Wish List items
 

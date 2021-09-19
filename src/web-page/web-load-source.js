@@ -105,8 +105,8 @@ async function configureState() {
 
     initRpcWebPage(browserDescriptor, webExtensionId)
 
-    rpcServer.registerCallbackProcedure("scrape-votes", (_procedureArgs, _resolve) => {
-        votesScraper.scrapeVotes()
+    rpcServer.registerPromiseProcedure("scrape-votes", (_procedureArgs) => {
+        return votesScraper.scrapeVotes()
     })
     rpcServer.registerPromiseProcedure("expand-posts", (_procedureArgs) => {
         return postsExpander.expandPosts()

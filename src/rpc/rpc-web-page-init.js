@@ -17,7 +17,7 @@ function initRpcWebPage(browserDescriptor, webExtensionId) {
 
     if (browserDescriptor === "chromium") {
         rpcClient = new ChromiumWebPageToBackgroundRpcClient(webExtensionId)
-        rpcServer = new ChromiumWebPageRpcServer()
+        rpcServer = new ChromiumWebPageRpcServer(webExtensionId)
     } else if (browserDescriptor === "firefox") {
         rpcClient = new FirefoxWebPageToContentScriptRpcClient(webExtensionId)
         rpcServer = new FirefoxWebPageRpcServer()

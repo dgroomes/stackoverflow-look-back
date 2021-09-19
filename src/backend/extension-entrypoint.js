@@ -75,7 +75,8 @@ document.getElementById("execute-scrape-votes")
         console.info(`[extension-entrypoint.js] Clicked the 'scrape votes' button`)
         await initPromise
         let rpcClient = await getRpcClient()
-        await rpcClient.execRemoteProcedure("scrape-votes")
+        let votesScraped = await rpcClient.execRemoteProcedure("scrape-votes")
+        console.info(`[extension-entrypoint.js] ${votesScraped} votes scraped!`)
     })
 
 
@@ -84,7 +85,8 @@ document.getElementById("execute-expand-posts")
         console.info(`[extension-entrypoint.js] Clicked the 'expand posts' button`)
         await initPromise
         let rpcClient = await getRpcClient()
-        await rpcClient.execRemoteProcedure("expand-posts")
+        let postsExpanded = await rpcClient.execRemoteProcedure("expand-posts")
+        console.info(`[extension-entrypoint.js] ${postsExpanded} posts expanded!`)
     })
 
 document.getElementById("view-posts")
