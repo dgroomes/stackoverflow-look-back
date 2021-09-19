@@ -14,7 +14,7 @@ function getBrowserDescriptor() {
     if (_browserDescriptor !== null) return _browserDescriptor
     return new Promise((resolve, reject) => {
         chrome.storage.local.get(["rpcBrowserDescriptor"], (found) => {
-            console.log(`[rpc-storage.js] Found rpcBrowserDescriptor: ${found}`)
+            console.log(`[rpc-storage.js] Found rpcBrowserDescriptor: ${JSON.stringify(found, null, 2)}`)
             _browserDescriptor = found.rpcBrowserDescriptor
             if (typeof _browserDescriptor === "undefined") {
                 reject()

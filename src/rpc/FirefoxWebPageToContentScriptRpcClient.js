@@ -34,7 +34,7 @@ class FirefoxWebPageToContentScriptRpcClient extends RpcClient {
                     && data.procedureName === procedureName) {
 
                     window.removeEventListener("message", listenForRpcResponse)
-                    resolve(data.returnValue)
+                    resolve(data.procedureReturnValue)
                 }
             })
         }))

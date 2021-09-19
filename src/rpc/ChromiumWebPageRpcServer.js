@@ -19,13 +19,13 @@ class ChromiumWebPageRpcServer extends RpcServer {
 
             let {procedureName} = data
 
-            that.dispatch(data).then(returnValue => {
+            that.dispatch(data).then(procedureReturnValue => {
                 // Send the procedure return value to the RPC client (it's assumed that the client is in a background
                 // script or popup script).
                 let returnMessage = {
                     procedureTargetReceiver: "background-client",
                     procedureName,
-                    returnValue
+                    procedureReturnValue
                 }
                 console.debug(`[ChromiumWebPageRpcServer] sending message:`)
                 console.debug(JSON.stringify(returnMessage, null, 2))

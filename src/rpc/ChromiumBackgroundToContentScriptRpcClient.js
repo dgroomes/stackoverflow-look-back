@@ -21,7 +21,7 @@ class ChromiumBackgroundToContentScriptRpcClient extends RpcClient {
                 console.debug(`[ChromiumBackgroundToContentScriptRpcClient] Received message:`)
                 console.debug(JSON.stringify({message}, null, 2))
                 if (message.procedureTargetReceiver === "background-client") {
-                    resolve(message.returnValue)
+                    resolve(message.procedureReturnValue)
                     chrome.runtime.onMessageExternal.removeListener(returnValueListener)
                 }
             })

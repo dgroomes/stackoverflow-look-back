@@ -34,14 +34,14 @@ window.addEventListener("message", ({data}) => {
     chrome.runtime.sendMessage(null,
         messageToMessagingSystem,
         null,
-        function (returnValue) {
+        function (procedureReturnValue) {
             console.debug(`[rpc-content-script-proxy.js] Got a response via callback from the extension messaging system:`)
-            console.debug({returnValue})
+            console.debug({procedureReturnValue})
 
             // While technically not necessary, I've found this error handling and logging useful. While developing the
             // RPC framework, I frequently get an "undefined" here and so the nicer logging makes for a less frustrating
             // development experience.
-            if (typeof returnValue === "undefined") {
+            if (typeof procedureReturnValue === "undefined") {
                 let errorMsg = `[rpc-content-script-proxy.js] Something went wrong. This is likely a programmer error. Got an 'undefined' return value from the extension messaging system for an RPC request for '${procedureName}'.`
 
                 // It is not enough to just throw the error on the next line. The error actually gets silently swallowed
@@ -55,7 +55,7 @@ window.addEventListener("message", ({data}) => {
             let messageToWindow = {
                 procedureTargetReceiver: "web-page-client",
                 procedureName,
-                returnValue
+                procedureReturnValue
             }
             window.postMessage(messageToWindow, "*")
         })
