@@ -1,19 +1,19 @@
-// This is the entrypoint code that should run in the extension's JavaScript environment. This code should NOT run in a
-// content script and should not run in the web page.
-//
-// This code bootstraps the content scripts which then bootstrap the web page.
+// This code runs in the popup. It bootstraps the content scripts which then bootstrap the web page. It waits for user
+// input when any of the "Scrape votes", "Expand posts", or "View posts" buttons are clicked in the popup.
 
 console.debug("[extension-entrypoint.js] Initializing...")
 
-let _initRpcServer = false
-
 /**
- * Create an RPC server in the background script that will receive remote procedure call (RPC) requests from the front-end
- * and then executes those requests.
+ * Initialize everything.
+ *
+ * - Create an RPC server in the background script that will receive remote procedure call (RPC) requests from the front-end
+ *   and then executes those requests.
+ *
+ * - Load the web page with the extension JavaScript source code and wait for its initialization. Through a mind-bending
+ *   concoction of message passing, extension APIs and asynchronous JavaScript (promises and async), load the source code
+ *   on the web page and confirm when the web page has finished executing the extension initialization code.
  */
-async function initRpcServer() {
-    if (_initRpcServer) return
-    _initRpcServer = true
+let initPromise = (async function () {
     let rpcServer = await getRpcServer()
 
     rpcServer.registerCallbackProcedure("save", (procedureArgs, resolve) => {
@@ -32,39 +32,7 @@ async function initRpcServer() {
     })
 
     rpcServer.listen()
-}
 
-/**
- * Execute a content script.
- *
- * @param fileName the file name of the content script
- * @return {Promise} that resolves when the content script has been loaded/executed(?)
- */
-async function execContentScript(fileName) {
-    console.debug(`[extension-entrypoint.js] Executing content script: ${fileName}`)
-    return new Promise(resolve => {
-        chrome.tabs.executeScript({
-            file: fileName
-        }, () => {
-            resolve()
-        })
-    })
-}
-
-let _initWebPage = false
-
-/**
- * Load the web page with the extension JavaScript source code and wait for it's initialization.
- *
- * This function takes care of some heavy lifting. Through a mind-bending concoction of message passing, extension APIs
- * and asynchronous JavaScript (promises and async), it loads the source code on the web page and confirms when the web
- * page has finished executing the extension initialization code.
- *
- * @return {Promise} a promise that resolves when the web page is fully loaded and initialized with the extension source code.
- */
-async function initWebPage() {
-    if (_initWebPage) return
-    _initWebPage = true
     await execContentScript("/rpc/rpc-content-script-proxy.js")
     await execContentScript("/rpc/rpc-content-script-load-source.js")
 
@@ -83,29 +51,40 @@ async function initWebPage() {
 
     await execContentScript("/backend/content-script-load-source.js")
     await webPageInitialized
-}
+})()
 
 /**
- * Execute a remote procedure on the web page.
+ * Execute a content script.
+ *
+ * @param fileName the file name of the content script
+ * @return {Promise} that resolves when the content script has been loaded/executed(?)
  */
-async function execProcedureInWebPage(procedureName) {
-    await initRpcServer()
-    await initWebPage()
-    let rpcClient = await getRpcClient()
-    rpcClient.execRemoteProcedure(procedureName)
+async function execContentScript(fileName) {
+    console.debug(`[extension-entrypoint.js] Executing content script: ${fileName}`)
+    return new Promise(resolve => {
+        chrome.tabs.executeScript({
+            file: fileName
+        }, () => {
+            resolve()
+        })
+    })
 }
 
 document.getElementById("execute-scrape-votes")
     .addEventListener("click", async () => {
         console.info(`[extension-entrypoint.js] Clicked the 'scrape votes' button`)
-        await execProcedureInWebPage("scrape-votes")
+        await initPromise
+        let rpcClient = await getRpcClient()
+        await rpcClient.execRemoteProcedure("scrape-votes")
     })
 
 
 document.getElementById("execute-expand-posts")
     .addEventListener("click", async () => {
         console.info(`[extension-entrypoint.js] Clicked the 'expand posts' button`)
-        await execProcedureInWebPage("expand-posts")
+        await initPromise
+        let rpcClient = await getRpcClient()
+        await rpcClient.execRemoteProcedure("expand-posts")
     })
 
 document.getElementById("view-posts")
