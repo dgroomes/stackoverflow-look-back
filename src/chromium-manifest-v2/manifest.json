@@ -5,8 +5,9 @@
   "manifest_version": 2,
   "background": {
     "scripts": [
+      "rpc/rpc.js",
       "rpc/rpc-storage.js",
-      "rpc/rpc-background-init.js",
+      "rpc/rpc-background.js",
       "init.js"
     ],
     "persistent": false

@@ -33,18 +33,6 @@ function _includeScript(fileName) {
  * @return {Promise<void>}
  */
 async function loadRpcSourceOnWebPage() {
-    await Promise.all([
-        _includeScript("rpc/RpcClient.js"),
-        _includeScript("rpc/RpcServer.js"),
-        _includeScript("rpc/rpc-web-page-init.js")
-    ])
-
-    // These files depend on another file already having been loaded because they use the "extends" keyword at the
-    // top-level. If I used the module system would this not be a problem?
-    await Promise.all([
-        _includeScript("rpc/ChromiumWebPageToBackgroundRpcClient.js"),
-        _includeScript("rpc/FirefoxWebPageToContentScriptRpcClient.js"),
-        _includeScript("rpc/ChromiumWebPageRpcServer.js"),
-        _includeScript("rpc/FirefoxWebPageRpcServer.js")
-    ])
+    await _includeScript("rpc/rpc.js")
+    await _includeScript("rpc/rpc-web-page.js")
 }
