@@ -1,6 +1,12 @@
 // This code should run in a content script and will load the web page with the web page components of the RPC framework.
 
-console.debug("[rpc-content-script-load-source.js] Initializing...")
+if (!window.rpcContentScriptLoadSourceLoaded) {
+    console.debug("[rpc-content-script-load-source.js] Loading...")
+    window.rpcContentScriptLoadSourceLoaded = true
+    loadRpcSourceOnWebPage().then(() => console.debug("[rpc-content-script-load-source.js] The web page source components of the RPC framework have been loaded into the web page."))
+} else {
+    console.debug("[rpc-content-script-load-source.js] Already loaded.")
+}
 
 /**
  * Include a script dependency.
@@ -26,7 +32,7 @@ function _includeScript(fileName) {
  * Load the web page source code components of the RPC framework into the web page.
  * @return {Promise<void>}
  */
-async function loadRpcOnWebPage() {
+async function loadRpcSourceOnWebPage() {
     await Promise.all([
         _includeScript("rpc/RpcClient.js"),
         _includeScript("rpc/RpcServer.js"),
@@ -42,5 +48,3 @@ async function loadRpcOnWebPage() {
         _includeScript("rpc/FirefoxWebPageRpcServer.js")
     ])
 }
-
-loadRpcOnWebPage().then(() => console.debug("[rpc-content-script-load-source.js] The web page source components of the RPC framework have been loaded into the web page."))

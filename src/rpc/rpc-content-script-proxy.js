@@ -5,7 +5,14 @@
 // First of all, it's not consistent in general because it's not using a class, but to be honest, classes are often not
 // the right tool for the job.
 
-console.debug("[rpc-content-script-proxy.js] Initializing...")
+if (!window.rpcContentScriptProxyInitialized) {
+    console.debug("[rpc-content-script-proxy.js] Initializing...")
+    window.rpcContentScriptProxyInitialized = true
+    window.addEventListener("message", webPageRpcClientsListener)
+    chrome.runtime.onMessage.addListener(backgroundRpcClientsListener)
+} else {
+    console.debug("[rpc-content-script-proxy.js] Already initialized.")
+}
 
 // Connect web page RPC clients to background RPC servers.
 //
@@ -15,7 +22,7 @@ console.debug("[rpc-content-script-proxy.js] Initializing...")
 //
 // This is only needed for Firefox. Chromium browsers, by contrast, give the web page special access to the extension
 // messaging API thanks to the "externally_connectable" Manifest field.
-window.addEventListener("message", ({data}) => {
+function webPageRpcClientsListener({data}) {
     console.debug(`[rpc-content-script-proxy.js] Received a message on the 'window'. Here is the 'data':`)
     console.debug(JSON.stringify({data}, null, 2))
 
@@ -66,14 +73,14 @@ window.addEventListener("message", ({data}) => {
             }
             window.postMessage(messageToWindow, "*")
         })
-})
+}
 
 // Connect background RPC clients to web page RPC servers.
 //
 // Listen for "RPC request" messages from the extension messaging system and forward them to an RPC server on the web
 // page via a window message. Then, if requested, set up another window listener to listen for the eventual return value
 // of the RPC request from the web page. Forward this to the original background RPC client.
-chrome.runtime.onMessage.addListener(function (message, _sender, sendResponse) {
+function backgroundRpcClientsListener(message, _sender, sendResponse) {
     console.debug("[rpc-content-script-proxy.js] Received a message via the extension messaging system:")
     console.debug(JSON.stringify({message}, null, 2))
 
@@ -120,4 +127,4 @@ chrome.runtime.onMessage.addListener(function (message, _sender, sendResponse) {
     window.postMessage(messageOutgoing, "*")
     console.debug(`[rpc-content-script-proxy.js] Returning '${JSON.stringify(listenerReturnValue)}'`)
     return listenerReturnValue
-})
+}

@@ -208,8 +208,12 @@ Follow these instructions to install it in Opera:
 General clean ups, TODOs and things I wish to implement for this project:
 
 * DONE Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like that.
-* Defect. If you click the extension button more than once, it is problematic because it runs the content scripts every
+* IN PROGRESS Defect. If you click the extension button more than once, it is problematic because it runs the content scripts every
   time, which mean multiple window listeners are added because of `content-script-messaging-proxy.js`.
+  * DONE When the popup is opened multiple times, the content scripts must skip the "load source" and "initialize RPC proxy"
+    work. Use a flag on the `window` to keep track of the state.
+  * There is some other issue where if you execute "Scrape votes" multiple times, it just grows. Some old objects stay around.
+    So when you execute it a second time, it kicks off two scrapers. And when you execute a third time, it kicks off three!
 * This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
   finding basic problems. For example, I changed the signature of the RPC client, and it's pretty easy to miss a call
   site and update the args.
