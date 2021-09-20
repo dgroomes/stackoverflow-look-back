@@ -4,9 +4,10 @@
 
 CREATE TABLE Posts
 (
-    Id         int not null,
+    Id         int           not null,
     ParentId   int,
-    PostTypeId tinyint not null,
+    PostTypeId tinyint       not null,
+    Tags       nvarchar(250),
     Title      nvarchar(250),
     Body       nvarchar(max) not null
 );

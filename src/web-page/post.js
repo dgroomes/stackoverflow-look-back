@@ -12,7 +12,7 @@ class Post {
         let {type, id, htmlBody} = postData
 
         if (type === "question") {
-            return new Question(id, postData.title, htmlBody)
+            return new Question(id, postData.tags, postData.title, htmlBody)
         } else if (postData.type === "answer") {
             return new Answer(id, postData.questionId, htmlBody)
         } else {
@@ -21,8 +21,8 @@ class Post {
     }
 
     /**
-     * @param id
-     * @param htmlBody the rendered HTML of the post body
+     * @param {Number} id
+     * @param {String} htmlBody the rendered HTML of the post body
      */
     constructor(id, htmlBody) {
         this.id = id
@@ -70,12 +70,14 @@ class Post {
 class Question extends Post {
 
     /**
-     * @param id
-     * @param title the title of the post. This is non-null for questions but is null for answers.
-     * @param htmlBody the rendered HTML of the post body
+     * @param {Number} id
+     * @param {Array<String>} tags the tags of the post. This is non-nullable. In StackExchange, it is nullable but here we will represent the absence of tags as an empty array.
+     * @param {String} title the title of the post. This is non-null for questions but is null for answers.
+     * @param {String} htmlBody the rendered HTML of the post body
      */
-    constructor(id, title, htmlBody) {
+    constructor(id, tags, title, htmlBody) {
         super(id, htmlBody)
+        this.tags = tags
         this.title = title
     }
 
@@ -97,8 +99,17 @@ class Question extends Post {
 </div>
 <div>
     <h1 class="question-title">${this.title}</h1>
+    <div class="question-tags">${this.#tagsHtml()}</div>
     ${this.htmlBody}
 </div>`
+    }
+
+    #tagsHtml() {
+        let html = ''
+        for (let tag of this.tags) {
+            html += `<span>${tag}</span>`
+        }
+        return html
     }
 }
 
@@ -110,9 +121,9 @@ class Answer extends Post {
     #questionId
 
     /**
-     * @param id
-     * @param questionId the ID of the answer's question post. The question post is considered the parent of the answer post.
-     * @param htmlBody the rendered HTML of the post body
+     * @param {Number} id
+     * @param {Number} questionId the ID of the answer's question post. The question post is considered the parent of the answer post.
+     * @param {String} htmlBody the rendered HTML of the post body
      */
     constructor(id, questionId, htmlBody) {
         super(id, htmlBody)

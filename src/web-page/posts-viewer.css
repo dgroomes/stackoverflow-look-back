@@ -55,6 +55,13 @@ pre {
     display: table; /* This is a neat trick to center an inline element horizontally without much effort. */
 }
 
+.question-tags * {
+    margin: 5px;
+    padding: 5px;
+    background-color: aliceblue;
+    color: darkslateblue;
+}
+
 #search-section {
     text-align: center;
 }

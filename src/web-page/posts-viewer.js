@@ -37,11 +37,14 @@ function search() {
     console.info(`Searching by the search term: ${searchTerm}`)
 
     let regex = new RegExp(searchTerm, "i")
-    let postsRendered = postsViewer.render(post => {
-        if (post instanceof Question && regex.test(post.title)) {
-            return true
+    let postsRendered = postsViewer.render(function filterPostForSearchTerm(post) {
+        // Build a body of text that the search term regular expression will be tested against. Question posts have
+        // more content to search over (title and tags) than answer posts.
+        let searchableText = post.htmlBody
+        if (post instanceof Question) {
+            searchableText += post.title + post.tags
         }
-        return regex.test(post.htmlBody)
+        return regex.test(searchableText)
     })
 
     searchResultsDescriptor.style.display = ""

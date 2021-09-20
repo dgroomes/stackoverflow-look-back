@@ -53,9 +53,24 @@ class PostsExpander {
                     let {rows} = resultSets[0]
 
                     // Collect the post data from the rows
-                    let posts = rows.map(([id, parentId, type, title, body]) => {
+                    let posts = rows.map(([id, parentId, type, tags, title, body]) => {
                         if (type === 1) {
-                            return new Question(id, title, body)
+                            if (tags === null) {
+                                tags = []
+                            } else {
+                                // The SQL query response for the "tags" value is formatted like this: <html><css><position>
+                                // Each entry is surrounded by a leading "<" and a trailing ">".
+                                // Use a regex to extract the tag strings and form them into an array.
+                                //
+                                // Reference https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/matchAll
+                                let regex = /<([a-z-]*)>/g // Note: parentheses define a "capturing group" in a regular expression. We want to capture the value inside of the "<>" and not capture the "<" and ">" characters themselves.
+                                let matches = tags.matchAll(regex)
+
+                                // Use Array.from instead of just ".map" because we have an Iterable object, which does not support functions like ".map" or ".forEach"
+                                // Extract the matched element of the capturing group into a new array.
+                                tags = Array.from(matches, match => match[1]) // Note: The element at index 1 is the capturing group match.
+                            }
+                            return new Question(id, tags, title, body)
                         } else {
                             return new Answer(id, parentId, body)
                         }

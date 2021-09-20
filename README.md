@@ -225,6 +225,15 @@ General clean ups, TODOs and things I wish to implement for this project:
   site and update the args.
 * Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
+* Multi-term search. The search bar should take each word and apply an "AND" search
+* DONE Tags. Add question tags to the data and to the UI. Sometimes, a question does not actually contain the relevant concept.
+  For example, a question like "How to get the current time in seconds" with the tag "JavaScript" would not show up if
+  you search "JavaScript", but I want it to show up. 
+  * DONE. Get a working SQL query that returns tags. Is it an array type in SQL?
+  * DONE Update the sede.ddl
+  * DONE Update the SQL query. Update the Post type. Persist the data. Query back the data.
+  * DONE Visualize the tags in the UI
+  * DONE on tags.
 
 ## Finished Wish List items
 
@@ -460,6 +469,8 @@ Materials I referenced when building this tool and deep diving on learning.
 ### Other
 
 * [Meta Stack Exchange: Database schema for the Stack Exchange Data Explorer (SEDE)](https://meta.stackexchange.com/a/2678)
+* [StackExchange: What are tags, and how should I use them?](https://stackoverflow.com/help/tagging)
+  * This describes the tag naming convention. E.g. `command-line`, `powershell`  
 * Multiple references on recommended/possible ways to render HTML dynamically from JS code in the browser (there are
   many but there is not an obvious choice!)
     * [StackOverflow Answer: Use `DOMParser`](https://stackoverflow.com/a/3104237)
