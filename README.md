@@ -116,7 +116,7 @@ extension and web page contexts:
 1. Manifest changes
     * The `manifest.json` file must allow access to the RPC JavaScript source code files as needed.
 1. Initialize configuration in the background
-    * The background script must invoke `initRpcBackground(...)`  
+    * The background script must invoke `initRpcBackground(...)`
 1. Load the content scripts
     * The content scripts `/rpc/rpc-content-script-proxy.js` and `/rpc/rpc-content-script-load-source.js` must be
       executed.
@@ -207,22 +207,26 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* DONE Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like that.
-* DONE Defect. If you click the extension button more than once, it is problematic because it runs the content scripts every
-  time, which mean multiple window listeners are added because of `content-script-messaging-proxy.js`.
-  * DONE When the popup is opened multiple times, the content scripts must skip the "load source" and "initialize RPC proxy"
-    work. Use a flag on the `window` to keep track of the state.
-  * DONE There is some other issue where if you execute "Scrape votes" multiple times, it just grows. Some old objects stay around.
-    So when you execute it a second time, it kicks off two scrapers. And when you execute a third time, it kicks off three!
+* DONE Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like
+  that.
+* DONE Defect. If you click the extension button more than once, it is problematic because it runs the content scripts
+  every time, which mean multiple window listeners are added because of `content-script-messaging-proxy.js`.
+    * DONE When the popup is opened multiple times, the content scripts must skip the "load source" and "initialize RPC
+      proxy"
+      work. Use a flag on the `window` to keep track of the state.
+    * DONE There is some other issue where if you execute "Scrape votes" multiple times, it just grows. Some old objects
+      stay around. So when you execute it a second time, it kicks off two scrapers. And when you execute a third time,
+      it kicks off three!
 * This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
   finding basic problems. For example, I changed the signature of the RPC client, and it's pretty easy to miss a call
   site and update the args.
 * Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
-* Clean up the References. Organize MDN links together.
-* DONE Remove the 'votesPageLimit' from storage and instead use an input box in the extension popup. The storage is not worth
-  the code complexity. Plus the feature is not even really useful. Might as well remove the code and make the limit even
-  more obvious by putting it right next to the "Scrape votes" button. This removes the discovery problem for that config.
+* DONE Clean up the References. Organize MDN links together.
+* DONE Remove the 'votesPageLimit' from storage and instead use an input box in the extension popup. The storage is not
+  worth the code complexity. Plus the feature is not even really useful. Might as well remove the code and make the
+  limit even more obvious by putting it right next to the "Scrape votes" button. This removes the discovery problem for
+  that config.
 
 ## Finished Wish List items
 
@@ -364,18 +368,19 @@ These are the finished items from the Wish List:
   other code. It should be such that the RPC framework is good enough to use by even another project!
 * DONE Get rid of the symlinks. It doesn't work on Windows. I think I need a build script, like the Firefox build
   script. It be should be pretty easy to make a Windows bat script or maybe Powershell.
-* DONE Embed the "browserDescriptor" into the RPC Framework so that it may use it to instantiate the correct
-  concrete sub-classes of RpcServer and RpcClient. Because there are multiple contexts (background, popup, content
-  script, and web page), I think its useful to save the browserDescriptor in storage.
-    * DONE Create an `rpc-background-init.js` file. This should have a function to take the browserDescriptor as a parameter
-      and save it to storage with some name like "rpc-browser-descriptor". The "rpc-" prefix should be used as a convention
-      to make it clear that this property is owned and operated by the RPC framework and not by the app code. There should
-      be another function to instantiate the `BackgroundToContentScriptRpcClient`. This would be a "factory" function. I
-      assume there will be a Chromium-specific and Firefox-specific versions of this client in the near future.
+* DONE Embed the "browserDescriptor" into the RPC Framework so that it may use it to instantiate the correct concrete
+  sub-classes of RpcServer and RpcClient. Because there are multiple contexts (background, popup, content script, and
+  web page), I think its useful to save the browserDescriptor in storage.
+    * DONE Create an `rpc-background-init.js` file. This should have a function to take the browserDescriptor as a
+      parameter and save it to storage with some name like "rpc-browser-descriptor". The "rpc-" prefix should be used as
+      a convention to make it clear that this property is owned and operated by the RPC framework and not by the app
+      code. There should be another function to instantiate the `BackgroundToContentScriptRpcClient`. This would be a "
+      factory" function. I assume there will be a Chromium-specific and Firefox-specific versions of this client in the
+      near future.
         * DONE Create an `rpc-storage.js` file that has functions to get and save the browserDescriptor
-* DONE Send a response from the web page RPC server to the popup client. With this feature, it enables the popup to give feedback
-  in the UI, like "Scraping..." and "120 votes scraped so far...". There won't be as much a need to open the dev tools
-  anymore to verify if it the tool is working or not.
+* DONE Send a response from the web page RPC server to the popup client. With this feature, it enables the popup to give
+  feedback in the UI, like "Scraping..." and "120 votes scraped so far...". There won't be as much a need to open the
+  dev tools anymore to verify if it the tool is working or not.
     * DONE Implement for Chrome.
     * DONE Implement for Firefox
 * DONE There is no need to fetch the votes page limit from the web page. It can be passed as an argument of the remote
@@ -405,8 +410,43 @@ These are the finished items from the Wish List:
 
 ## Reference
 
+Materials I referenced when building this tool and deep diving on learning.
+
+### MDN Web Docs
+
 * [MDN Web docs: API docs for *NodeList*](https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
 * [MDN Web docs: API docs for *MutationObserver*](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)
+* [MDN Web docs: *JavaScript modules*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
+* [MDN Web docs: toJSON() behavior](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#tojson_behavior)
+* [MDN Web docs: "page_action"](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/page_action)
+    * Note that the Manifest property `show_matches` (of `page_actions`) is only supported in Firefox. By default, page
+      actions are hidden in Firefox but by contrast, page actions are shown by default in other browsers. This was a
+      surprising find to me because I couldn't see the page action in the URL bar and I was confused! I need to
+      explicitly enable it with the `show_matches` property.
+* [MDN Web Docs: Manifest property "externally_connectable"](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/externally_connectable)
+    * The `externally_connectable` is not supported in Firefox. An alternative must be used for message passing between
+      the web page and the extension.
+      See <https://github.com/mdn/webextensions-examples/tree/master/page-to-extension-messaging>.
+* [MDN Web Docs: the EventTarget APIs](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget)
+* [MDN Web Docs: Window postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)
+* [MDN Web Docs: runtime.sendMessage()](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/sendMessage)
+* [MDN Web Docs: browserAction.onClicked](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction/onClicked)
+* [MDN Web Docs: tabs.sendMessage()](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/sendMessage)
+    * Send messages from background scripts to content scripts
+    * [Chrome equivalent](https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage)
+* [MDN Web Docs: extension storage API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage)
+    * > Enables extensions to store and retrieve data, and listen for changes to stored items.
+
+### Chrome extension docs
+
+* [Chrome extensions docs](https://developer.chrome.com/docs/extensions/mv3/getstarted/)
+* [Chrome extension docs: chrome.webRequest](https://developer.chrome.com/docs/extensions/reference/webRequest/)
+    * Consider using this API to intercept requests instead of using a Proxy object on the web page
+* [Chrome extension docs: Manifest V2 Getting started](https://developer.chrome.com/docs/extensions/mv2/getstarted/)
+* [Chrome extension docs: chrome.browserAction](https://developer.chrome.com/docs/extensions/reference/browserAction/)
+
+### Other
+
 * [Meta Stack Exchange: Database schema for the Stack Exchange Data Explorer (SEDE)](https://meta.stackexchange.com/a/2678)
 * Multiple references on recommended/possible ways to render HTML dynamically from JS code in the browser (there are
   many but there is not an obvious choice!)
@@ -415,24 +455,11 @@ These are the finished items from the Wish List:
     * [StackOverflow Answer: Use `insertAdjacentHtml`](https://stackoverflow.com/a/19241659)
     * [StackOverflow Answer: Use `<template>`](https://stackoverflow.com/a/35385518)
     * [StackOverflow Answer: Use `createContextualFragment`](https://stackoverflow.com/a/7326602/1333713)
-* [Chrome extensions docs](https://developer.chrome.com/docs/extensions/mv3/getstarted/)
-* [MDN Web docs: *JavaScript modules*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
-* [MDN Web docs: *toJSON()
-  behavior*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#tojson_behavior)
 * [`dgroomes/web-playground/browser-extensions`](https://github.com/dgroomes/web-playground/tree/main/browser-extensions)
     * My own reference project for Chrome extensions
-* [Chrome extension docs: *chrome.webRequest*](https://developer.chrome.com/docs/extensions/reference/webRequest/)
-    * Consider using this API to intercept requests instead of using a Proxy object on the web page
-* [Firefox Extension Workshop: *Porting a Google Chrome
-  extension*](https://extensionworkshop.com/documentation/develop/porting-a-google-chrome-extension/)
+* [Extension Workshop: Porting a Google Chrome extension](https://extensionworkshop.com/documentation/develop/porting-a-google-chrome-extension/)
     * Shoot, Firefox doesn't support Manifest v3 and I spent all this time writing a Chrome extension in Manifest v3. I
       wish I had implemented in Manifest v2 so that I could compatibility with Firefox.
-* [Chrome extension docs: Manifest V2 *Getting started*](https://developer.chrome.com/docs/extensions/mv2/getstarted/)
-* [MDN Web docs: "page_action"](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/page_action)
-    * Note that the Manifest property `show_matches` (of `page_actions`) is only supported in Firefox. By default, page
-      actions are hidden in Firefox but by contrast, page actions are shown by default in other browsers. This was a
-      surprising find to me because I couldn't see the page action in the URL bar and I was confused! I need to
-      explicitly enable it with the `show_matches` property.
 * [Extension Workshop](https://extensionworkshop.com/documentation/develop/debugging/#developer-tools-toolbox)
     * A special Firefox site that is focused entirely on extension development.
     * > Get help creating and publishing Firefox add-ons that make browsing smarter, safer, and faster.
@@ -443,18 +470,4 @@ These are the finished items from the Wish List:
 * [GitHub repo: mozilla/web-ext](https://github.com/mozilla/web-ext)
     * I'm purposely choosing to not use this tool. I want to keep the dependencies to an absolute minimum and this tool
       is not critical.
-* [MDN Web Docs: Manifest property "externally_connectable"](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/externally_connectable)
-    * The `externally_connectable` is not supported in Firefox. An alternative must be used for message passing between
-      the web page and the extension.
-      See <https://github.com/mdn/webextensions-examples/tree/master/page-to-extension-messaging>.
-* [MDN Web Docs: the EventTarget APIs](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget)
-* [MDN Web Docs: Window postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)
-* [MDN Web Docs: runtime.sendMessage()](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/sendMessage)
 * [Opera dev docs: *The Basics of Making an Extension*](https://dev.opera.com/extensions/basics/)
-* [MDN Web Docs: browserAction.onClicked](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/browserAction/onClicked)
-* [Chrome extension docs: *chrome.browserAction*](https://developer.chrome.com/docs/extensions/reference/browserAction/)
-* [MDN Web Docs: tabs.sendMessage()](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/sendMessage)
-    * Send messages from background scripts to content scripts
-    * [Chrome equivalent](https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage) 
-* [MDN Web Docs: extension storage API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage)
-    * > Enables extensions to store and retrieve data, and listen for changes to stored items.
