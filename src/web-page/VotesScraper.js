@@ -8,6 +8,7 @@
 class VotesScraper {
 
     #votesPageLimit
+    #votesPageObserver
     votesTab // Get a handle on the "Votes tab" HTML element
     votes = [] // The votes data will be scraped from the HTML and collected into this array as instances of the "Vote" class
     attempts = 0
@@ -29,7 +30,7 @@ class VotesScraper {
         let that = this // Accommodate the awkwardness of ES6 classes
 
         let _resolve
-        let observer = new MutationObserver(function (mutations) {
+        this.#votesPageObserver = new MutationObserver(function (mutations) {
             for (let mutation of mutations) {
                 if (!that.votesTab.isConnected) {
                     // The votes tab was disconnected! It must have been replaced by a new.
@@ -41,7 +42,7 @@ class VotesScraper {
             }
         })
 
-        observer.observe(document, {
+        this.#votesPageObserver.observe(document, {
             subtree: true, // Monitor all sub-elements (children, children of children, etc) for mutations
             childList: true, // Monitor for the addition and removal of elements on the target element,
         })
@@ -105,8 +106,10 @@ row: ${row.outerHTML}
      */
     nextVotesPage(resolve) {
         let votes = this.votes
+        let that = this
 
         function save() {
+            that.#votesPageObserver.disconnect()
             appStorage.saveVotes(votes)
                 .then(() => {
                     console.info(`The votes data has been saved successfully`)
