@@ -97,10 +97,22 @@ differences in APIs between browsers (Chromium vs Firefox). It's desirable to en
 passing behind an easy-to-use API that takes a message, does all of the behind the scenes work, and then returns a
 response. This description looks like a *Remote Procedure Call* system.
 
-In this codebase, I've implemented a Remote Procedure Call (RPC) API.
+In this codebase, I've implemented a general-purpose Remote Procedure Call (RPC) API for web extensions.
 
 It could be extracted into it's own project. And honestly, it's not a great implementation, but I came to it out of
 necessity.
+
+The source code is laid out in a file structure that groups code by the execution context that the code runs in:
+
+* `src/rpc/rpc.js`
+    * The code in this file is foundational common code for the RPC framework. It is used in all contexts of a web
+      extension: background scripts, popup scripts, content scripts, and the web page.
+* `src/rpc/rpc-web-page.js`
+    * The code in this file runs on the web page.
+* `src/rpc/rpc-backend.js/`
+    * The code in this file runs in the extension *backend* contexts: background workers, popups, and content scripts.
+* `src/rpc/content-script.js`
+    * The code in this file runs in a content script.
 
 One thing I'm omitting with the RPC implementation is an "absolute unique identifier" to associate with each message.
 Without this uniqueness, it's potentially possible to "cross beams" and, for example, have an RPC client process a
@@ -115,6 +127,8 @@ extension and web page contexts:
 
 1. Manifest changes
     * The `manifest.json` file must allow access to the RPC JavaScript source code files as needed.
+      Specifically, `rpc/rpc.js`, and `rpc/rpc-backend.js` must be added to the background scripts and `rpc/rpc.js`
+      and `rpc/rpc-web-page.js` must be added to the web page.
 1. Initialize configuration in the background
     * The background script must invoke `initRpcBackground(...)`
 1. Load the content scripts

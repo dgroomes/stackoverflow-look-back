@@ -6,8 +6,7 @@
   "background": {
     "scripts": [
       "rpc/rpc.js",
-      "rpc/rpc-storage.js",
-      "rpc/rpc-background.js",
+      "rpc/rpc-backend.js",
       "init.js"
     ]
   },
@@ -19,7 +18,8 @@
   ],
   "web_accessible_resources": [
     "web-page/*",
-    "rpc/*"
+    "rpc/rpc.js",
+    "rpc/rpc-web-page.js"
   ],
   "page_action": {
     "default_popup": "backend/popup.html",
