@@ -35,8 +35,7 @@ let initPromise = (async function () {
 
     rpcServer.listen()
 
-    await execContentScript("/rpc/rpc-content-script-proxy.js")
-    await execContentScript("/rpc/rpc-content-script-load-source.js")
+    await execContentScript("/rpc/rpc-content-script.js")
 
     let webPageInitialized = new Promise(resolve => {
         console.debug(`[popup.js] [${Date.now()}] Registering listener for 'web-page-initialized'`)

@@ -1,17 +1,51 @@
-// This code runs in a content script and proxies messages between the web page, background scripts and potentially other
-// JavaScript execution environments like extension popup pages.
+// This code is designed to run in a content script.
 //
-// Wouldn't it be consistent with the design of the repo that this be designed as an RpcServer and multiple RpcClients?
+// It will load the web page with the web page components of the RPC framework.
+//
+// It proxies messages between the web page, background scripts and potentially other JavaScript execution environments
+// like extension popup pages.
+//
+// Note: Wouldn't it be consistent with the design of the repo that this be designed as an RpcServer and multiple RpcClients?
 // First of all, it's not consistent in general because it's not using a class, but to be honest, classes are often not
 // the right tool for the job.
 
-if (!window.rpcContentScriptProxyInitialized) {
-    console.debug("[rpc-content-script-proxy.js] Initializing...")
-    window.rpcContentScriptProxyInitialized = true
+if (!window.rpcContentScriptInitialized) {
+    console.debug("[rpc-content-script.js] Loading...")
+    window.rpcContentScriptInitialized = true
     window.addEventListener("message", webPageRpcClientsListener)
     chrome.runtime.onMessage.addListener(backgroundRpcClientsListener)
+    loadRpcSourceOnWebPage().then(() => console.debug("[rpc-content-script.js] The web page source components of the RPC framework have been loaded into the web page."))
 } else {
-    console.debug("[rpc-content-script-proxy.js] Already initialized.")
+    console.debug("[rpc-content-script.js] Already loaded.")
+}
+
+/**
+ * Include a script dependency.
+ *
+ * This creates a <script> element with the given URL and adds it to the document head. The script will be downloaded and
+ * run. This is a way to dynamically load JavaScript to the page.
+ * @param fileName
+ * @return {Promise} a promise that resolves when the script loads
+ */
+function _includeScript(fileName) {
+    let el = document.createElement("script")
+    el.src = chrome.runtime.getURL(fileName)
+    document.head.append(el)
+
+    return new Promise(resolve => {
+        el.onload = function () {
+            resolve()
+        }
+    })
+}
+
+/**
+ * Load the web page source code components of the RPC framework into the web page.
+ * @return {Promise<void>}
+ */
+async function loadRpcSourceOnWebPage() {
+    await _includeScript("rpc/rpc.js")
+    await _includeScript("rpc/rpc-web-page.js")
 }
 
 // Connect web page RPC clients to background RPC servers.
@@ -23,7 +57,7 @@ if (!window.rpcContentScriptProxyInitialized) {
 // This is only needed for Firefox. Chromium browsers, by contrast, give the web page special access to the extension
 // messaging API thanks to the "externally_connectable" Manifest field.
 function webPageRpcClientsListener({data}) {
-    console.debug(`[rpc-content-script-proxy.js] Received a message on the 'window'. Here is the 'data':`)
+    console.debug(`[rpc-content-script.js] Received a message on the 'window'. Here is the 'data':`)
     console.debug(JSON.stringify({data}, null, 2))
 
     // If the message is not an RPC message then return immediately to ignore the message. We can tell if a message
@@ -43,20 +77,20 @@ function webPageRpcClientsListener({data}) {
         procedureName,
         procedureArgs
     }
-    console.debug("[rpc-content-script-proxy.js] Sending an RPC request message to the extension messaging system:")
+    console.debug("[rpc-content-script.js] Sending an RPC request message to the extension messaging system:")
     console.debug(JSON.stringify(messageToMessagingSystem, null, 2))
     chrome.runtime.sendMessage(null,
         messageToMessagingSystem,
         null,
         function (procedureReturnValue) {
-            console.debug(`[rpc-content-script-proxy.js] Got a response via callback from the extension messaging system:`)
+            console.debug(`[rpc-content-script.js] Got a response via callback from the extension messaging system:`)
             console.debug({procedureReturnValue})
 
             // While technically not necessary, I've found this error handling and logging useful. While developing the
             // RPC framework, I frequently get an "undefined" here and so the nicer logging makes for a less frustrating
             // development experience.
             if (typeof procedureReturnValue === "undefined") {
-                let errorMsg = `[rpc-content-script-proxy.js] Something went wrong. This is likely a programmer error. Got an 'undefined' return value from the extension messaging system for an RPC request for '${procedureName}'.`
+                let errorMsg = `[rpc-content-script.js] Something went wrong. This is likely a programmer error. Got an 'undefined' return value from the extension messaging system for an RPC request for '${procedureName}'.`
 
                 // It is not enough to just throw the error on the next line. The error actually gets silently swallowed
                 // by the browser's extension framework and you will never see the error in the logs. Instead we
@@ -81,7 +115,7 @@ function webPageRpcClientsListener({data}) {
 // page via a window message. Then, if requested, set up another window listener to listen for the eventual return value
 // of the RPC request from the web page. Forward this to the original background RPC client.
 function backgroundRpcClientsListener(message, _sender, sendResponse) {
-    console.debug("[rpc-content-script-proxy.js] Received a message via the extension messaging system:")
+    console.debug("[rpc-content-script.js] Received a message via the extension messaging system:")
     console.debug(JSON.stringify({message}, null, 2))
 
     if (message.procedureTargetReceiver !== "content-script-rpc-proxy") return false
@@ -92,7 +126,7 @@ function backgroundRpcClientsListener(message, _sender, sendResponse) {
 
     if (procedureCaptureReturnValue) {
         window.addEventListener("message", function captureReturnValueListener({data}) {
-            console.debug("[rpc-content-script-proxy.js] The return value listener received a message via the extension messaging system:")
+            console.debug("[rpc-content-script.js] The return value listener received a message via the extension messaging system:")
             console.debug(JSON.stringify({data}, null, 2))
             let {procedureReturnValue} = data
 
@@ -108,7 +142,7 @@ function backgroundRpcClientsListener(message, _sender, sendResponse) {
             // listener. Return immediately to ignore this message.
             if (data.procedureTargetReceiver !== "content-script-rpc-proxy" || (typeof procedureReturnValue === "undefined") || data.procedureName !== procedureName) return
 
-            console.debug(`[rpc-content-script-proxy.js] Got the return value for the RPC request for procedure '${data.procedureName}'`)
+            console.debug(`[rpc-content-script.js] Got the return value for the RPC request for procedure '${data.procedureName}'`)
             console.debug(JSON.stringify(data, null, 2))
             sendResponse(procedureReturnValue)
 
@@ -117,7 +151,7 @@ function backgroundRpcClientsListener(message, _sender, sendResponse) {
         listenerReturnValue = true // Returning "true" tells Firefox that we plan to invoke the "sendResponse" function later (rather, asynchronously). Otherwise, the "sendResponse" function would become invalid.
     }
 
-    console.debug("[rpc-content-script-proxy.js] Broadcasting the RPC request to the window so that it may be received by the web page:")
+    console.debug("[rpc-content-script.js] Broadcasting the RPC request to the window so that it may be received by the web page:")
     let messageOutgoing = {
         procedureTargetReceiver: "web-page-server",
         procedureName,
@@ -125,6 +159,6 @@ function backgroundRpcClientsListener(message, _sender, sendResponse) {
     }
     console.debug(JSON.stringify(messageOutgoing, null, 2))
     window.postMessage(messageOutgoing, "*")
-    console.debug(`[rpc-content-script-proxy.js] Returning '${JSON.stringify(listenerReturnValue)}'`)
+    console.debug(`[rpc-content-script.js] Returning '${JSON.stringify(listenerReturnValue)}'`)
     return listenerReturnValue
 }
