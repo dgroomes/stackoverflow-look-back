@@ -3,6 +3,8 @@
 
 console.debug("[popup.js] Initializing...")
 
+let votesPageLimitEl = document.getElementById("votes-page-limit")
+
 /**
  * Initialize everything.
  *
@@ -73,16 +75,11 @@ async function execContentScript(fileName) {
 document.getElementById("execute-scrape-votes")
     .addEventListener("click", async () => {
         console.info(`[popup.js] Clicked the 'scrape votes' button`)
+        let votesPageLimit = votesPageLimitEl.value
+
         await initPromise
-
-        let votesPageLimit = await new Promise(resolve => {
-            chrome.storage.local.get("votesPageLimit", (found) => {
-                resolve(found.votesPageLimit)
-            })
-        })
-
         let rpcClient = await getRpcClient()
-        let votesScraped = await rpcClient.execRemoteProcedure("scrape-votes", { votesPageLimit })
+        let votesScraped = await rpcClient.execRemoteProcedure("scrape-votes", {votesPageLimit})
         console.info(`[popup.js] ${votesScraped} votes scraped!`)
     })
 

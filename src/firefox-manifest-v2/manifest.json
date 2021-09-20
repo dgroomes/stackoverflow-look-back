@@ -7,7 +7,6 @@
     "scripts": [
       "rpc/rpc-storage.js",
       "rpc/rpc-background-init.js",
-      "backend/init-common.js",
       "init.js"
     ]
   },
@@ -27,8 +26,5 @@
       "https://stackoverflow.com/*",
       "https://data.stackexchange.com/*"
     ]
-  },
-  "options_ui": {
-    "page": "backend/options.html"
   }
 }

@@ -5,7 +5,6 @@
 console.debug("[chromium-manifest-v2/init.js] Initializing...")
 
 chrome.runtime.onInstalled.addListener(async () => {
-    setConfig()
     await initRpcBackground("chromium")
 
     chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {

@@ -14,10 +14,26 @@
     <script defer src="../rpc/rpc-storage.js"></script>
     <script defer src="../rpc/rpc-background-init.js"></script>
     <script defer src="popup.js"></script>
+    <style>
+        body {
+            width: 450px
+        }
+    </style>
 </head>
 <body>
-<button type="button" id="execute-scrape-votes" name="execute-scrape-votes">Scrape votes</button>
-<button type="button" id="execute-expand-posts" name="execute-expand-posts">Expand posts</button>
-<button type="button" id="view-posts" name="view-posts">View posts</button>
+<h1>StackOverflow <em>Look Back Tool</em></h1>
+<ul>
+    <li>
+        <button type="button" id="execute-scrape-votes" name="execute-scrape-votes">Scrape votes</button>
+        <label for="votes-page-limit">Votes page limit:</label>
+        <input id="votes-page-limit" name="votes-page-limit" required value="2"/>
+    </li>
+    <li>
+        <button type="button" id="execute-expand-posts" name="execute-expand-posts">Expand posts</button>
+    </li>
+    <li>
+        <button type="button" id="view-posts" name="view-posts">View posts</button>
+    </li>
+</ul>
 </body>
 </html>

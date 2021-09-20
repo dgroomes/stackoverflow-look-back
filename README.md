@@ -216,7 +216,7 @@ General clean ups, TODOs and things I wish to implement for this project:
 * Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
 * Clean up the References. Organize MDN links together.
-* Remove the 'votesPageLimit' from storage and instead use an input box in the extension popup. The storage is not worth
+* DONE Remove the 'votesPageLimit' from storage and instead use an input box in the extension popup. The storage is not worth
   the code complexity. Plus the feature is not even really useful. Might as well remove the code and make the limit even
   more obvious by putting it right next to the "Scrape votes" button. This removes the discovery problem for that config.
 

@@ -7,7 +7,6 @@
     "scripts": [
       "rpc/rpc-storage.js",
       "rpc/rpc-background-init.js",
-      "backend/init-common.js",
       "init.js"
     ],
     "persistent": false
@@ -31,6 +30,5 @@
   },
   "page_action": {
     "default_popup": "backend/popup.html"
-  },
-  "options_page": "backend/options.html"
+  }
 }
