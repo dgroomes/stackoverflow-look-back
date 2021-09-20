@@ -207,26 +207,11 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* DONE Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like
-  that.
-* DONE Defect. If you click the extension button more than once, it is problematic because it runs the content scripts
-  every time, which mean multiple window listeners are added because of `content-script-messaging-proxy.js`.
-    * DONE When the popup is opened multiple times, the content scripts must skip the "load source" and "initialize RPC
-      proxy"
-      work. Use a flag on the `window` to keep track of the state.
-    * DONE There is some other issue where if you execute "Scrape votes" multiple times, it just grows. Some old objects
-      stay around. So when you execute it a second time, it kicks off two scrapers. And when you execute a third time,
-      it kicks off three!
 * This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
   finding basic problems. For example, I changed the signature of the RPC client, and it's pretty easy to miss a call
   site and update the args.
 * Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
-* DONE Clean up the References. Organize MDN links together.
-* DONE Remove the 'votesPageLimit' from storage and instead use an input box in the extension popup. The storage is not
-  worth the code complexity. Plus the feature is not even really useful. Might as well remove the code and make the
-  limit even more obvious by putting it right next to the "Scrape votes" button. This removes the discovery problem for
-  that config.
 
 ## Finished Wish List items
 
@@ -385,6 +370,11 @@ These are the finished items from the Wish List:
     * DONE Implement for Firefox
 * DONE There is no need to fetch the votes page limit from the web page. It can be passed as an argument of the remote
   procedure call from the background.
+* DONE Clean up the References. Organize MDN links together.
+* DONE Remove the 'votesPageLimit' from storage and instead use an input box in the extension popup. The storage is not
+  worth the code complexity. Plus the feature is not even really useful. Might as well remove the code and make the
+  limit even more obvious by putting it right next to the "Scrape votes" button. This removes the discovery problem for
+  that config.
 
 ## Notes
 
@@ -406,7 +396,16 @@ These are the finished items from the Wish List:
   designed? Is there an idiomatic ES6 class way? Or this a quirk of classes?
 * One of the significant changes of Chrome's Manifest V3 over Manifest V2 is
   the [Action API unification](https://developer.chrome.com/docs/extensions/mv3/intro/mv3-migration/#action-api-unification)
-  .
+* DONE Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like
+  that.
+* DONE Defect. If you click the extension button more than once, it is problematic because it runs the content scripts
+  every time, which mean multiple window listeners are added because of `content-script-messaging-proxy.js`.
+    * DONE When the popup is opened multiple times, the content scripts must skip the "load source" and "initialize RPC
+      proxy"
+      work. Use a flag on the `window` to keep track of the state.
+    * DONE There is some other issue where if you execute "Scrape votes" multiple times, it just grows. Some old objects
+      stay around. So when you execute it a second time, it kicks off two scrapers. And when you execute a third time,
+      it kicks off three!
 
 ## Reference
 
