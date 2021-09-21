@@ -234,6 +234,21 @@ General clean ups, TODOs and things I wish to implement for this project:
   * DONE Update the SQL query. Update the Post type. Persist the data. Query back the data.
   * DONE Visualize the tags in the UI
   * DONE on tags.
+* Implement a "recents" feature? Maybe the most relevant StackOverflow posts are the ones I just added! I'm revisiting
+  them continually until I understand them (concepts) or memorize them (commands or code snippets).
+* IN PROGRESS Fix static download. It doesn't include the JavaScript code. The search doesn't work.
+  * ABANDONED (Abandoned because Chrome extension by default do not allow any inline `<script>` tags for security. See this [answer](https://stackoverflow.com/a/16153913/)) Yikes, this is a bit involved. There's a fundamental issue which is that you can't just extract the contents of the
+    `<script src="...">` tags and paste it into the page as an inline `<script>` tag. You basically do this with CSS which
+    is awesome, but it won't work the same for JavaScript as [explained here](https://stackoverflow.com/a/48403181)
+    because of the same origin policy. I don't really want to do the technique described in the linked StackOverflow answer.
+    How can I get what I want and not introduce too much complexity (or even reduce complexity)... I think I can inline
+    the contents `posts.viewer.js`, `PostsViewer.js` and `posts-viewer.css` into `posts-viewer.html`. In other words,
+    get rid of those files and just use `posts-viewer.html`. This way, `posts-viewer.html` is already much closer to the
+    "Download-ready format" we need to support the download button. Nice.
+  * IN PROGRESS Re-download the external source and splice it into the page. This is the complicated solution that we must do because
+    of the restriction described in the earlier item.
+  * Delete the `<script src="...">` tags. These should not be included in the download. The downloaded file has to be
+    completely static, no external dependencies can be downloaded at runtime.
 
 ## Finished Wish List items
 
