@@ -1,6 +1,8 @@
 // This code runs in the popup. It bootstraps the content scripts which then bootstrap the web page. It waits for user
 // input when any of the "Scrape votes", "Expand posts", or "View posts" buttons are clicked in the popup.
 
+import {getRpcServer, getRpcClient} from "../rpc/rpc-backend.js"
+
 console.debug("[popup.js] Initializing...")
 
 let votesPageLimitEl = document.getElementById("votes-page-limit")

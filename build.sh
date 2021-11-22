@@ -48,6 +48,7 @@ build_distribution() {
 
   # Copy over the source code that is common across all extension distributions.
   cp -r "$project_dir/src/backend" "$output_dir"
+  deno bundle "$project_dir/src/backend/popup.js" "$output_dir/backend/popup.js"
   cp -r "$project_dir/src/web-page" "$output_dir"
   cp -r "$project_dir/src/rpc" "$output_dir"
 }
