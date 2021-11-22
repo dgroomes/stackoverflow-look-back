@@ -217,6 +217,9 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
+* Fix the order of Q&As in the viewer. I'm seeing questions all bunched together and then answers bunched together right
+  afterwards. Questions should always be following by their answers, but this isn't happening. For example, [this answer](https://stackoverflow.com/questions/37920923/how-to-check-whether-kafka-server-is-running/49852168#49852168)
+  is not following its question.
 * This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
   finding basic problems. For example, I changed the signature of the RPC client, and it's pretty easy to miss a call
   site and update the args.
@@ -312,8 +315,7 @@ These are the finished items from the Wish List:
   forward the "Expand posts" trigger to the web page 3) execute and wait for the response
   from `PostExpander.expandPosts`
   and return the response to the content script and finally 4) the content script returns the response to the extension
-
-  Solidify on a "Posts viewer" name for the `generate-html.html` (do all the code renaming) and create a "download"
+* DONE Solidify on a "Posts viewer" name for the `generate-html.html` (do all the code renaming) and create a "download"
   option as a button on this page.
 * DONE Consider adding RPC from the extension to the web page. Currently there is only the other way where the extension
   background script is the RPC server and the web page is the RPC client. But the other way would create a needed
@@ -355,9 +357,8 @@ These are the finished items from the Wish List:
 * DONE Standardize on RPC class naming convention.
     * For clients, the name should follow: 1) BrowserDescriptor 2) SourceDescription 3) DestinationDescriptor 4) "
       RpcClient"
-    * For servers, the name should follow: 1) BrowserDescriptor 2) DestinationDescriptor 3) "RpcServer"
-
-  The class comments should follow the same order.
+    * For servers, the name should follow: 1) BrowserDescriptor 2) DestinationDescriptor 3) "RpcServer".
+      The class comments should follow the same order.
 * DONE Consider turning `content-script-messaging-proxy.js` into a specific component of the RPC system. The genericness
   of it is becoming more confusing I think. This work will include baking in the "procedure target RPC" in the RpcClient
   and RpcServer classes and also handling it in the content script proxy.
