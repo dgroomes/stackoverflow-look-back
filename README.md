@@ -38,7 +38,7 @@ The overall flow of the tool breaks down like this:
 
 1. Scrape your votes data from <https://stackoverflow.com>
 1. Expand the votes data into posts data using <https://data.stackexchange.com>
-1. View, search and download a copy of the posts data
+1. View and search a copy of the posts data
 
 The source code is laid out in a directory structure that generally groups code by the execution context that the code
 runs in and is inviting for future additions like Manifest V3 support, or a Safari browser extension.
@@ -180,8 +180,6 @@ Follow these instructions to install the tool as a Chrome browser extension and 
     * While on the same StackExchange page, repeat the earlier steps to open the extension entry
     * Click the "View posts" button
     * Explore the data!
-    * Optionally, save the page to a static HTML file with the "Download" button. A file download will appear! Save it
-      somewhere easily accessible for quick answers.
 
 ## Firefox
 
@@ -236,7 +234,7 @@ General clean ups, TODOs and things I wish to implement for this project:
   * DONE on tags.
 * Implement a "recents" feature? Maybe the most relevant StackOverflow posts are the ones I just added! I'm revisiting
   them continually until I understand them (concepts) or memorize them (commands or code snippets).
-* IN PROGRESS Fix static download. It doesn't include the JavaScript code. The search doesn't work.
+* ABANDONED (Possible, but not feasible) Fix static download. It doesn't include the JavaScript code. The search doesn't work.
   * ABANDONED (Abandoned because Chrome extension by default do not allow any inline `<script>` tags for security. See this [answer](https://stackoverflow.com/a/16153913/)) Yikes, this is a bit involved. There's a fundamental issue which is that you can't just extract the contents of the
     `<script src="...">` tags and paste it into the page as an inline `<script>` tag. You basically do this with CSS which
     is awesome, but it won't work the same for JavaScript as [explained here](https://stackoverflow.com/a/48403181)
@@ -245,7 +243,7 @@ General clean ups, TODOs and things I wish to implement for this project:
     the contents `posts.viewer.js`, `PostsViewer.js` and `posts-viewer.css` into `posts-viewer.html`. In other words,
     get rid of those files and just use `posts-viewer.html`. This way, `posts-viewer.html` is already much closer to the
     "Download-ready format" we need to support the download button. Nice.
-  * IN PROGRESS Re-download the external source and splice it into the page. This is the complicated solution that we must do because
+  * Re-download the external source and splice it into the page. This is the complicated solution that we must do because
     of the restriction described in the earlier item.
   * Delete the `<script src="...">` tags. These should not be included in the download. The downloaded file has to be
     completely static, no external dependencies can be downloaded at runtime.

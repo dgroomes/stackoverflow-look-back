@@ -78,9 +78,13 @@ class PostsViewer {
     }
 
     /**
+     * ABANDONED. This is unfortunately pretty complicated and I don't want to deal with it. After all, I don't actually
+     * use the "static download" feature anymore even though the static download was my vision from the start of the
+     * project. For more details about why this feature is hard, see the in-line comments and the notes in the README.
+     *
      * Serialize the whole document to an HTML string and download it to a file.
      */
-    downloadHtml() {
+    async downloadHtml() {
         // The styles from linked stylesheets will not be serialized without extra effort. The styles must be copied into a
         // <style> tag.
         let style = document.createElement("style")
@@ -92,6 +96,23 @@ class PostsViewer {
         // Remove the 'link' elements since the styles are now embedded in a 'style' element
         for (let link of document.getElementsByTagName("link")) {
             link.remove()
+        }
+
+        // Similarly, we need to embed the JavaScript source into the document. This is even more complicated. We have to
+        // fetch the JavaScript source code for each '<script src='...'>" tag and splice the contents into a new inline
+        // '<script>' tag.
+        // Reference this answer https://stackoverflow.com/a/48403181
+        let sourceFiles = ["PostsViewer.js", "posts-viewer.js",] // todo more files
+        for (let sourceFile of sourceFiles) {
+            let result = await fetch(sourceFile).then(response => response.text())
+            console.log(`[PostViewer.js] Got result from fetch: ${JSON.stringify(result, null, 2)}`)
+            let el = document.createElement("script");
+            // el.textContent = result
+            let sourceTextNode = document.createTextNode(result)
+            el.appendChild(sourceTextNode)
+            document.body.append(el)
+            // document.body.insertAdjacentHTML("beforeend", el)
+            // document.body.insertAdjacentHTML("beforeend", `<script>${result}</script>`)
         }
 
         let serializer = new XMLSerializer()
