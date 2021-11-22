@@ -220,7 +220,12 @@ General clean ups, TODOs and things I wish to implement for this project:
 * IN PROGRESS Experimental. Re-write in TypeScript and use Deno.
   * What is the first minimal step in incorporating Deno? I think we want to use Deno's `bundle` command to create a
     bundled entrypoint JavaScript. But on the other hand, I've discovered that it's inconvenient in general to use
-    modules in a browser extension context. So, I'm not sure... Can the `init.js` file be bundled? 
+    modules in a browser extension context. So, I'm not sure... Can the `init.js` file be bundled?
+    * Update: we want to use ES modules for authoring code but not at runtime because of the aforementioned awkwardness
+      of the support for modules in a browser extension context. Deno's bundle let's us concatenate the content of JS
+      files that use `import`/`export` into a "bundles" file that does not include `import`/`export`. Perfect.
+  * One-by-one modularize the files markes as accessible in the `manifest.json` file. Only entrypoint-type files should
+    exist by the end, like `init.js`, `popup.js` and `posts-viewer.js`.
 * DONE Fix the sort order of Q&As in the viewer. I'm seeing questions all bunched together and then answers bunched together right
   afterwards. Questions should always be following by their answers, but this isn't happening. For example, [this answer](https://stackoverflow.com/questions/37920923/how-to-check-whether-kafka-server-is-running/49852168#49852168)
   is not following its question.
