@@ -217,6 +217,10 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
+* IN PROGRESS Experimental. Re-write in TypeScript and use Deno.
+  * What is the first minimal step in incorporating Deno? I think we want to use Deno's `bundle` command to create a
+    bundled entrypoint JavaScript. But on the other hand, I've discovered that it's inconvenient in general to use
+    modules in a browser extension context. So, I'm not sure... Can the `init.js` file be bundled? 
 * DONE Fix the sort order of Q&As in the viewer. I'm seeing questions all bunched together and then answers bunched together right
   afterwards. Questions should always be following by their answers, but this isn't happening. For example, [this answer](https://stackoverflow.com/questions/37920923/how-to-check-whether-kafka-server-is-running/49852168#49852168)
   is not following its question.
@@ -509,3 +513,4 @@ Materials I referenced when building this tool and deep diving on learning.
     * I'm purposely choosing to not use this tool. I want to keep the dependencies to an absolute minimum and this tool
       is not critical.
 * [Opera dev docs: *The Basics of Making an Extension*](https://dev.opera.com/extensions/basics/)
+* [Deno: "A modern runtime for JavaScript and TypeScript."](https://deno.land/)
