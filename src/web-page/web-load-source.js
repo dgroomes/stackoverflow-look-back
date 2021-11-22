@@ -1,6 +1,8 @@
 // This code runs on the web page. It downloads all of the other JavaScript source files into the web page by adding
 // "script" tags. It also does some initialization to wire up the main objects and variables.
 
+import {initRpcWebPage} from "../rpc/rpc-web-page.js"
+
 console.debug("[web-load-source.js] Initializing...")
 
 let browserDescriptor // Either "chromium" or "firefox. Firefox and Chromium web extension APIs have differences and we need to know the browser.

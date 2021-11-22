@@ -226,6 +226,7 @@ General clean ups, TODOs and things I wish to implement for this project:
       files that use `import`/`export` into a "bundles" file that does not include `import`/`export`. Perfect.
   * One-by-one modularize the files markes as accessible in the `manifest.json` file. Only entrypoint-type files should
     exist by the end, like `init.js`, `popup.js` and `posts-viewer.js`.
+    * DONE Modularize `rpc-web-page.js` 
 * DONE Fix the sort order of Q&As in the viewer. I'm seeing questions all bunched together and then answers bunched together right
   afterwards. Questions should always be following by their answers, but this isn't happening. For example, [this answer](https://stackoverflow.com/questions/37920923/how-to-check-whether-kafka-server-is-running/49852168#49852168)
   is not following its question.

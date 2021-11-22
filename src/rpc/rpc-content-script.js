@@ -45,7 +45,6 @@ function _includeScript(fileName) {
  */
 async function loadRpcSourceOnWebPage() {
     await _includeScript("rpc/rpc.js")
-    await _includeScript("rpc/rpc-web-page.js")
 }
 
 // Connect web page RPC clients to background RPC servers.
