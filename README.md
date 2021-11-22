@@ -217,9 +217,11 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* Fix the order of Q&As in the viewer. I'm seeing questions all bunched together and then answers bunched together right
+* DONE Fix the sort order of Q&As in the viewer. I'm seeing questions all bunched together and then answers bunched together right
   afterwards. Questions should always be following by their answers, but this isn't happening. For example, [this answer](https://stackoverflow.com/questions/37920923/how-to-check-whether-kafka-server-is-running/49852168#49852168)
   is not following its question.
+  * (Answer: yes the "questionId" is a non-normal field and needed be included in the toJSON) Is there a defect where the question ID field is null on answers? For example, answer 37943159 has a null question ID.
+    Why? This is a problem for the sort order.
 * This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
   finding basic problems. For example, I changed the signature of the RPC client, and it's pretty easy to miss a call
   site and update the args.

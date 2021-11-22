@@ -47,7 +47,7 @@ class Post {
      * This function is used by functions like "sort" to sort elements by their natural order.
      * @return {Number}
      */
-    compare() {
+    naturalOrder() {
         throw new Error("Must be implemented on sub-classes")
     }
 
@@ -60,7 +60,7 @@ class Post {
     }
 
     toJSON() {
-        return toJSON(this, "type")
+        return toJSON(this, "type", "questionId")
     }
 }
 
@@ -89,7 +89,7 @@ class Question extends Post {
         return this.id
     }
 
-    compare() {
+    naturalOrder() {
         return this.id
     }
 
@@ -138,7 +138,7 @@ class Answer extends Post {
         return this.#questionId
     }
 
-    compare() {
+    naturalOrder() {
         return Number(`${this.questionId}.${this.id}`) // Answers should always appear after questions. We can use a Dewey Decimal sorting implementation. QuestionId.AnswerId. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
     }
 

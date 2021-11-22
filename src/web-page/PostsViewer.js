@@ -48,7 +48,7 @@ class PostsViewer {
 
         // Sort the posts data. Every question post is followed by its answer posts.
         // See the "compareFn" parameter for "Array.prototype.sort()": https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
-        let sorted = filtered.sort((postA, postB) => postA.compare() - postB.compare())
+        let sorted = filtered.sort((postA, postB) => postA.naturalOrder() - postB.naturalOrder())
 
         let [first, ...rest] = sorted
 
