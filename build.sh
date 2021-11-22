@@ -25,6 +25,13 @@ set -eu
 project_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 extension_sources=(firefox-manifest-v2 chromium-manifest-v2)
 
+preconditions() {
+  if ! which deno &> /dev/null; then
+    echo >&2 "The 'deno' command was not found. Please install Deno. See https://deno.land/."
+    exit 1
+  fi
+}
+
 build_distribution() {
   local extension_source="$1"
   local source_dir="$project_dir/src/${extension_source}"
@@ -36,7 +43,7 @@ build_distribution() {
   mkdir -p "$output_dir"
 
   # Copy over the source code that is specific to this extension distribution.
-  cp "$source_dir/init.js" "$output_dir"
+  deno bundle "$source_dir/init.js" "$output_dir/init.js"
   cp "$source_dir/manifest.json" "$output_dir"
 
   # Copy over the source code that is common across all extension distributions.
@@ -51,6 +58,8 @@ build_all() {
   done
   echo "Distributions built! ✅"
 }
+
+preconditions
 
 if [[ "$watch" == "true" ]]; then
   echo "Building with the '--watch' option. The distributions will be built again when any of the 'src/' code changes."
