@@ -18,8 +18,7 @@
   ],
   "web_accessible_resources": [
     "web-page/*",
-    "rpc/rpc.js",
-    "rpc/rpc-web-page.js"
+    "rpc/rpc.js"
   ],
   "externally_connectable": {
     "matches": [
