@@ -69,7 +69,6 @@ function downloadScripts() {
         "web-page/PostsViewer.js",
         "web-page/vote.js",
         "web-page/post.js",
-        "web-page/util/download-to-file.js",
         "web-page/util/jquery-proxy.js",
         "web-page/util/to-json.js"
     ]

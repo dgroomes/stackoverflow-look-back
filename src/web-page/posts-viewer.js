@@ -14,10 +14,6 @@ programReady.then(() => {
     document.getElementById("search-button").addEventListener("click", () => {
         search()
     })
-
-    document.getElementById("download").addEventListener("click", async () => {
-        await postsViewer.downloadHtml()
-    })
 }
 
 /**
