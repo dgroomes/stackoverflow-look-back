@@ -217,7 +217,7 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* IN PROGRESS Experimental. Re-write in TypeScript and use Deno.
+* DONE Bundle JavaScript source code with Deno. Deno let's us write TypeScript!
   * What is the first minimal step in incorporating Deno? I think we want to use Deno's `bundle` command to create a
     bundled entrypoint JavaScript. But on the other hand, I've discovered that it's inconvenient in general to use
     modules in a browser extension context. So, I'm not sure... Can the `init.js` file be bundled?
@@ -232,9 +232,9 @@ General clean ups, TODOs and things I wish to implement for this project:
     * DONE Modularize everything
   * DONE fix modularization. The `Vote` class is getting double declared. I need to bundle `web-load-source.js`
     into the other web entrypoint files like `posts-viewer.js`
-  * Convert something to TypeScript
-  * Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
-    extension web page (`posts-viewer.html`) versus the portion needed by the frontend web page (the ".com" pages).
+  * DONE Convert something to TypeScript
+* Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
+  extension web page (`posts-viewer.html`) versus the portion needed by the frontend web page (the ".com" pages).
 * DONE Fix the sort order of Q&As in the viewer. I'm seeing questions all bunched together and then answers bunched together right
   afterwards. Questions should always be following by their answers, but this isn't happening. For example, [this answer](https://stackoverflow.com/questions/37920923/how-to-check-whether-kafka-server-is-running/49852168#49852168)
   is not following its question.
