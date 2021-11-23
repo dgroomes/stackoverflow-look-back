@@ -59,7 +59,7 @@ build_distribution() {
   deno bundle "$project_dir/src/backend/popup.js" "$vendor_output_dir/backend/popup.js"
   deno bundle "$project_dir/src/backend/content-script-load-source.js" "$vendor_output_dir/backend/content-script-load-source.js"
   deno bundle "$project_dir/src/rpc/rpc-content-script.js" "$vendor_output_dir/rpc/rpc-content-script.js"
-  deno bundle "$project_dir/src/web-page/web-load-source.js" "$vendor_output_dir/web-page/web-load-source.js"
+  deno bundle "$project_dir/src/web-page/web-injected.js" "$vendor_output_dir/web-page/web-injected.js"
   deno bundle "$project_dir/src/web-page/posts-viewer.js" "$vendor_output_dir/web-page/posts-viewer.js"
 }
 
