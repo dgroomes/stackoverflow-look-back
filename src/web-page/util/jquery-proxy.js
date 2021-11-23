@@ -1,5 +1,7 @@
 // Instrument jQuery with some proxy code
 
+export {instrumentJQuery, registerAjaxSuccessSpy}
+
 let _onSuccessSpyFns = []
 
 /**

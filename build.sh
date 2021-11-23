@@ -51,6 +51,7 @@ build_distribution() {
   deno bundle "$project_dir/src/backend/popup.js" "$output_dir/backend/popup.js"
   cp -r "$project_dir/src/web-page" "$output_dir"
   deno bundle "$project_dir/src/web-page/web-load-source.js" "$output_dir/web-page/web-load-source.js"
+  deno bundle "$project_dir/src/web-page/PostsExpander.js" "$output_dir/web-page/PostsExpander.js"
   cp -r "$project_dir/src/rpc" "$output_dir"
 }
 
