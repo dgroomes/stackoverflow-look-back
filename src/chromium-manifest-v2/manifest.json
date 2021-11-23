@@ -21,7 +21,7 @@
     "web-page/posts-viewer.css",
     "web-page/posts-viewer.html",
     "web-page/posts-viewer.js",
-    "web-page/web-load-source.js"
+    "web-page/web-injected.js"
   ],
   "externally_connectable": {
     "matches": [

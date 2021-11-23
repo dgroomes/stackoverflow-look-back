@@ -18,8 +18,8 @@ if (!window.contentScriptLoadSourceLoaded) {
 
 function loadSourceOnWebPage() {
     let scriptEl = document.createElement("script")
-    scriptEl.src = chrome.runtime.getURL("web-page/web-load-source.js")
-    scriptEl.id = "web-load-source"
+    scriptEl.src = chrome.runtime.getURL("web-page/web-injected.js")
+    scriptEl.id = "web-injected"
     document.head.append(scriptEl)
 
     // Register a window listener for the "web-page-initialized" message which the web page will send when it has finished

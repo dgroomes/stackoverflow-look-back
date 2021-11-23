@@ -1,3 +1,4 @@
+import {Vote} from "./vote.js"
 export {AppStorage}
 
 /**

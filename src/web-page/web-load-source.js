@@ -1,5 +1,6 @@
 // This code runs on the web page. It does some initialization to wire up the main objects and variables.
 
+export {exec}
 import {initRpcWebPage} from "../rpc/rpc-web-page.js"
 import {PostsExpander} from "./PostsExpander.js"
 import {AppStorage} from "./AppStorage.js"
@@ -9,10 +10,8 @@ import {PostsViewer} from "./PostsViewer.js"
 console.debug("[web-load-source.js] Initializing...")
 
 let browserDescriptor // Either "chromium" or "firefox. Firefox and Chromium web extension APIs have differences and we need to know the browser.
-let webResourcesOrigin // The origin that serves the web resources like the JavaScript files. This origin will be a special Chromium/Firefox extension URL.
+window.webResourcesOrigin = null // The origin that serves the web resources like the JavaScript files. This origin will be a special Chromium/Firefox extension URL.
 let webExtensionId // This is the ID of the web extension. This is always a super long ID that's generated the browser.
-let _programReadyResolveRef
-programReady = new Promise(resolve => _programReadyResolveRef = resolve) // A promise that will resolve when the program is ready. I.e. all of the JavaScript source files have been loaded and the objects have been wired up
 
 /**
  * Detect the current environment and assign the following global properties:
@@ -36,7 +35,7 @@ function detectEnvironment() {
     function detectFromExtensionUrl(url) {
         let regex = new RegExp("(chrome-extension|moz-extension)://([a-z0-9-]+)")
         let matches = regex.exec(url)
-        webResourcesOrigin = matches[0]
+        window.webResourcesOrigin = matches[0]
 
         let host = matches[1]
         if (host === "chrome-extension")
@@ -57,7 +56,7 @@ function detectEnvironment() {
         return
     }
 
-    let script = document.getElementById("web-load-source")
+    let script = document.getElementById("web-injected")
     detectFromExtensionUrl(script.src)
 }
 
@@ -87,8 +86,4 @@ async function exec() {
     await configureState()
     console.debug(`[web-load-source.js] [${Date.now()}] Fully initialized.`)
     window.postMessage("web-page-initialized", "*")
-    _programReadyResolveRef()
 }
-
-// noinspection JSIgnoredPromiseFromCall
-exec()

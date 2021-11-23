@@ -230,7 +230,11 @@ General clean ups, TODOs and things I wish to implement for this project:
     * DONE Modularize `rpc.js`
     * DONE Modularize `jquery-proxy.js`
     * DONE Modularize everything
+  * DONE fix modularization. The `Vote` class is getting double declared. I need to bundle `web-load-source.js`
+    into the other web entrypoint files like `posts-viewer.js`
   * Convert something to TypeScript
+  * Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
+    extension web page (`posts-viewer.html`) versus the portion needed by the frontend web page (the ".com" pages).
 * DONE Fix the sort order of Q&As in the viewer. I'm seeing questions all bunched together and then answers bunched together right
   afterwards. Questions should always be following by their answers, but this isn't happening. For example, [this answer](https://stackoverflow.com/questions/37920923/how-to-check-whether-kafka-server-is-running/49852168#49852168)
   is not following its question.

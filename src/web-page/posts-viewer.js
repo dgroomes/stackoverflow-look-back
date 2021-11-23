@@ -1,8 +1,9 @@
 import {Question} from "./post.js"
+import {exec} from "./web-load-source.js"
 
 console.debug("[posts-viewer.js] Initializing...")
 
-programReady.then(() => {
+exec().then(() => {
     postsViewer.init()
         .then(() => console.info("Posts were rendered to HTML successfully"))
 })
