@@ -1,3 +1,5 @@
+export {toJSON}
+
 /**
  * This is a utility function to help define the "toJSON" function on classes so that the JSON.stringify picks up non-normal
  * fields.

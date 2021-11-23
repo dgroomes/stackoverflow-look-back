@@ -1,3 +1,5 @@
+export {PostsViewer}
+
 /**
  * View the posts data on the page.
  */

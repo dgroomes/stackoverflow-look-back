@@ -1,8 +1,10 @@
-// This code runs on the web page. It downloads all of the other JavaScript source files into the web page by adding
-// "script" tags. It also does some initialization to wire up the main objects and variables.
+// This code runs on the web page. It does some initialization to wire up the main objects and variables.
 
 import {initRpcWebPage} from "../rpc/rpc-web-page.js"
 import {PostsExpander} from "./PostsExpander.js"
+import {AppStorage} from "./AppStorage.js"
+import {VotesScraper} from "./VotesScraper.js"
+import {PostsViewer} from "./PostsViewer.js"
 
 console.debug("[web-load-source.js] Initializing...")
 
@@ -59,45 +61,6 @@ function detectEnvironment() {
     detectFromExtensionUrl(script.src)
 }
 
-/**
- * Load all scripts
- * @return {Promise} a promise that resolves when all scripts have loaded into the page. Specifically, all script
- * elements will have called their 'onload' functions.
- */
-function downloadScripts() {
-    const scripts = [
-        "web-page/AppStorage.js",
-        "web-page/VotesScraper.js",
-        "web-page/PostsExpander.js",
-        "web-page/PostsViewer.js",
-        "web-page/vote.js",
-        "web-page/post.js",
-        "web-page/util/to-json.js"
-    ]
-
-    /**
-     * Include a script dependency.
-     *
-     * This creates a <script> element with the given URL and adds it to the document head. The script will be downloaded and
-     * run. This is a way to dynamically load JavaScript to the page.
-     * @param fileName
-     * @return {Promise} a promise that resolves when the script loads
-     */
-    function includeScript(fileName) {
-        let el = document.createElement("script")
-        el.src = `${webResourcesOrigin}/${fileName}`
-        document.head.append(el)
-
-        return new Promise((res, rej) => {
-            el.onload = function () {
-                res()
-            }
-        })
-    }
-
-    return Promise.all(scripts.map(fileName => includeScript(fileName)))
-}
-
 async function configureState() {
 
     initRpcWebPage(browserDescriptor, webExtensionId)
@@ -121,7 +84,6 @@ async function configureState() {
  */
 async function exec() {
     detectEnvironment()
-    await downloadScripts()
     await configureState()
     console.debug(`[web-load-source.js] [${Date.now()}] Fully initialized.`)
     window.postMessage("web-page-initialized", "*")

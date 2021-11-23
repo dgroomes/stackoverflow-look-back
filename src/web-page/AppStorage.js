@@ -1,3 +1,5 @@
+export {AppStorage}
+
 /**
  * An API for general storage and retrieval (i.e. reads/writes) of the domain data.
  */

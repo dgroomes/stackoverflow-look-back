@@ -1,3 +1,6 @@
+import {toJSON} from "./util/to-json.js"
+export {Vote}
+
 /**
  * A StackOverflow vote on a post (either a question post or an answer post).
  */
