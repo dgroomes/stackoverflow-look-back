@@ -2,6 +2,7 @@
 // "script" tags. It also does some initialization to wire up the main objects and variables.
 
 import {initRpcWebPage} from "../rpc/rpc-web-page.js"
+import {PostsExpander} from "./PostsExpander.js"
 
 console.debug("[web-load-source.js] Initializing...")
 
@@ -71,7 +72,6 @@ function downloadScripts() {
         "web-page/PostsViewer.js",
         "web-page/vote.js",
         "web-page/post.js",
-        "web-page/util/jquery-proxy.js",
         "web-page/util/to-json.js"
     ]
 

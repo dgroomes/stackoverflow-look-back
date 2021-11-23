@@ -15,7 +15,18 @@
     "https://data.stackexchange.com/*"
   ],
   "web_accessible_resources": [
-    "web-page/*"
+    "web-page/util/to-json.js",
+    "web-page/AppStorage.js",
+    "web-page/get-posts-by-ids.sql",
+    "web-page/post.js",
+    "web-page/posts-viewer.css",
+    "web-page/posts-viewer.html",
+    "web-page/posts-viewer.js",
+    "web-page/PostsExpander.js",
+    "web-page/PostsViewer.js",
+    "web-page/vote.js",
+    "web-page/VotesScraper.js",
+    "web-page/web-load-source.js"
   ],
   "page_action": {
     "default_popup": "backend/popup.html",
