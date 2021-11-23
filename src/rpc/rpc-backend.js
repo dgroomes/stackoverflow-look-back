@@ -1,6 +1,7 @@
 // This code is designed to run in background scripts.
 
 export {initRpcBackground, getRpcServer, getRpcClient}
+import {RpcServer, RpcClient} from "./rpc.js"
 
 /**
  * Initialize the configuration for the RPC framework. This must always be executed before any other work is done.

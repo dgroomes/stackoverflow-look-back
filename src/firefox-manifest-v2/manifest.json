@@ -15,8 +15,7 @@
     "https://data.stackexchange.com/*"
   ],
   "web_accessible_resources": [
-    "web-page/*",
-    "rpc/rpc.js"
+    "web-page/*"
   ],
   "page_action": {
     "default_popup": "backend/popup.html",
