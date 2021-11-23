@@ -1,6 +1,8 @@
 // This is foundational common code for the RPC framework. It is used in all contexts of a web extension: background scripts,
 // popup scripts, content scripts, and the web page.
 
+export {RpcServer, RpcClient}
+
 /**
  * This is a partially implemented class (in Java it would be called an "abstract" class) that defines the base
  * functionality of the server component of a Remote Procedure Call (RPC) system. Instances of this class service RPC

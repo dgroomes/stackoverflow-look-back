@@ -17,8 +17,7 @@
     "https://data.stackexchange.com/*"
   ],
   "web_accessible_resources": [
-    "web-page/*",
-    "rpc/rpc.js"
+    "web-page/*"
   ],
   "externally_connectable": {
     "matches": [
