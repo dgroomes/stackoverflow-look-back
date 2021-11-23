@@ -34,25 +34,33 @@ preconditions() {
 
 build_distribution() {
   local extension_source="$1"
-  local source_dir="$project_dir/src/${extension_source}"
-  local output_dir="$project_dir/build/${extension_source}-web-extension"
+  local vendor_source_dir="$project_dir/src/${extension_source}"
+  local vendor_output_dir="$project_dir/build/${extension_source}-web-extension"
 
   # Delete the build directory and everything inside of it if it already exists and then create it again.
-  mkdir -p "$output_dir"
-  rm -rf "$output_dir"
-  mkdir -p "$output_dir"
+  mkdir -p "$vendor_output_dir"
+  rm -rf "$vendor_output_dir"
+  mkdir -p "$vendor_output_dir/backend" "$vendor_output_dir/rpc" "$vendor_output_dir/web-page"
 
-  # Copy over the source code that is specific to this extension distribution.
-  deno bundle "$source_dir/init.js" "$output_dir/init.js"
-  cp "$source_dir/manifest.json" "$output_dir"
+  # Copy over the vendor-specific Manifest file and bundle the vendor-specific initialization JavaScript file
+  cp "$vendor_source_dir/manifest.json" "$vendor_output_dir"
+  deno bundle "$vendor_source_dir/init.js" "$vendor_output_dir/init.js"
 
-  # Copy over the source code that is common across all extension distributions.
-  cp -r "$project_dir/src/backend" "$output_dir"
-  deno bundle "$project_dir/src/backend/popup.js" "$output_dir/backend/popup.js"
-  cp -r "$project_dir/src/web-page" "$output_dir"
-  deno bundle "$project_dir/src/web-page/web-load-source.js" "$output_dir/web-page/web-load-source.js"
-  deno bundle "$project_dir/src/web-page/PostsExpander.js" "$output_dir/web-page/PostsExpander.js"
-  cp -r "$project_dir/src/rpc" "$output_dir"
+  # Copy over non-JavaScript files (don't bother using fancy shell scripting here. Just copy over the few files explicitly)
+  cp \
+    "$project_dir/src/web-page/get-posts-by-ids.sql" \
+    "$project_dir/src/web-page/posts-viewer.html" \
+    "$project_dir/src/web-page/posts-viewer.css" \
+    "$vendor_output_dir/web-page"
+
+  cp "$project_dir/src/backend/popup.html" "$vendor_output_dir/backend"
+
+  # Bundle the entrypoint-type JavaScript files
+  deno bundle "$project_dir/src/backend/popup.js" "$vendor_output_dir/backend/popup.js"
+  deno bundle "$project_dir/src/backend/content-script-load-source.js" "$vendor_output_dir/backend/content-script-load-source.js"
+  deno bundle "$project_dir/src/rpc/rpc-content-script.js" "$vendor_output_dir/rpc/rpc-content-script.js"
+  deno bundle "$project_dir/src/web-page/web-load-source.js" "$vendor_output_dir/web-page/web-load-source.js"
+  deno bundle "$project_dir/src/web-page/posts-viewer.js" "$vendor_output_dir/web-page/posts-viewer.js"
 }
 
 build_all() {

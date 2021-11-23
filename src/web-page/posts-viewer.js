@@ -1,3 +1,5 @@
+import {Question} from "./post.js"
+
 console.debug("[posts-viewer.js] Initializing...")
 
 programReady.then(() => {

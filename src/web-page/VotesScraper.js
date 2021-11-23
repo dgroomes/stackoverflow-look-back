@@ -1,3 +1,7 @@
+import {Vote} from "./vote.js"
+
+export {VotesScraper}
+
 /**
  * Scrape your own StackOverflow votes data from your profile page. See the README.
  *

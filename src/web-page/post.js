@@ -1,3 +1,6 @@
+import {toJSON} from "./util/to-json.js"
+export {Post, Question, Answer}
+
 /**
  * A StackOverflow post
  */
