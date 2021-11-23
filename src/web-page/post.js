@@ -1,4 +1,4 @@
-import {toJSON} from "./util/to-json.js"
+import {toJSON} from "./util/to-json.ts"
 export {Post, Question, Answer}
 
 /**
