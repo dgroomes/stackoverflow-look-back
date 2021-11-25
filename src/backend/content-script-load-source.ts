@@ -20,9 +20,7 @@ if (!window.contentScriptLoadSourceLoaded) {
     loadSourceOnWebPage()
 } else {
     console.debug("[content-script-load-source.js] Already loaded.")
-    chrome.runtime.sendMessage(null,
-        "web-page-initialized",
-        null)
+    chrome.runtime.sendMessage(null, "web-page-initialized")
 }
 
 function loadSourceOnWebPage() {
@@ -38,9 +36,7 @@ function loadSourceOnWebPage() {
         console.debug(JSON.stringify({data}, null, 2))
         if (data === "web-page-initialized") {
             console.debug("[content-script-load-source.js] Sending the 'web-page-initialized' message")
-            chrome.runtime.sendMessage(null,
-                "web-page-initialized",
-                null)
+            chrome.runtime.sendMessage(null, "web-page-initialized")
 
             window.removeEventListener("message", webPageInitializedListener)
         }

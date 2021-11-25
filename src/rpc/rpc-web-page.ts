@@ -1,7 +1,16 @@
 // This code is designed to run on the web page.
 
+import {chrome} from "../chromium-manifest-v2/chrome-extension-types.d.ts"
+
 export {initRpcWebPage}
 import {RpcServer, RpcClient} from "./rpc.ts"
+
+declare global {
+    interface Window {
+        rpcClient: RpcClient
+        rpcServer: RpcServer
+    }
+}
 
 /**
  *  Initialize the web page objects of the RPC framework. Programs that depend on the RPC framework must call this
@@ -103,7 +112,7 @@ class FirefoxWebPageRpcServer extends RpcServer {
             }
             console.debug(`[FirefoxWebPageRpcServer] sending message:`)
             console.debug(JSON.stringify(returnMessage, null, 2))
-            window.postMessage(returnMessage)
+            window.postMessage(returnMessage, undefined)
         })
     }
 }

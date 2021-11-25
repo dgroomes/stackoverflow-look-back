@@ -1,7 +1,7 @@
 // This code runs on the web page. It does some initialization to wire up the main objects and variables.
 
 export {exec}
-import {initRpcWebPage} from "../rpc/rpc-web-page.js"
+import {initRpcWebPage} from "../rpc/rpc-web-page.ts"
 import {PostsExpander} from "./PostsExpander.js"
 import {AppStorage} from "./AppStorage.js"
 import {VotesScraper} from "./VotesScraper.js"

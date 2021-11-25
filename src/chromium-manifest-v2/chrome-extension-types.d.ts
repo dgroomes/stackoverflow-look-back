@@ -26,7 +26,7 @@ interface Runtime {
     sendMessage(
         extensionId: string | null,
         message: any,
-        options: object | null
+        options?: object
     ): void
 
     /** https://developer.chrome.com/docs/extensions/reference/runtime/#method-getURL */
