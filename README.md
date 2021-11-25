@@ -207,10 +207,6 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* [x] DONE Modularize the source code layout. I want the `rpc/` code far away from the other code, so it's clear that it is
-      a standalone component. Similarly, I want a `core/` component which is the core of the SO Look Back Tool and it
-      should be far away from the vendor-specific code (stuff like web extension IDs and manifests)  
-* [x] DONE (It's not perfect, it should exit earlier. But I don't want to deal with Bash traps/catch yet) Fix the `build.sh` script to not exit when TypeScript compilation fails when the `--watch` option is used
 * [ ] Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
   extension web page (`posts-viewer.html`) versus the portion needed by the frontend web page (the ".com" pages).
 * [ ] Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
@@ -446,6 +442,10 @@ These are the finished items from the Wish List:
 * OBSOLETE (now that TypeScript is in the picture, it is a strong counter force to this problem) This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
   finding basic problems. For example, I changed the signature of the RPC client, and it's pretty easy to miss a call
   site and update the args.
+* [x] DONE Modularize the source code layout. I want the `rpc/` code far away from the other code, so it's clear that it is
+  a standalone component. Similarly, I want a `core/` component which is the core of the SO Look Back Tool and it
+  should be far away from the vendor-specific code (stuff like web extension IDs and manifests)
+* [x] DONE (It's not perfect, it should exit earlier. But I don't want to deal with Bash traps/catch yet) Fix the `build.sh` script to not exit when TypeScript compilation fails when the `--watch` option is used
 
 ## Background
 
