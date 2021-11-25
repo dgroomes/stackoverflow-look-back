@@ -5,6 +5,7 @@ export {Chrome, Runtime, chrome}
 declare var chrome: Chrome
 
 interface Chrome {
+    declarativeContent: DeclarativeContent;
     runtime: Runtime
     storage: Storage
     tabs: Tabs
@@ -34,7 +35,10 @@ interface Runtime {
     getURL(url: string): string
 
     // https://developer.chrome.com/docs/extensions/reference/runtime/#event-onMessage
-    onMessage: EventRegisterer
+    onMessage: Event
+
+    // https://developer.chrome.com/docs/extensions/reference/runtime/#event-onInstalled
+    onInstalled: Event
 }
 
 /**
@@ -59,14 +63,10 @@ interface StorageArea {
 
 /**
  * https://developer.chrome.com/docs/extensions/reference/runtime/#event
- *
- * I've made up the name "EventRegisterer". I don't know what name to use because the Chrome docs don't refer to this
- * type by name.
  */
-interface EventRegisterer {
+interface Event {
 
-    // Note: I'm not sure how to express a function with an unknown arity. So I'll just an "any" here.
-    addListener(callback: any): void
+    addListener(callback: Function): void
 
     // This method isn't documented in https://developer.chrome.com/docs/extensions/reference/runtime/ but the method
     // exists.
@@ -81,12 +81,12 @@ interface Tabs {
     executeScript(
         details: InjectDetails,
         callback: () => void
-    ) : void
+    ): void
 
     // https://developer.chrome.com/docs/extensions/reference/tabs/#method-create
     create(createProperties: {
         url: string
-    }) : void
+    }): void
 }
 
 /**
@@ -94,4 +94,34 @@ interface Tabs {
  */
 interface InjectDetails {
     file: string
+}
+
+/**
+ * https://developer.chrome.com/docs/extensions/reference/declarativeContent/
+ */
+interface DeclarativeContent {
+    onPageChanged: DeclarativeEvent
+
+    // I don't know how to declare an inner interface (like an inner class)
+    PageStateMatcher: any
+    ShowPageAction: any
+}
+
+/**
+ * https://developer.chrome.com/docs/extensions/reference/events/#type-Event
+ */
+interface DeclarativeEvent {
+
+    removeRules(ruleIdentifiers: Array<string> | undefined,
+                callback: Function): void;
+
+    addRules(rules: Array<Rule>): void;
+}
+
+/**
+ * https://developer.chrome.com/docs/extensions/reference/events/#type-Rule
+ */
+interface Rule {
+    conditions: Array<any>
+    actions: Array<any>
 }

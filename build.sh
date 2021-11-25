@@ -49,7 +49,7 @@ build_distribution() {
 
   # Copy over the vendor-specific Manifest file and bundle the vendor-specific initialization JavaScript file
   cp "$vendor_source_dir/manifest.json" "$vendor_output_dir"
-  deno_bundle "$vendor_source_dir/init.js" "$vendor_output_dir/init.js"
+  deno_bundle "$vendor_source_dir/init.ts" "$vendor_output_dir/init.js"
 
   # Copy over non-JavaScript files (don't bother using fancy shell scripting here. Just copy over the few files explicitly)
   cp \
