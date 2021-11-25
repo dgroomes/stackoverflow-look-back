@@ -23,6 +23,8 @@
     * Why do I like the browser so much? Among other things,
       the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/MDN) are so amazing 🤩⭐️ and make it fun and rewarding
       to develop using Web APIs.
+* This is a vehicle for me to learn TypeScript on a non-trivial project. I'm learning TypeScript with the help of Deno
+  and its `bundle` command.
 
 ---
 **NOTE**:
@@ -237,7 +239,9 @@ General clean ups, TODOs and things I wish to implement for this project:
     * DONE `posts-viewer.js`
     * DONE `content-script-load-source.js`
     * DONE `popup.js`
-  * How do source maps work with TypeScript/Deno? Can I still productively debug my code in Chrome Dev Tools?
+  * ANSWERED How do source maps work with TypeScript/Deno? Can I still productively debug my code in Chrome Dev Tools?.
+    Answer: `deno bundle ...` does not support sourcemaps but it is an [open issue](https://github.com/denoland/deno/issues/8577)
+    with a show of support from the Deno core team.
 * Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
   extension web page (`posts-viewer.html`) versus the portion needed by the frontend web page (the ".com" pages).
 * DONE Fix the sort order of Q&As in the viewer. I'm seeing questions all bunched together and then answers bunched together right
