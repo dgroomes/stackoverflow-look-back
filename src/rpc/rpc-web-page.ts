@@ -1,16 +1,13 @@
 // This code is designed to run on the web page.
+// This is a component of the RPC framework.
 
 import {chrome} from "../chromium-manifest-v2/chrome-extension-types.d.ts"
 
-export {initRpcWebPage}
+export {initRpcWebPage, rpcClient, rpcServer}
 import {RpcServer, RpcClient} from "./rpc.ts"
 
-declare global {
-    interface Window {
-        rpcClient: RpcClient
-        rpcServer: RpcServer
-    }
-}
+declare var rpcClient: RpcClient
+declare var rpcServer: RpcServer
 
 /**
  *  Initialize the web page objects of the RPC framework. Programs that depend on the RPC framework must call this
@@ -24,8 +21,6 @@ declare global {
  */
 function initRpcWebPage(browserDescriptor, webExtensionId) {
     console.debug("[rpc-web-page.js] Initializing...")
-    let rpcClient
-    let rpcServer
 
     if (browserDescriptor === "chromium") {
         rpcClient = new ChromiumWebPageToBackgroundRpcClient(webExtensionId)
@@ -36,16 +31,6 @@ function initRpcWebPage(browserDescriptor, webExtensionId) {
     } else {
         throw new Error(`Unexpected browser: '${browserDescriptor}'. Expected either 'chromium' or 'firefox'`)
     }
-
-    /**
-     * Assign the RPC objects to the window. A function declaration is necessary to help intellisense in the IDE.
-     * @param {RpcClient} rpcClient
-     * @param {RpcServer} rpcServer
-     */
-    (function assignPolymorphicGlobals(rpcClient, rpcServer) {
-        window.rpcClient = rpcClient
-        window.rpcServer = rpcServer
-    })(rpcClient, rpcServer)
 }
 
 /**
@@ -61,15 +46,14 @@ class ChromiumWebPageRpcServer extends RpcServer {
     }
 
     listen() {
-        let that = this
         window.addEventListener("message", ({data}) => {
-            if (!that.intake(data)) {
+            if (!this.intake(data)) {
                 return false
             }
 
             let {procedureName} = data
 
-            that.dispatch(data).then(procedureReturnValue => {
+            this.dispatch(data).then(procedureReturnValue => {
                 // Send the procedure return value to the RPC client (it's assumed that the client is in a background
                 // script or popup script).
                 let returnMessage = {
@@ -79,7 +63,7 @@ class ChromiumWebPageRpcServer extends RpcServer {
                 }
                 console.debug(`[ChromiumWebPageRpcServer] sending message:`)
                 console.debug(JSON.stringify(returnMessage, null, 2))
-                chrome.runtime.sendMessage(that.#webExtensionId, returnMessage)
+                chrome.runtime.sendMessage(this.#webExtensionId, returnMessage)
             })
         })
     }
@@ -95,13 +79,12 @@ class FirefoxWebPageRpcServer extends RpcServer {
     }
 
     listen() {
-        let that = this
         window.addEventListener("message", async ({data}) => {
-            if (!that.intake(data)) {
+            if (!this.intake(data)) {
                 return false
             }
 
-            let procedureReturnValue = await that.dispatch(data)
+            let procedureReturnValue = await this.dispatch(data)
 
             let {procedureName} = data
             // Send the procedure return value to the RPC client by way of the RPC proxy.

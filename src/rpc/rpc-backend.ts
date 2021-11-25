@@ -126,13 +126,12 @@ class ChromiumBackgroundRpcServer extends RpcServer {
     }
 
     listen() {
-        let that = this
-        chrome.runtime.onMessageExternal.addListener(function (message, sender, sendResponse) {
-            if (!that.intake(message)) {
+        chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
+            if (!this.intake(message)) {
                 return
             }
 
-            that.dispatch(message).then(returnValue => {
+            this.dispatch(message).then(returnValue => {
                 sendResponse(returnValue)
             })
         })
@@ -149,13 +148,12 @@ class FirefoxBackgroundRpcServer extends RpcServer {
     }
 
     listen() {
-        let that = this
-        browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-            if (!that.intake(message)) {
+        browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+            if (!this.intake(message)) {
                 return false
             }
 
-            that.dispatch(message).then(returnValue => {
+            this.dispatch(message).then(returnValue => {
                 sendResponse(returnValue)
             })
             return true // Returning "true" tells Firefox that we plan to invoke the "sendResponse" function later (rather, asynchronously). Otherwise, the "sendResponse" function would become invalid.

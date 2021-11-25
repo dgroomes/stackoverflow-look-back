@@ -219,6 +219,7 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
+* [ ] Fix the `build.sh` script to not exit when TypeScript compilation fails when the `--watch` option is used
 * [ ] Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
   extension web page (`posts-viewer.html`) versus the portion needed by the frontend web page (the ".com" pages).
 * [ ] Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
@@ -472,7 +473,9 @@ These are the finished items from the Wish List:
   a good reason). And there is a way to work around this problem anyway: inject a script element into the page itself
   from a content script. See [this StackOverflow question and answer](https://stackoverflow.com/q/20499994).
 * The `let that = this` trick I have to use in the ES6 classes is a bit disappointing... how else could this code be
-  designed? Is there an idiomatic ES6 class way? Or this a quirk of classes?
+  designed? Is there an idiomatic ES6 class way? Or this a quirk of classes? Answer: no, see [this SO question](https://stackoverflow.com/q/38730692).
+  Update 2: well, in all cases arrow functions actually solve my problem (not sure if that's a good thing but I'll take
+  it)!
 * One of the significant changes of Chrome's Manifest V3 over Manifest V2 is
   the [Action API unification](https://developer.chrome.com/docs/extensions/mv3/intro/mv3-migration/#action-api-unification)
 

@@ -34,16 +34,15 @@ class VotesScraper {
     scrapeVotes() {
         console.info(`Scraping votes...  [limit=${this.#votesPageLimit}]`)
         this.votesTab = document.getElementById("user-tab-votes")
-        let that = this // Accommodate the awkwardness of ES6 classes
 
         let _resolve
-        this.#votesPageObserver = new MutationObserver(function (mutations) {
+        this.#votesPageObserver = new MutationObserver(mutations => {
             for (let mutation of mutations) {
-                if (!that.votesTab.isConnected) {
+                if (!this.votesTab.isConnected) {
                     // The votes tab was disconnected! It must have been replaced by a new.
-                    that.votesTab = document.getElementById("user-tab-votes")
-                    that.scrapeCurrentPage()
-                    setTimeout(() => that.nextVotesPage(_resolve), 1000) // Trigger the next votes page, but with rate limiting
+                    this.votesTab = document.getElementById("user-tab-votes")
+                    this.scrapeCurrentPage()
+                    setTimeout(() => this.nextVotesPage(_resolve), 1000) // Trigger the next votes page, but with rate limiting
                     return
                 }
             }
@@ -113,10 +112,8 @@ row: ${row.outerHTML}
      */
     nextVotesPage(resolve) {
         let votes = this.votes
-        let that = this
-
-        function save() {
-            that.#votesPageObserver.disconnect()
+        let save = () => {
+            this.#votesPageObserver.disconnect()
             appStorage.saveVotes(votes)
                 .then(() => {
                     console.info(`The votes data has been saved successfully`)
