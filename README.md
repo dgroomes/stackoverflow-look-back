@@ -219,7 +219,7 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* IN PROGRESS Convert everything to TypeScript
+* DONE Convert everything to TypeScript
   * DONE Convert the `init.js` files to TypeScript 
   * DONE Convert `rpc-backend.js` to TypeScript
   * DONE Convert all of the RPC framework to TypeScript

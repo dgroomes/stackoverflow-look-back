@@ -1,4 +1,4 @@
-import {exec} from "./web-load-source.js"
+import {exec} from "./web-load-source.ts"
 
 console.debug("[web-injected.js] Initializing...")
 

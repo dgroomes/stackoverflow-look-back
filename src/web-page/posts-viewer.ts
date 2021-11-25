@@ -1,5 +1,5 @@
 import {Question} from "./post.ts"
-import {exec} from "./web-load-source.js"
+import {exec} from "./web-load-source.ts"
 import {PostsViewer} from "./PostsViewer.ts"
 
 console.debug("[posts-viewer.js] Initializing...")

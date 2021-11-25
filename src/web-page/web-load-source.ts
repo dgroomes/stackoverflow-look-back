@@ -1,5 +1,7 @@
 // This code runs on the web page. It does some initialization to wire up the main objects and variables.
 
+import {RpcServer} from "../rpc/rpc.ts";
+
 export {exec}
 import {initRpcWebPage} from "../rpc/rpc-web-page.ts"
 import {PostsExpander} from "./PostsExpander.ts"
@@ -8,6 +10,16 @@ import {VotesScraper} from "./VotesScraper.ts"
 import {PostsViewer} from "./PostsViewer.ts"
 
 console.debug("[web-load-source.js] Initializing...")
+
+declare global {
+    interface Window {
+        webResourcesOrigin: string | null
+        rpcServer: RpcServer
+        postsExpander: PostsExpander
+        postsViewer: PostsViewer
+        appStorage: AppStorage
+    }
+}
 
 let browserDescriptor // Either "chromium" or "firefox. Firefox and Chromium web extension APIs have differences and we need to know the browser.
 window.webResourcesOrigin = null // The origin that serves the web resources like the JavaScript files. This origin will be a special Chromium/Firefox extension URL.
@@ -34,7 +46,7 @@ function detectEnvironment() {
      */
     function detectFromExtensionUrl(url) {
         let regex = new RegExp("(chrome-extension|moz-extension)://([a-z0-9-]+)")
-        let matches = regex.exec(url)
+        let matches = regex.exec(url)!
         window.webResourcesOrigin = matches[0]
 
         let host = matches[1]
@@ -56,7 +68,7 @@ function detectEnvironment() {
         return
     }
 
-    let script = document.getElementById("web-injected")
+    let script = document.getElementById("web-injected") as HTMLScriptElement
     detectFromExtensionUrl(script.src)
 }
 
@@ -64,16 +76,16 @@ async function configureState() {
 
     initRpcWebPage(browserDescriptor, webExtensionId)
 
-    rpcServer.registerPromiseProcedure("scrape-votes", (procedureArgs) => {
+    window.rpcServer.registerPromiseProcedure("scrape-votes", (procedureArgs) => {
         let votesScraper = new VotesScraper(procedureArgs.votesPageLimit)
         return votesScraper.scrapeVotes()
     })
-    rpcServer.registerPromiseProcedure("expand-posts", (_procedureArgs) => {
-        return postsExpander.expandPosts()
+    window.rpcServer.registerPromiseProcedure("expand-posts", (_procedureArgs) => {
+        return window.postsExpander.expandPosts()
     })
-    rpcServer.listen()
+    window.rpcServer.listen()
 
-    window.appStorage = new AppStorage(rpcClient)
+    window.appStorage = new AppStorage(window.rpcClient)
     window.postsExpander = new PostsExpander()
     window.postsViewer = new PostsViewer()
 }
