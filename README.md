@@ -2,36 +2,12 @@
 
 🛠 Extract and search the posts you've up-voted on StackOverflow. ***Look back*** on your data.
 
-## Why?
-
-* I need to quickly browse and re-learn from questions I've up-voted in the past
-    * Does StackOverflow already support this? <https://stackoverflow.com> does not have search functionality for posts
-      that you've up-voted. By contrast, there is a way to search for posts that you've bookmarked (née favorited) using
-      the search option `inbookmarks:mine`. See the search page <https://stackoverflow.com/search> for all search
-      options. I've bookmarked 117 posts whereas I've up-voted 1,850 posts! **I want search coverage on my votes** (
-      Hello StackOverflow, if you see this, consider this a feature request, or at least, a user experience data point!
-      Thank you). Here are some related questions by other people:
-        * [*How do I search for posts I've interacted on, with a particular word in
-          them?*](https://meta.stackoverflow.com/q/302648)
-        * [*Search Q or A's I've upvoted*](https://meta.stackoverflow.com/q/394635)
-    * Why *scrape* the HTML for this data and not just *query* it via
-      the [Stack Exchange Data Explorer (SEDE)](https://data.stackexchange.com/)? Unfortunately, up-vote and down-vote
-      data is private. It is anonymized in SEDE. The StackOverflow API also does not expose this data. So, it must be
-      scraped from the HTML.
-* This is a fun project for me
-* I like JavaScript and the browser
-    * Why do I like the browser so much? Among other things,
-      the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/MDN) are so amazing 🤩⭐️ and make it fun and rewarding
-      to develop using Web APIs.
-* This is a vehicle for me to learn TypeScript on a non-trivial project. I'm learning TypeScript with the help of Deno
-  and its `bundle` command.
-
 ---
-**NOTE**:
 
-This was developed on macOS and for my own personal use.
+I need to quickly browse and re-learn from questions I've up-voted in the past. This is a browser extension for doing
+that. See [Background](#background) for more information.
 
----
+**NOTE**: This was developed on macOS and for my own personal use.
 
 ## Design
 
@@ -470,6 +446,31 @@ These are the finished items from the Wish List:
 * OBSOLETE (now that TypeScript is in the picture, it is a strong counter force to this problem) This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
   finding basic problems. For example, I changed the signature of the RPC client, and it's pretty easy to miss a call
   site and update the args.
+
+## Background
+
+Here is some background on this project and some of my research which contextualizes the "why" of this project.
+
+* Does StackOverflow already support this? [stackoverflow.com](https://stackoverflow.com) does not have search functionality for posts
+  that you've up-voted. By contrast, there is a way to search for posts that you've bookmarked (née favorited) using
+  the search option `inbookmarks:mine`. See the search page <https://stackoverflow.com/search> for all search
+  options. I've bookmarked 117 posts whereas I've up-voted 1,850 posts! **I want search coverage on my votes** (
+  Hello StackOverflow, if you see this, consider this a feature request, or at least, a user experience data point!
+  Thank you). Here are some related questions by other people:
+    * ["How do I search for posts I've interacted on, with a particular word in them?"](https://meta.stackoverflow.com/q/302648)
+    * [*Search Q or A's I've upvoted*](https://meta.stackoverflow.com/q/394635)
+* Why *scrape* the HTML for this data and not just *query* it via
+  the [Stack Exchange Data Explorer (SEDE)](https://data.stackexchange.com/)? Unfortunately, up-vote and down-vote
+  data is private. It is anonymized in SEDE. The StackOverflow API also does not expose this data. So, it must be
+  scraped from the HTML.
+* This is a fun project for me
+* I like JavaScript and the browser
+    * Why do I like the browser so much? Among other things,
+      the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/MDN) are so amazing 🤩⭐️ and make it fun and rewarding
+      to develop using Web APIs.
+* This is a vehicle for me to learn TypeScript on a non-trivial project. I'm learning TypeScript with the help of Deno
+  and its `bundle` command.
+
 
 ## Notes
 
