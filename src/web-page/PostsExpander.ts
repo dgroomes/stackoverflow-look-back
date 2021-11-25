@@ -3,7 +3,13 @@
 
 import {instrumentJQuery, registerAjaxSuccessSpy} from "./util/jquery-proxy.ts"
 import {Answer, Question} from "./post.ts"
+import {AppStorage} from "./AppStorage.ts"
+import {Vote} from "./vote.ts"
+
 export {PostsExpander}
+
+declare var webResourcesOrigin: string
+declare var appStorage: AppStorage
 
 class PostsExpander {
 
@@ -20,13 +26,13 @@ class PostsExpander {
 
         // Fetch the source code for the SQL query
         let sql = await fetch(`${webResourcesOrigin}/web-page/get-posts-by-ids.sql`)
-            .then(response => response.text())
+            .then(response => response.text());
 
-        document.querySelector('.CodeMirror').CodeMirror.setValue(sql) // Set the SQL query
+        (<any>document.querySelector('.CodeMirror')).CodeMirror.setValue(sql) // Set the SQL query
 
-        let runQueryBtn = document.getElementById("submit-query")
-        runQueryBtn.click() // Click the 'Run Query' button to prompt the parameters field to show up. The query is not actually run.
-        document.querySelector('input[name=PostIds]').value = `'${ids}'` // Set the parameter
+        let runQueryBtn = document.getElementById("submit-query")!
+        runQueryBtn.click(); // Click the 'Run Query' button to prompt the parameters field to show up. The query is not actually run.
+        (<HTMLInputElement>document.querySelector('input[name=PostIds]')).value = `'${ids}'` // Set the parameter
         runQueryBtn.click() // Run the query
     }
 
@@ -38,7 +44,7 @@ class PostsExpander {
      */
     async expandPosts() {
 
-        let votes = await appStorage.getVotes()
+        let votes: Array<Vote> = await appStorage.getVotes()
 
         let promise = new Promise(resolve => {
             instrumentJQuery()
@@ -68,7 +74,7 @@ class PostsExpander {
                                 //
                                 // Reference https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/matchAll
                                 let regex = /<([a-z-]*)>/g // Note: parentheses define a "capturing group" in a regular expression. We want to capture the value inside of the "<>" and not capture the "<" and ">" characters themselves.
-                                let matches = tags.matchAll(regex)
+                                let matches : ArrayLike<string> = (tags as any).matchAll(regex)
 
                                 // Use Array.from instead of just ".map" because we have an Iterable object, which does not support functions like ".map" or ".forEach"
                                 // Extract the matched element of the capturing group into a new array.
@@ -90,7 +96,7 @@ class PostsExpander {
         // Create a set of all the answer and question posts IDs. Use a Set data structure to avoid duplicates. When an
         // answer and its question are both up-voted (this is the common case), then we have two references to the question
         // ID. So, use a Set to avoid duplicates.
-        let idsUnique = new Set(votes.flatMap(vote => vote.ids))
+        let idsUnique = new Set((votes as any).flatMap(vote => vote.ids))
         let idsSorted = Array.from(idsUnique).sort() // Sorting the IDs is not needed, but helps for reproduce-ability and debugging.
         await this.expandByIds(idsSorted)
         return promise

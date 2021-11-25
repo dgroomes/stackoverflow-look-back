@@ -2,7 +2,7 @@
 
 export {exec}
 import {initRpcWebPage} from "../rpc/rpc-web-page.ts"
-import {PostsExpander} from "./PostsExpander.js"
+import {PostsExpander} from "./PostsExpander.ts"
 import {AppStorage} from "./AppStorage.ts"
 import {VotesScraper} from "./VotesScraper.js"
 import {PostsViewer} from "./PostsViewer.js"

@@ -1,4 +1,4 @@
-import {Vote} from "./vote.js"
+import {Vote} from "./vote.ts"
 
 export {VotesScraper}
 

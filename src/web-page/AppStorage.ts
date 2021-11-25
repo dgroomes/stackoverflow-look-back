@@ -1,4 +1,4 @@
-import {Vote} from "./vote.js"
+import {Vote} from "./vote.ts"
 import {Post} from "./post.ts"
 import {RpcClient} from "../rpc/rpc.ts"
 import {chrome} from "../chromium-manifest-v2/chrome-extension-types.d.ts"
@@ -29,9 +29,8 @@ class AppStorage {
 
     /**
      * Read the votes data from storage.
-     * @return {Array<Vote>}
      */
-    async getVotes() {
+    async getVotes() : Promise<Array<Vote>> {
         return this.#rpcClient.execRemoteProcedure("get", {key: "votes"})
             .then(returnValue => {
                 return returnValue.votes.map(voteData => Vote.deserialize(voteData))

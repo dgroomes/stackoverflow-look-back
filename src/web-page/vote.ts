@@ -6,6 +6,8 @@ export {Vote}
  */
 class Vote {
 
+    id: number
+
     /**
      * Deserialize from a data object to a concrete Vote instance.
      * @param voteData a regular object that includes the raw vote data
@@ -33,7 +35,7 @@ class Vote {
         // For example, 54189630 is the ID in the below URL:
         // https://stackoverflow.com/questions/54189630/kill-all-gradle-daemons-regardless-version
         let match = /questions\/(?<id>\d+)/.exec(postUrl)
-        let questionId = parseInt(match.groups.id)
+        let questionId = parseInt((match as any).groups.id)
 
         if (postType === "question") {
             return new QuestionVote(questionId)
@@ -42,7 +44,7 @@ class Vote {
             // Extract the answer ID from the URL. The answer ID is at the end of the URL.
             // For example, 28358529 is the ID in the below URL:
             // https://stackoverflow.com/questions/28351294/postgres-finding-max-value-in-an-int-array/28358529#28358529
-            let match = /\d+$/.exec(postUrl)
+            let match = /\d+$/.exec(postUrl)!
             let answerId = parseInt(match[0])
             return new AnswerVote(answerId, questionId)
         } else {
@@ -53,25 +55,25 @@ class Vote {
     /**
      * @param {Number} id the ID of the post that was voted on
      */
-    constructor(id) {
+    constructor(id: number) {
         this.id = id
     }
 
     /**
      * Returns the type. Either "question" or "answer"
      */
-    get type() {
+    get type() : string {
         throw new Error("Must be implemented on sub-classes")
     }
 
     /**
-     * @return {array<Number>} the IDs related to this post
+     * @return the IDs related to this post
      */
-    get ids() {
+    get ids() : Array<number> {
         throw new Error("Must be implemented on sub-classes")
     }
 
-    toJSON() {
+    toJSON() : object {
         return toJSON(this, "type")
     }
 }
@@ -85,11 +87,11 @@ class QuestionVote extends Vote {
         super(id)
     }
 
-    get type() {
+    get type() : string {
         return "question"
     }
 
-    get ids() {
+    get ids() : Array<number> {
         return [this.id]
     }
 }
@@ -99,16 +101,18 @@ class QuestionVote extends Vote {
  */
 class AnswerVote extends Vote {
 
+    questionId: number
+
     constructor(id, questionId) {
         super(id)
         this.questionId = questionId
     }
 
-    get type() {
+    get type() : string {
         return "answer"
     }
 
-    get ids() {
+    get ids() : Array<number> {
         return [this.id, this.questionId]
     }
 }
