@@ -63,7 +63,7 @@ build_distribution() {
   # Bundle the entrypoint-type JavaScript files
   deno_bundle "$project_dir/src/backend/popup.ts" "$vendor_output_dir/backend/popup.js"
   deno_bundle "$project_dir/src/backend/content-script-load-source.ts" "$vendor_output_dir/backend/content-script-load-source.js"
-  deno_bundle "$project_dir/src/rpc/rpc-content-script.js" "$vendor_output_dir/rpc/rpc-content-script.js"
+  deno_bundle "$project_dir/src/rpc/rpc-content-script.ts" "$vendor_output_dir/rpc/rpc-content-script.js"
   deno_bundle "$project_dir/src/web-page/web-injected.js" "$vendor_output_dir/web-page/web-injected.js"
   deno_bundle "$project_dir/src/web-page/posts-viewer.ts" "$vendor_output_dir/web-page/posts-viewer.js"
 }

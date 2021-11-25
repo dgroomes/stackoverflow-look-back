@@ -19,7 +19,7 @@ interface Runtime {
         extensionId: string | null,
         message: any,
         options: object | null,
-        responseCallback: () => void | null
+        responseCallback: Function | null
     ): void
 
 

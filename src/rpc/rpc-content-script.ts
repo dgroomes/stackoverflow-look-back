@@ -9,6 +9,14 @@
 // First of all, it's not consistent in general because it's not using a class, but to be honest, classes are often not
 // the right tool for the job.
 
+import {chrome} from "../chromium-manifest-v2/chrome-extension-types.d.ts"
+
+declare global {
+    interface Window {
+        rpcContentScriptInitialized: boolean
+    }
+}
+
 if (!window.rpcContentScriptInitialized) {
     console.debug("[rpc-content-script.js] Loading...")
     window.rpcContentScriptInitialized = true

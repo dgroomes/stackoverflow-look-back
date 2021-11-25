@@ -221,7 +221,7 @@ General clean ups, TODOs and things I wish to implement for this project:
 
 * IN PROGRESS Convert everything to TypeScript
   * DONE Convert the `init.js` files to TypeScript 
-  * DONE Convert `rpc-backend.js` to TypeScript 
+  * DONE Convert `rpc-backend.js` to TypeScript
 * Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
   extension web page (`posts-viewer.html`) versus the portion needed by the frontend web page (the ".com" pages).
 * OBSOLETE (now that TypeScript is in the picture, it is a strong counter force to this problem) This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
