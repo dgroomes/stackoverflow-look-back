@@ -231,7 +231,7 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* [ ] IN PROGRESS Modularize the source code layout. I want the `rpc/` code far away from the other code, so it's clear that it is
+* [x] DONE Modularize the source code layout. I want the `rpc/` code far away from the other code, so it's clear that it is
       a standalone component. Similarly, I want a `core/` component which is the core of the SO Look Back Tool and it
       should be far away from the vendor-specific code (stuff like web extension IDs and manifests)  
 * [ ] Fix the `build.sh` script to not exit when TypeScript compilation fails when the `--watch` option is used
