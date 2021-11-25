@@ -160,7 +160,8 @@ class RpcClient {
      * @param procedureArgs the "procedure arguments" of the remote procedure call.
      * @return {Promise} a promise containing the return value of the remote procedure call
      */
-    execRemoteProcedure(procedureName, procedureArgs) {
+    execRemoteProcedure(procedureName, procedureArgs) : Promise<any> {
+        throw new Error("Must be implemented on sub-classes")
     }
 }
 

@@ -1,4 +1,7 @@
 import {Vote} from "./vote.js"
+import {Post} from "./post.js"
+import {RpcClient} from "../rpc/rpc.ts"
+import {chrome} from "../chromium-manifest-v2/chrome-extension-types.d.ts"
 export {AppStorage}
 
 /**
@@ -6,7 +9,7 @@ export {AppStorage}
  */
 class AppStorage {
 
-    #rpcClient
+    #rpcClient : RpcClient
 
     constructor(rpcClient) {
         this.#rpcClient = rpcClient
@@ -37,10 +40,8 @@ class AppStorage {
 
     /**
      * Saves posts data to storage
-     * @param {Array<Post>}
-     * @return {Promise}
      */
-    savePosts(posts) {
+    savePosts(posts: Array<Post>) : Promise<any> {
         let postsMapped = posts.map(post => post.toJSON())
 
         return this.#rpcClient.execRemoteProcedure("save", {posts: postsMapped})
@@ -51,7 +52,7 @@ class AppStorage {
      * @return {Array<Post>} posts
      */
     async getPosts() {
-        let promise = new Promise(resolve => {
+        let promise = new Promise<Array<Post>>(resolve => {
             chrome.storage.local.get("posts", (found) => {
                 console.debug("Got this response from storage:")
                 console.debug({found})
@@ -59,7 +60,7 @@ class AppStorage {
             })
         })
 
-        let postsData = await promise
+        let postsData : Array<Post> = await promise
         return postsData.map(postData => Post.deserialize(postData))
     }
 }
