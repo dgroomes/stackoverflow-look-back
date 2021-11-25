@@ -2,14 +2,21 @@
 
 export {instrumentJQuery, registerAjaxSuccessSpy}
 
-let _onSuccessSpyFns = []
+declare global {
+    interface Window {
+        $: any
+        jQuery: any
+    }
+}
+
+let _onSuccessSpyFns : Array<Function> = []
 
 /**
  * Register a spy function on jQuery's "ajax" success callback. This spy function will be executed first and then the
  * normal success handler functions will be called.
  * @param fn
  */
-function registerAjaxSuccessSpy(fn) {
+function registerAjaxSuccessSpy(fn: Function) {
     _onSuccessSpyFns.push(fn)
 }
 
@@ -26,7 +33,7 @@ function instrumentJQuery() {
     let handler = {
         get: function (target, prop, receiver) {
             console.debug(`Property '${prop}' was accessed on the jQuery object ($)`)
-            let resolvedProp = Reflect.get(...arguments) // Get the "actual" property on the underlying proxied object.
+            let resolvedProp = Reflect.get(target, prop, receiver) // Get the "actual" property on the underlying proxied object.
 
             if (prop === "ajax") {
                 console.debug(`Instrumenting a pointcut/aspect around 'ajax'`)
@@ -64,7 +71,7 @@ function instrumentJQuery() {
                             }
 
                             // Finally, delegate to the underlying "original/normal/actual" function.
-                            Reflect.apply(...arguments)
+                            Reflect.apply(target, thisArg, argumentsList)
                         }
                     })
 
