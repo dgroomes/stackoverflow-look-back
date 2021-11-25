@@ -1,4 +1,4 @@
-import {toJSON} from "./util/to-json.ts"
+import {toJSON} from "../../util/to-json.ts"
 export {Vote}
 
 /**

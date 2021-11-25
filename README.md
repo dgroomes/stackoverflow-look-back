@@ -41,7 +41,7 @@ The overall flow of the tool breaks down like this:
 1. Expand the votes data into posts data using <https://data.stackexchange.com>
 1. View and search a copy of the posts data
 
-The source code is laid out in a directory structure that separates generic code from the *Look Back Tool*-specific
+(Update: this is in flux as I experiment with the code layout since modularizing and moving to TypeScript) The source code is laid out in a directory structure that separates generic code from the *Look Back Tool*-specific
 code. Within the *Look Back Tool* code it is generally grouped by the execution context that the code runs in and is
 inviting for future additions like Manifest V3 support, or a Safari browser extension.
 
@@ -53,6 +53,8 @@ inviting for future additions like Manifest V3 support, or a Safari browser exte
     * The code in this directory implements a generic Remote Procedure Call (RPC) framework for browser extensions. This
       code has components that run in all contexts: background scripts, popup scripts, content scripts, and the web
       page.
+* `util/`
+    * Miscellaneous utility code that is not specific to the *Look Back Tool*. 
 * `src/`
     * The code in this directory is specific to the *Look Back Tool*. 
 * `src/web-page/`

@@ -2,9 +2,9 @@
 
 export {exec}
 import {initRpcWebPage, rpcClient, rpcServer} from "../../rpc-framework/rpc-web-page.ts"
-import {PostsExpander} from "./PostsExpander.ts"
-import {AppStorage} from "./AppStorage.ts"
-import {VotesScraper} from "./VotesScraper.ts"
+import {PostsExpander} from "../core/PostsExpander.ts"
+import {AppStorage} from "../core/AppStorage.ts"
+import {VotesScraper} from "../core/VotesScraper.ts"
 
 console.debug("[web-load-source.js] Initializing...")
 
