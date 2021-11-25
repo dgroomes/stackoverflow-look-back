@@ -47,10 +47,10 @@ function webPageRpcClientsListener({data}) {
     // RPC server flow". Return immediately to ignore this message.
     if (data.procedureTargetReceiver !== "content-script-rpc-proxy" || (typeof data.procedureReturnValue !== "undefined")) return
 
-    let {procedureName, procedureArgs} = data
+    const {procedureName, procedureArgs} = data
 
     // Send the message to the background script, and register a handler that forwards the response to the web page.
-    let messageToMessagingSystem = {
+    const messageToMessagingSystem = {
         procedureTargetReceiver: "background-server",
         procedureName,
         procedureArgs
@@ -68,7 +68,7 @@ function webPageRpcClientsListener({data}) {
             // RPC framework, I frequently get an "undefined" here and so the nicer logging makes for a less frustrating
             // development experience.
             if (typeof procedureReturnValue === "undefined") {
-                let errorMsg = `[rpc-content-script.js] Something went wrong. This is likely a programmer error. Got an 'undefined' return value from the extension messaging system for an RPC request for '${procedureName}'.`
+                const errorMsg = `[rpc-content-script.js] Something went wrong. This is likely a programmer error. Got an 'undefined' return value from the extension messaging system for an RPC request for '${procedureName}'.`
 
                 // It is not enough to just throw the error on the next line. The error actually gets silently swallowed
                 // by the browser's extension framework and you will never see the error in the logs. Instead we
@@ -78,7 +78,7 @@ function webPageRpcClientsListener({data}) {
             }
 
             // Finally, send the return value to the window so that it may be received by the web page
-            let messageToWindow = {
+            const messageToWindow = {
                 procedureTargetReceiver: "web-page-client",
                 procedureName,
                 procedureReturnValue
@@ -100,13 +100,13 @@ function backgroundRpcClientsListener(message, _sender, sendResponse) {
 
     let listenerReturnValue = false
 
-    let {procedureName, procedureArgs, procedureCaptureReturnValue} = message
+    const {procedureName, procedureArgs, procedureCaptureReturnValue} = message
 
     if (procedureCaptureReturnValue) {
         window.addEventListener("message", function captureReturnValueListener({data}) {
             console.debug("[rpc-content-script.js] The return value listener received a message via the extension messaging system:")
             console.debug(JSON.stringify({data}, null, 2))
-            let {procedureReturnValue} = data
+            const {procedureReturnValue} = data
 
             // If the message is not an RPC message then return immediately to ignore the message. We can tell if a message
             // is an RPC message by looking for the existence of the field "procedureTargetReceiver".
@@ -130,7 +130,7 @@ function backgroundRpcClientsListener(message, _sender, sendResponse) {
     }
 
     console.debug("[rpc-content-script.js] Broadcasting the RPC request to the window so that it may be received by the web page:")
-    let messageOutgoing = {
+    const messageOutgoing = {
         procedureTargetReceiver: "web-page-server",
         procedureName,
         procedureArgs

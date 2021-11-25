@@ -24,7 +24,7 @@ let _rpcServer: RpcServer
 async function getRpcServer() : Promise<RpcServer> {
     if (_rpcServer instanceof RpcServer) return _rpcServer
 
-    let browserDescriptor = await getBrowserDescriptor()
+    const browserDescriptor = await getBrowserDescriptor()
 
     if (browserDescriptor === "chromium") {
         _rpcServer = new ChromiumBackgroundRpcServer()
@@ -57,7 +57,7 @@ function getBrowserDescriptor() {
             _browserDescriptor = found.rpcBrowserDescriptor
             if (typeof _browserDescriptor === "undefined") {
                 reject()
-                let msg = "[rpc-backend.js] 'rpcBrowserDescriptor' not found. The RPC framework must not have been initialized. Call the 'init(...)' function first."
+                const msg = "[rpc-backend.js] 'rpcBrowserDescriptor' not found. The RPC framework must not have been initialized. Call the 'init(...)' function first."
                 console.error(msg)
                 throw Error(msg)
             }
@@ -93,14 +93,14 @@ function setBrowserDescriptor(browserDescriptor) {
 async function getRpcClient() {
     if (_rpcClient instanceof RpcClient) return _rpcClient
 
-    let activeTab: Tab = await new Promise(resolve => {
+    const activeTab: Tab = await new Promise(resolve => {
         chrome.tabs.query({active: true}, tabs => {
-            let activeTab = tabs[0] // The "query" function returns an array of results, but when searching for the "active" tab there of course can only be one. It is the first element in the array.
+            const activeTab = tabs[0] // The "query" function returns an array of results, but when searching for the "active" tab there of course can only be one. It is the first element in the array.
             resolve(activeTab)
         })
     })
 
-    let browserDescriptor = await getBrowserDescriptor()
+    const browserDescriptor = await getBrowserDescriptor()
 
     // For now, the background to content script RPC client is the same for Chromium and Firefox but when I implement
     // the "passing of the return value" there will need to be different implementations for Chromium and Firefox.
@@ -168,7 +168,7 @@ class FirefoxBackgroundRpcServer extends RpcServer {
  */
 class ChromiumBackgroundToContentScriptRpcClient extends RpcClient {
 
-    #tabId
+    readonly #tabId
 
     constructor(tabId) {
         super("content-script-rpc-proxy")
@@ -176,7 +176,7 @@ class ChromiumBackgroundToContentScriptRpcClient extends RpcClient {
     }
 
     async execRemoteProcedure(procedureName, procedureArgs) {
-        let rpcRequest = this.createRequest(procedureName, procedureArgs)
+        const rpcRequest = this.createRequest(procedureName, procedureArgs)
 
         let responsePromise = new Promise(resolve => {
             console.debug(`[ChromiumBackgroundToContentScriptRpcClient] Registering listener on the messaging system to listen for RPC return value...`)
@@ -201,7 +201,7 @@ class ChromiumBackgroundToContentScriptRpcClient extends RpcClient {
  */
 class FirefoxBackgroundToContentScriptRpcClient extends RpcClient {
 
-    #tabId
+    readonly #tabId
 
     constructor(tabId: number) {
         super("content-script-rpc-proxy")

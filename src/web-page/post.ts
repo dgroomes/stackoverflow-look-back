@@ -15,7 +15,7 @@ class Post {
      * @return {Post} a Post object. It's an instance of either Question or Answer.
      */
     static deserialize(postData : any) : Post {
-        let {type, id, htmlBody} = postData
+        const {type, id, htmlBody} = postData
 
         if (type === "question") {
             return new Question(id, postData.tags, postData.title, htmlBody)
@@ -115,7 +115,7 @@ class Question extends Post {
 
     #tagsHtml() {
         let html = ''
-        for (let tag of this.tags) {
+        for (const tag of this.tags) {
             html += `<span>${tag}</span>`
         }
         return html

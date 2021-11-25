@@ -67,10 +67,10 @@ class RpcServer {
         console.debug(`[RpcServer|${this.#descriptor}] Dispatching RPC call for '${procedureName}'...`)
 
         if (this.#promiseProcedures.has(procedureName)) {
-            let procedure = this.#promiseProcedures.get(procedureName)
+            const procedure = this.#promiseProcedures.get(procedureName)
             return procedure(procedureArgs)
         } else if (this.#callbackProcedures.has(procedureName)) {
-            let procedure = this.#callbackProcedures.get(procedureName)
+            const procedure = this.#callbackProcedures.get(procedureName)
             return new Promise(resolve => {
                 procedure(procedureArgs, resolve)
             })

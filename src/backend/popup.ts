@@ -6,7 +6,7 @@ import {chrome} from "../chromium-manifest-v2/chrome-extension-types.d.ts";
 
 console.debug("[popup.js] Initializing...")
 
-let votesPageLimitEl = document.getElementById("votes-page-limit") as HTMLInputElement
+const votesPageLimitEl = document.getElementById("votes-page-limit") as HTMLInputElement
 
 /**
  * Initialize everything.
@@ -18,8 +18,8 @@ let votesPageLimitEl = document.getElementById("votes-page-limit") as HTMLInputE
  *   concoction of message passing, extension APIs and asynchronous JavaScript (promises and async), load the source code
  *   on the web page and confirm when the web page has finished executing the extension initialization code.
  */
-let initPromise = (async function () {
-    let rpcServer = await getRpcServer()
+const initPromise = (async function () {
+    const rpcServer = await getRpcServer()
 
     rpcServer.registerCallbackProcedure("save", (procedureArgs, resolve) => {
         chrome.storage.local.set(procedureArgs, () => {
@@ -29,7 +29,7 @@ let initPromise = (async function () {
     })
 
     rpcServer.registerCallbackProcedure("get", (procedureArgs, resolve) => {
-        let key = procedureArgs.key
+        const key = procedureArgs.key
         chrome.storage.local.get(key, (found) => {
             console.debug("The extension successfully read the data")
             resolve(found)
@@ -40,7 +40,7 @@ let initPromise = (async function () {
 
     await execContentScript("/rpc/rpc-content-script.js")
 
-    let webPageInitialized = new Promise(resolve => {
+    const webPageInitialized = new Promise(resolve => {
         console.debug(`[popup.js] [${Date.now()}] Registering listener for 'web-page-initialized'`)
         chrome.runtime.onMessage.addListener(function webPageInitializedListener(message, _sender, _sendResponse) {
             console.debug("[popup.js] Received a message from the extension messaging system:")
@@ -77,11 +77,11 @@ async function execContentScript(fileName) {
 document.getElementById("execute-scrape-votes")!
     .addEventListener("click", async () => {
         console.info(`[popup.js] Clicked the 'scrape votes' button`)
-        let votesPageLimit = votesPageLimitEl.value
+        const votesPageLimit = votesPageLimitEl.value
 
         await initPromise
-        let rpcClient = await getRpcClient()
-        let votesScraped = await rpcClient.execRemoteProcedure("scrape-votes", {votesPageLimit})
+        const rpcClient = await getRpcClient()
+        const votesScraped = await rpcClient.execRemoteProcedure("scrape-votes", {votesPageLimit})
         console.info(`[popup.js] ${votesScraped} votes scraped!`)
     })
 
@@ -90,8 +90,8 @@ document.getElementById("execute-expand-posts")!
     .addEventListener("click", async () => {
         console.info(`[popup.js] Clicked the 'expand posts' button`)
         await initPromise
-        let rpcClient = await getRpcClient()
-        let postsExpanded = await rpcClient.execRemoteProcedure("expand-posts", null)
+        const rpcClient = await getRpcClient()
+        const postsExpanded = await rpcClient.execRemoteProcedure("expand-posts", null)
         console.info(`[popup.js] ${postsExpanded} posts expanded!`)
     })
 

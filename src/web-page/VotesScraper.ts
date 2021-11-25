@@ -14,7 +14,7 @@ declare var appStorage: AppStorage
  */
 class VotesScraper {
 
-    #votesPageLimit
+    readonly #votesPageLimit
     #votesPageObserver
     votesTab // Get a handle on the "Votes tab" HTML element
     votes: Array<Vote> = [] // The votes data will be scraped from the HTML and collected into this array as instances of the "Vote" class
@@ -37,7 +37,7 @@ class VotesScraper {
 
         let _resolve
         this.#votesPageObserver = new MutationObserver(mutations => {
-            for (let mutation of mutations) {
+            for (const mutation of mutations) {
                 if (!this.votesTab.isConnected) {
                     // The votes tab was disconnected! It must have been replaced by a new.
                     this.votesTab = document.getElementById("user-tab-votes")
@@ -53,7 +53,7 @@ class VotesScraper {
             childList: true, // Monitor for the addition and removal of elements on the target element,
         })
 
-        let scrapeCompletedPromise = new Promise(resolve => {
+        const scrapeCompletedPromise = new Promise(resolve => {
             _resolve = resolve
         })
 
@@ -72,18 +72,18 @@ class VotesScraper {
         //
         // Each row represents an up-voted question OR up-voted answer. (Does it include up-voted comments?). All rows have
         // the 'data-postid' attribute so we can query using that fact.
-        let votesRows = this.votesTab.querySelectorAll('tr[data-postid]')
+        const votesRows = this.votesTab.querySelectorAll('tr[data-postid]')
 
         // Extract the data from each vote row HTML element.
         //
         // Note that each row will either be an up-voted question or up-voted answer:
         // * Answer rows will always have an anchor tag ('a') with a class named "answer-hyperlink"
         // * Question rows will always have an anchor tag ('a') with a class named "question-hyperlink"
-        for (let row of votesRows) {
+        for (const row of votesRows) {
 
             // All rows will have an anchor tag which links to the up-voted post. This anchor tag is always inside of a
             // 'b' tag.
-            let anchor = row.querySelector('b a')
+            const anchor = row.querySelector('b a')
 
             let postType
             if (anchor.classList.contains('question-hyperlink')) {
@@ -97,7 +97,7 @@ row: ${row.outerHTML}
 `)
             }
 
-            let vote = Vote.parseFromUrl(anchor.href, postType)
+            const vote = Vote.parseFromUrl(anchor.href, postType)
             this.votes.push(vote)
         }
         console.info(`Found ${this.votes.length} total votes!`)
@@ -111,8 +111,8 @@ row: ${row.outerHTML}
      * last page and saved the data. This is a pretty awkward design! Consider how to restructure it.
      */
     nextVotesPage(resolve) {
-        let votes = this.votes
-        let save = () => {
+        const votes = this.votes
+        const save = () => {
             this.#votesPageObserver.disconnect()
             appStorage.saveVotes(votes)
                 .then(() => {
@@ -127,7 +127,7 @@ row: ${row.outerHTML}
             return
         }
 
-        let el = document.querySelector('a[rel=next]') as HTMLButtonElement
+        const el = document.querySelector('a[rel=next]') as HTMLButtonElement
         if (el === null) {
             console.info("All pages of the votes tab have been visited. Saving the votes data to storage...")
             save()

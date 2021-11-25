@@ -51,12 +51,12 @@ class ChromiumWebPageRpcServer extends RpcServer {
                 return false
             }
 
-            let {procedureName} = data
+            const {procedureName} = data
 
             this.dispatch(data).then(procedureReturnValue => {
                 // Send the procedure return value to the RPC client (it's assumed that the client is in a background
                 // script or popup script).
-                let returnMessage = {
+                const returnMessage = {
                     procedureTargetReceiver: "background-client",
                     procedureName,
                     procedureReturnValue
@@ -84,11 +84,11 @@ class FirefoxWebPageRpcServer extends RpcServer {
                 return false
             }
 
-            let procedureReturnValue = await this.dispatch(data)
+            const procedureReturnValue = await this.dispatch(data)
 
-            let {procedureName} = data
+            const {procedureName} = data
             // Send the procedure return value to the RPC client by way of the RPC proxy.
-            let returnMessage = {
+            const returnMessage = {
                 procedureTargetReceiver: "content-script-rpc-proxy",
                 procedureName,
                 procedureReturnValue
@@ -114,7 +114,7 @@ class ChromiumWebPageToBackgroundRpcClient extends RpcClient {
     }
 
     execRemoteProcedure(procedureName, procedureArgs) {
-        let rpcRequest = this.createRequest(procedureName, procedureArgs)
+        const rpcRequest = this.createRequest(procedureName, procedureArgs)
         return new Promise((resolve) => {
             chrome.runtime.sendMessage(this.#webExtensionId, rpcRequest,
                 function (returnValue) {
@@ -156,7 +156,7 @@ class FirefoxWebPageToContentScriptRpcClient extends RpcClient {
     execRemoteProcedure(procedureName, procedureArgs) {
         // I'm assuming it's wise to wire up the event listener before posting the message to avoid a race condition.
         // That's why I've put this before the "window.postMessage". But I don't think it actually matters.
-        let returnValuePromise = new Promise((resolve => {
+        const returnValuePromise = new Promise((resolve => {
             window.addEventListener("message", function listenForRpcResponse({data}) {
                 if (data.procedureTargetReceiver === "web-page-client"
                     && data.procedureName === procedureName) {
@@ -167,7 +167,7 @@ class FirefoxWebPageToContentScriptRpcClient extends RpcClient {
             })
         }))
 
-        let rpcRequest = this.createRequest(procedureName, procedureArgs)
+        const rpcRequest = this.createRequest(procedureName, procedureArgs)
         window.postMessage(rpcRequest, "*")
 
         return returnValuePromise

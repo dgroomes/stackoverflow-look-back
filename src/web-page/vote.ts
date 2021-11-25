@@ -14,7 +14,7 @@ class Vote {
      * @return {Vote} a Vote object. It's an instance of either QuestionVote or AnswerVote
      */
     static deserialize(voteData) {
-        let {id, type} = voteData
+        const {id, type} = voteData
         if (type === "question") {
             return new QuestionVote(id)
         } else if (type === "answer") {
@@ -34,8 +34,8 @@ class Vote {
         // Extract the question ID from the URL. The question ID is always after the "questions/" part in the URL.
         // For example, 54189630 is the ID in the below URL:
         // https://stackoverflow.com/questions/54189630/kill-all-gradle-daemons-regardless-version
-        let match = /questions\/(?<id>\d+)/.exec(postUrl)
-        let questionId = parseInt((match as any).groups.id)
+        const match = /questions\/(?<id>\d+)/.exec(postUrl)
+        const questionId = parseInt((match as any).groups.id)
 
         if (postType === "question") {
             return new QuestionVote(questionId)
@@ -44,8 +44,8 @@ class Vote {
             // Extract the answer ID from the URL. The answer ID is at the end of the URL.
             // For example, 28358529 is the ID in the below URL:
             // https://stackoverflow.com/questions/28351294/postgres-finding-max-value-in-an-int-array/28358529#28358529
-            let match = /\d+$/.exec(postUrl)!
-            let answerId = parseInt(match[0])
+            const match = /\d+$/.exec(postUrl)!
+            const answerId = parseInt(match[0])
             return new AnswerVote(answerId, questionId)
         } else {
             throw new Error(`Unrecognized post type '${postType}'`)

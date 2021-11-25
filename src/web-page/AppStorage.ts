@@ -22,7 +22,7 @@ class AppStorage {
      * @return {Promise<String>} a promise that resolves when the votes have been successfully saved. The promise's string value indicates which storage backend was used.
      */
     saveVotes(votes) {
-        let votesMapped = votes.map(vote => vote.toJSON())
+        const votesMapped = votes.map(vote => vote.toJSON())
 
         return this.#rpcClient.execRemoteProcedure("save", {votes: votesMapped})
     }
@@ -41,7 +41,7 @@ class AppStorage {
      * Saves posts data to storage
      */
     savePosts(posts: Array<Post>) : Promise<any> {
-        let postsMapped = posts.map(post => post.toJSON())
+        const postsMapped = posts.map(post => post.toJSON())
 
         return this.#rpcClient.execRemoteProcedure("save", {posts: postsMapped})
     }
@@ -51,7 +51,7 @@ class AppStorage {
      * @return {Array<Post>} posts
      */
     async getPosts() {
-        let promise = new Promise<Array<Post>>(resolve => {
+        const promise = new Promise<Array<Post>>(resolve => {
             chrome.storage.local.get("posts", (found) => {
                 console.debug("Got this response from storage:")
                 console.debug({found})
@@ -59,7 +59,7 @@ class AppStorage {
             })
         })
 
-        let postsData : Array<Post> = await promise
+        const postsData : Array<Post> = await promise
         return postsData.map(postData => Post.deserialize(postData))
     }
 }

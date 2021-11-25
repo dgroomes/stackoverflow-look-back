@@ -26,8 +26,8 @@ exec().then(() => {
  * Narrow the rendered StackOverflow posts data by the given search term.
  */
 function search() {
-    let searchTerm = (<HTMLInputElement>document.getElementById("search-box")!).value
-    let searchResultsDescriptor = document.getElementById("search-results-descriptor")!
+    const searchTerm = (<HTMLInputElement>document.getElementById("search-box")!).value
+    const searchResultsDescriptor = document.getElementById("search-results-descriptor")!
 
     // If there is no search term, then render all posts and hide the search results descriptor
     if (searchTerm.trim() === "") {
@@ -38,8 +38,8 @@ function search() {
 
     console.info(`Searching by the search term: ${searchTerm}`)
 
-    let regex = new RegExp(searchTerm, "i")
-    let postsRendered = postsViewer.render(function filterPostForSearchTerm(post) {
+    const regex = new RegExp(searchTerm, "i")
+    const postsRendered = postsViewer.render(function filterPostForSearchTerm(post) {
         // Build a body of text that the search term regular expression will be tested against. Question posts have
         // more content to search over (title and tags) than answer posts.
         let searchableText = post.htmlBody

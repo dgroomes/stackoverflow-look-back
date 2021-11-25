@@ -25,12 +25,12 @@ class PostsExpander {
         })
 
         // Fetch the source code for the SQL query
-        let sql = await fetch(`${webResourcesOrigin}/web-page/get-posts-by-ids.sql`)
+        const sql = await fetch(`${webResourcesOrigin}/web-page/get-posts-by-ids.sql`)
             .then(response => response.text());
 
         (<any>document.querySelector('.CodeMirror')).CodeMirror.setValue(sql) // Set the SQL query
 
-        let runQueryBtn = document.getElementById("submit-query")!
+        const runQueryBtn = document.getElementById("submit-query")!
         runQueryBtn.click(); // Click the 'Run Query' button to prompt the parameters field to show up. The query is not actually run.
         (<HTMLInputElement>document.querySelector('input[name=PostIds]')).value = `'${ids}'` // Set the parameter
         runQueryBtn.click() // Run the query
@@ -44,9 +44,9 @@ class PostsExpander {
      */
     async expandPosts() {
 
-        let votes: Array<Vote> = await appStorage.getVotes()
+        const votes: Array<Vote> = await appStorage.getVotes()
 
-        let promise = new Promise(resolve => {
+        const promise = new Promise(resolve => {
             instrumentJQuery()
             registerAjaxSuccessSpy(async responseData => {
 
@@ -57,13 +57,13 @@ class PostsExpander {
                 // I'm not sure how exactly this works but I think the Stack Exchange Data Explorer is doing
                 // some caching on queries that it recognizes. In any case, check for the field "resultSets"
                 // to see if the response has the data or not.
-                let resultSets = responseData.resultSets
+                const resultSets = responseData.resultSets
                 if (resultSets) {
                     // Get the first element in the result sets array. When would this ever be more than one?
-                    let {rows} = resultSets[0]
+                    const {rows} = resultSets[0]
 
                     // Collect the post data from the rows
-                    let posts = rows.map(([id, parentId, type, tags, title, body]) => {
+                    const posts = rows.map(([id, parentId, type, tags, title, body]) => {
                         if (type === 1) {
                             if (tags === null) {
                                 tags = []
@@ -73,8 +73,8 @@ class PostsExpander {
                                 // Use a regex to extract the tag strings and form them into an array.
                                 //
                                 // Reference https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/matchAll
-                                let regex = /<([a-z-]*)>/g // Note: parentheses define a "capturing group" in a regular expression. We want to capture the value inside of the "<>" and not capture the "<" and ">" characters themselves.
-                                let matches : ArrayLike<string> = (tags as any).matchAll(regex)
+                                const regex = /<([a-z-]*)>/g // Note: parentheses define a "capturing group" in a regular expression. We want to capture the value inside of the "<>" and not capture the "<" and ">" characters themselves.
+                                const matches : ArrayLike<string> = (tags as any).matchAll(regex)
 
                                 // Use Array.from instead of just ".map" because we have an Iterable object, which does not support functions like ".map" or ".forEach"
                                 // Extract the matched element of the capturing group into a new array.
@@ -96,8 +96,8 @@ class PostsExpander {
         // Create a set of all the answer and question posts IDs. Use a Set data structure to avoid duplicates. When an
         // answer and its question are both up-voted (this is the common case), then we have two references to the question
         // ID. So, use a Set to avoid duplicates.
-        let idsUnique = new Set((votes as any).flatMap(vote => vote.ids))
-        let idsSorted = Array.from(idsUnique).sort() // Sorting the IDs is not needed, but helps for reproduce-ability and debugging.
+        const idsUnique = new Set((votes as any).flatMap(vote => vote.ids))
+        const idsSorted = Array.from(idsUnique).sort() // Sorting the IDs is not needed, but helps for reproduce-ability and debugging.
         await this.expandByIds(idsSorted)
         return promise
     }

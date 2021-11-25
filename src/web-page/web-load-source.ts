@@ -42,11 +42,11 @@ function detectEnvironment() {
      *               - moz-extension://df0b610b-995b-9240-8c3b-fcaf155c9005/web-page/web-load-source.js
      */
     function detectFromExtensionUrl(url) {
-        let regex = new RegExp("(chrome-extension|moz-extension)://([a-z0-9-]+)")
-        let matches = regex.exec(url)!
+        const regex = new RegExp("(chrome-extension|moz-extension)://([a-z0-9-]+)")
+        const matches = regex.exec(url)!
         window.webResourcesOrigin = matches[0]
 
-        let host = matches[1]
+        const host = matches[1]
         if (host === "chrome-extension")
             browserDescriptor = "chromium"
         else if (host === "moz-extension") {
@@ -65,7 +65,7 @@ function detectEnvironment() {
         return
     }
 
-    let script = document.getElementById("web-injected") as HTMLScriptElement
+    const script = document.getElementById("web-injected") as HTMLScriptElement
     detectFromExtensionUrl(script.src)
 }
 
@@ -74,7 +74,7 @@ async function configureState() {
     initRpcWebPage(browserDescriptor, webExtensionId)
 
     rpcServer.registerPromiseProcedure("scrape-votes", (procedureArgs) => {
-        let votesScraper = new VotesScraper(procedureArgs.votesPageLimit)
+        const votesScraper = new VotesScraper(procedureArgs.votesPageLimit)
         return votesScraper.scrapeVotes()
     })
     rpcServer.registerPromiseProcedure("expand-posts", (_procedureArgs) => {

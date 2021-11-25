@@ -16,9 +16,9 @@ interface JSObject {
  * Read more about toJSON at https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#tojson_behavior
  */
 function toJSON(obj : JSObject, ...fieldNames : string[]) : object {
-    let plainObj : JSObject = {}
+    const plainObj : JSObject = {}
 
-    for (let fieldName of fieldNames) {
+    for (const fieldName of fieldNames) {
         plainObj[fieldName] = obj[fieldName]
     }
 
