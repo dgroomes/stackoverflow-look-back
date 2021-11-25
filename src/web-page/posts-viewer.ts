@@ -1,4 +1,4 @@
-import {Question} from "./post.js"
+import {Question} from "./post.ts"
 import {exec} from "./web-load-source.js"
 import {PostsViewer} from "./PostsViewer.d.ts"
 
@@ -44,7 +44,7 @@ function search() {
         // more content to search over (title and tags) than answer posts.
         let searchableText = post.htmlBody
         if (post instanceof Question) {
-            searchableText += post.title + post.tags
+            searchableText += post.title + post.tags.toString()
         }
         return regex.test(searchableText)
     })

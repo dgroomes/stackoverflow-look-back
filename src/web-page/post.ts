@@ -6,12 +6,15 @@ export {Post, Question, Answer}
  */
 class Post {
 
+    id: number;
+    htmlBody: string;
+
     /**
      * Deserialize from a data object to a concrete Post instance.
      * @param postData a regular object that includes the raw post data
      * @return {Post} a Post object. It's an instance of either Question or Answer.
      */
-    static deserialize(postData) {
+    static deserialize(postData : any) : Post {
         let {type, id, htmlBody} = postData
 
         if (type === "question") {
@@ -35,14 +38,14 @@ class Post {
     /**
      * Returns the type. Either "question" or "answer"
      */
-    get type() {
+    get type() : string {
         throw new Error("Must be implemented on sub-classes")
     }
 
     /**
      * Return the ID of the post's related question.
      */
-    get questionId() {
+    get questionId() : number {
         throw new Error("Must be implemented on sub-classes")
     }
 
@@ -50,7 +53,7 @@ class Post {
      * This function is used by functions like "sort" to sort elements by their natural order.
      * @return {Number}
      */
-    naturalOrder() {
+    naturalOrder() : number {
         throw new Error("Must be implemented on sub-classes")
     }
 
@@ -58,11 +61,11 @@ class Post {
      * Generate an HTML string for this post.
      * @return {string} HTML
      */
-    toHtml() {
+    toHtml() : string {
         throw new Error("Must be implemented on sub-classes")
     }
 
-    toJSON() {
+    toJSON() : object {
         return toJSON(this, "type", "questionId")
     }
 }
@@ -71,6 +74,9 @@ class Post {
  * A StackOverflow question post
  */
 class Question extends Post {
+
+    tags: Array<String>
+    title: String
 
     /**
      * @param {Number} id

@@ -2,7 +2,7 @@
 // the Stack Exchange Data Explorer. See the README for more info.
 
 import {instrumentJQuery, registerAjaxSuccessSpy} from "./util/jquery-proxy.ts"
-import {Answer, Question} from "./post.js"
+import {Answer, Question} from "./post.ts"
 export {PostsExpander}
 
 class PostsExpander {

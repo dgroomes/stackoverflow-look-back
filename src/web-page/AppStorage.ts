@@ -1,5 +1,5 @@
 import {Vote} from "./vote.js"
-import {Post} from "./post.js"
+import {Post} from "./post.ts"
 import {RpcClient} from "../rpc/rpc.ts"
 import {chrome} from "../chromium-manifest-v2/chrome-extension-types.d.ts"
 export {AppStorage}
