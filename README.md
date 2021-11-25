@@ -478,6 +478,12 @@ These are the finished items from the Wish List:
   it)!
 * One of the significant changes of Chrome's Manifest V3 over Manifest V2 is
   the [Action API unification](https://developer.chrome.com/docs/extensions/mv3/intro/mv3-migration/#action-api-unification)
+* I'm not sure how to do global state anymore since I've incorporated modules. In a browser extension context especially,
+  a content script might be loaded multiple times, a web page script might be loaded multiple times and it's important
+  for the subsequent loads to not have a negative effect. For example, the first load might initialize an listener
+  object, and subsequent loads must not initialize a new listener object because then it leads to "double listens" and
+  other unintended side effects. Plus I'm confused how to declare global variables in TypeScript. I should stick the to
+  the `window` right?
 
 ## Reference
 
