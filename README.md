@@ -219,37 +219,9 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* DONE Bundle JavaScript source code with Deno. Deno let's us write TypeScript!
-  * What is the first minimal step in incorporating Deno? I think we want to use Deno's `bundle` command to create a
-    bundled entrypoint JavaScript. But on the other hand, I've discovered that it's inconvenient in general to use
-    modules in a browser extension context. So, I'm not sure... Can the `init.js` file be bundled?
-    * Update: we want to use ES modules for authoring code but not at runtime because of the aforementioned awkwardness
-      of the support for modules in a browser extension context. Deno's bundle let's us concatenate the content of JS
-      files that use `import`/`export` into a "bundles" file that does not include `import`/`export`. Perfect.
-  * DONE One-by-one modularize the files marked as accessible in the `manifest.json` file. Only entrypoint-type files should
-    exist by the end, like `init.js`, `popup.js` and `posts-viewer.js`.
-    * DONE Modularize `rpc-web-page.js` 
-    * DONE Modularize `rpc.js`
-    * DONE Modularize `jquery-proxy.js`
-    * DONE Modularize everything
-  * DONE fix modularization. The `Vote` class is getting double declared. I need to bundle `web-load-source.js`
-    into the other web entrypoint files like `posts-viewer.js`
-  * DONE Convert something to TypeScript
-  * DONE convert more things to TypeScript
-    * DONE `posts-viewer.js`
-    * DONE `content-script-load-source.js`
-    * DONE `popup.js`
-  * ANSWERED How do source maps work with TypeScript/Deno? Can I still productively debug my code in Chrome Dev Tools?.
-    Answer: `deno bundle ...` does not support sourcemaps but it is an [open issue](https://github.com/denoland/deno/issues/8577)
-    with a show of support from the Deno core team.
 * Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
   extension web page (`posts-viewer.html`) versus the portion needed by the frontend web page (the ".com" pages).
-* DONE Fix the sort order of Q&As in the viewer. I'm seeing questions all bunched together and then answers bunched together right
-  afterwards. Questions should always be following by their answers, but this isn't happening. For example, [this answer](https://stackoverflow.com/questions/37920923/how-to-check-whether-kafka-server-is-running/49852168#49852168)
-  is not following its question.
-  * (Answer: yes the "questionId" is a non-normal field and needed be included in the toJSON) Is there a defect where the question ID field is null on answers? For example, answer 37943159 has a null question ID.
-    Why? This is a problem for the sort order.
-* This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
+* OBSOLETE (now that TypeScript is in the picture, it is a strong counter force to this problem) This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
   finding basic problems. For example, I changed the signature of the RPC client, and it's pretty easy to miss a call
   site and update the args.
 * Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
@@ -439,6 +411,35 @@ These are the finished items from the Wish List:
       of the restriction described in the earlier item.
     * Delete the `<script src="...">` tags. These should not be included in the download. The downloaded file has to be
       completely static, no external dependencies can be downloaded at runtime.
+* DONE Bundle JavaScript source code with Deno. Deno let's us write TypeScript!
+    * What is the first minimal step in incorporating Deno? I think we want to use Deno's `bundle` command to create a
+      bundled entrypoint JavaScript. But on the other hand, I've discovered that it's inconvenient in general to use
+      modules in a browser extension context. So, I'm not sure... Can the `init.js` file be bundled?
+        * Update: we want to use ES modules for authoring code but not at runtime because of the aforementioned awkwardness
+          of the support for modules in a browser extension context. Deno's bundle let's us concatenate the content of JS
+          files that use `import`/`export` into a "bundles" file that does not include `import`/`export`. Perfect.
+    * DONE One-by-one modularize the files marked as accessible in the `manifest.json` file. Only entrypoint-type files should
+      exist by the end, like `init.js`, `popup.js` and `posts-viewer.js`.
+        * DONE Modularize `rpc-web-page.js`
+        * DONE Modularize `rpc.js`
+        * DONE Modularize `jquery-proxy.js`
+        * DONE Modularize everything
+    * DONE fix modularization. The `Vote` class is getting double declared. I need to bundle `web-load-source.js`
+      into the other web entrypoint files like `posts-viewer.js`
+    * DONE Convert something to TypeScript
+    * DONE convert more things to TypeScript
+        * DONE `posts-viewer.js`
+        * DONE `content-script-load-source.js`
+        * DONE `popup.js`
+    * ANSWERED How do source maps work with TypeScript/Deno? Can I still productively debug my code in Chrome Dev Tools?.
+      Answer: `deno bundle ...` does not support sourcemaps but it is an [open issue](https://github.com/denoland/deno/issues/8577)
+      with a show of support from the Deno core team.
+* DONE Fix the sort order of Q&As in the viewer. I'm seeing questions all bunched together and then answers bunched together right
+  afterwards. Questions should always be following by their answers, but this isn't happening. For example, [this answer](https://stackoverflow.com/questions/37920923/how-to-check-whether-kafka-server-is-running/49852168#49852168)
+  is not following its question.
+    * (Answer: yes the "questionId" is a non-normal field and needed be included in the toJSON) Is there a defect where the question ID field is null on answers? For example, answer 37943159 has a null question ID.
+      Why? This is a problem for the sort order.
+
 
 ## Notes
 
