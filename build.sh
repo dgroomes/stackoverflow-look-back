@@ -69,18 +69,36 @@ build_distribution() {
 }
 
 build_all() {
+  echo "Building..."
+  local build_status=0
+
+  # Allow failures (set +e). It's expected that the build will often fail because as new code is written it won't
+  # compile.
+  set +e
   for extension_source in "${extension_sources[@]}"; do
-    build_distribution "$extension_source"
+    if ! build_distribution "$extension_source"; then
+      # If the vendor-specific build failed (Chromium or FireFox) break now and don't bother building the other
+      # vendor-specific distribution.
+      build_status=1
+      break
+    fi
   done
-  echo "Distributions built! ✅"
+  # Disallow failures again. If there is an exception, that's unexpected and should terminate the script.
+  set -e
+
+  if [[ $build_status = 0 ]]; then
+    echo "Distributions built! ✅"
+  else
+    echo >&2 "Build failed ❌"
+  fi
 }
 
 preconditions
 
 if [[ "$watch" == "true" ]]; then
-  echo "Building with the '--watch' option. The distributions will be built again when any of the 'src/' code changes."
+  echo "Building with the '--watch' option. The distributions will be built again when any source code changes."
   build_all
-  fswatch -0 src/ | while read -d "" event; do build_all; done
+  fswatch -0 src/ rpc-framework/ util/ web-extension-types/ | while read -d "" event; do build_all; done
 else
   build_all
 fi

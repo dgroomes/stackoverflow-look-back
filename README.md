@@ -55,7 +55,7 @@ The extension has been verified to work in the checked `[x]` browsers:
 * [x] Firefox (version 91)
 * [x] Chrome (version 92)
 * [x] Opera (version 78)
-* [ ] Edge (coming soon)
+* [ ] Edge
 * [ ] Safari
 
 ### My Bias Against Content Scripts
@@ -210,7 +210,7 @@ General clean ups, TODOs and things I wish to implement for this project:
 * [x] DONE Modularize the source code layout. I want the `rpc/` code far away from the other code, so it's clear that it is
       a standalone component. Similarly, I want a `core/` component which is the core of the SO Look Back Tool and it
       should be far away from the vendor-specific code (stuff like web extension IDs and manifests)  
-* [ ] Fix the `build.sh` script to not exit when TypeScript compilation fails when the `--watch` option is used
+* [x] DONE (It's not perfect, it should exit earlier. But I don't want to deal with Bash traps/catch yet) Fix the `build.sh` script to not exit when TypeScript compilation fails when the `--watch` option is used
 * [ ] Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
   extension web page (`posts-viewer.html`) versus the portion needed by the frontend web page (the ".com" pages).
 * [ ] Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
