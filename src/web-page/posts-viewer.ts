@@ -1,6 +1,6 @@
 import {Question} from "./post.ts"
 import {exec} from "./web-load-source.js"
-import {PostsViewer} from "./PostsViewer.d.ts"
+import {PostsViewer} from "./PostsViewer.ts"
 
 console.debug("[posts-viewer.js] Initializing...")
 

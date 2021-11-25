@@ -1,4 +1,8 @@
+import {AppStorage} from "./AppStorage.ts";
+
 export {PostsViewer}
+
+declare var appStorage: AppStorage
 
 /**
  * View the posts data on the page.
@@ -9,10 +13,8 @@ class PostsViewer {
 
     /**
      * This is the main function! Get the posts data and render it to the page.
-     *
-     * @return {Promise<void>}
      */
-    async init() {
+    async init() : Promise<void> {
         let posts = await appStorage.getPosts()
         if (posts.length === 0) {
             throw new Error("Zero posts were found. This is unexpected.")
@@ -36,7 +38,7 @@ class PostsViewer {
      * @return {Number} the number of posts rendered
      */
     render(filterFn) {
-        let postsEl = document.getElementById("posts")
+        let postsEl = document.getElementById("posts")!
         postsEl.innerHTML = "" // Clear all existing content
 
         // Filter the posts given the optional filter function
