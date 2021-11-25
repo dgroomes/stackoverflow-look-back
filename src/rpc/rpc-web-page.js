@@ -1,7 +1,7 @@
 // This code is designed to run on the web page.
 
 export {initRpcWebPage}
-import {RpcServer, RpcClient} from "./rpc.js"
+import {RpcServer, RpcClient} from "./rpc.ts"
 
 /**
  *  Initialize the web page objects of the RPC framework. Programs that depend on the RPC framework must call this

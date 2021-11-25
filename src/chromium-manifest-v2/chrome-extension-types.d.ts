@@ -1,6 +1,6 @@
 // Type declarations for the Chrome web extension JavaScript API.
 
-export {Chrome, Runtime, chrome}
+export {Chrome, Runtime, chrome, Tab}
 
 declare var chrome: Chrome
 
@@ -11,12 +11,10 @@ interface Chrome {
     tabs: Tabs
 }
 
-/**
- * The "chrome.runtime" API https://developer.chrome.com/docs/extensions/reference/runtime/
- */
+/** The "chrome.runtime" API https://developer.chrome.com/docs/extensions/reference/runtime/ */
 interface Runtime {
 
-    // https://developer.chrome.com/docs/extensions/reference/runtime/#method-sendMessage
+    /** https://developer.chrome.com/docs/extensions/reference/runtime/#method-sendMessage */
     sendMessage(
         extensionId: string | null,
         message: any,
@@ -31,14 +29,17 @@ interface Runtime {
         options: object | null
     ): void
 
-    // https://developer.chrome.com/docs/extensions/reference/runtime/#method-getURL
+    /** https://developer.chrome.com/docs/extensions/reference/runtime/#method-getURL */
     getURL(url: string): string
 
-    // https://developer.chrome.com/docs/extensions/reference/runtime/#event-onMessage
+    /** https://developer.chrome.com/docs/extensions/reference/runtime/#event-onMessage */
     onMessage: Event
 
-    // https://developer.chrome.com/docs/extensions/reference/runtime/#event-onInstalled
+    /** https://developer.chrome.com/docs/extensions/reference/runtime/#event-onInstalled */
     onInstalled: Event
+
+    /** https://developer.chrome.com/docs/extensions/reference/runtime/#event-onMessageExternal */
+    onMessageExternal: Event
 }
 
 /**
@@ -68,8 +69,10 @@ interface Event {
 
     addListener(callback: Function): void
 
-    // This method isn't documented in https://developer.chrome.com/docs/extensions/reference/runtime/ but the method
-    // exists.
+    /**
+     * This method isn't documented in https://developer.chrome.com/docs/extensions/reference/runtime/ but the method
+     * exists.
+     */
     removeListener(fn: any): void
 }
 
@@ -77,16 +80,27 @@ interface Event {
  * https://developer.chrome.com/docs/extensions/reference/tabs/
  */
 interface Tabs {
-    // https://developer.chrome.com/docs/extensions/reference/tabs/#method-executeScript
+    /** https://developer.chrome.com/docs/extensions/reference/tabs/#method-executeScript */
     executeScript(
         details: InjectDetails,
         callback: () => void
     ): void
 
-    // https://developer.chrome.com/docs/extensions/reference/tabs/#method-create
+    /** https://developer.chrome.com/docs/extensions/reference/tabs/#method-create */
     create(createProperties: {
         url: string
     }): void
+
+    /** https://developer.chrome.com/docs/extensions/reference/tabs/#method-query */
+    query(queryInfo: { active: boolean }, callback: (tabs: Array<Tab>) => void): void;
+
+    /** https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage */
+    sendMessage(tabId, message: any): void
+}
+
+/** https://developer.chrome.com/docs/extensions/reference/tabs/#type-Tab */
+interface Tab {
+    id : number
 }
 
 /**
@@ -102,7 +116,7 @@ interface InjectDetails {
 interface DeclarativeContent {
     onPageChanged: DeclarativeEvent
 
-    // I don't know how to declare an inner interface (like an inner class)
+    /** I don't know how to declare an inner interface (like an inner class) */
     PageStateMatcher: any
     ShowPageAction: any
 }

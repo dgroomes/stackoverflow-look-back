@@ -140,11 +140,12 @@ class RpcClient {
      *
      * @return {Object} a correctly formatted RPC request message
      */
-    createRequest(procedureName, procedureArgs) {
+    createRequest(procedureName, procedureArgs) : RpcRequestMessage {
         return {
             procedureTargetReceiver: this.#procedureTargetReceiver,
             procedureName,
-            procedureArgs
+            procedureArgs,
+            procedureCaptureReturnValue: false
         }
     }
 
@@ -161,4 +162,11 @@ class RpcClient {
      */
     execRemoteProcedure(procedureName, procedureArgs) {
     }
+}
+
+interface RpcRequestMessage {
+    procedureTargetReceiver: any
+    procedureName: string
+    procedureArgs: Array<any>
+    procedureCaptureReturnValue: boolean
 }

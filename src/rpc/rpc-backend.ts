@@ -1,7 +1,10 @@
 // This code is designed to run in background scripts.
 
+import {chrome, Tab} from "../chromium-manifest-v2/chrome-extension-types.d.ts"
+import {browser} from "../firefox-manifest-v2/firefox-extension-types.d.ts"
+import {RpcClient, RpcServer} from "./rpc.ts"
+
 export {initRpcBackground, getRpcServer, getRpcClient}
-import {RpcServer, RpcClient} from "./rpc.js"
 
 /**
  * Initialize the configuration for the RPC framework. This must always be executed before any other work is done.
@@ -13,15 +16,13 @@ function initRpcBackground(browserDescriptor) {
     return setBrowserDescriptor(browserDescriptor)
 }
 
-let _rpcServer = null
+let _rpcServer: RpcServer
 
 /**
  * Instantiate a background RPC server.
- *
- * @return {Promise<RpcServer>}
  */
-async function getRpcServer() {
-    if (_rpcServer !== null) return _rpcServer
+async function getRpcServer() : Promise<RpcServer> {
+    if (_rpcServer instanceof RpcServer) return _rpcServer
 
     let browserDescriptor = await getBrowserDescriptor()
 
@@ -36,7 +37,7 @@ async function getRpcServer() {
     return _rpcServer
 }
 
-let _rpcClient = null
+let _rpcClient : RpcClient
 
 // Cache a copy of the browserDescriptor. The value of the browser descriptor will never change because of course the
 // browser can't change. If we are in Firefox, then we are Firefox. The browser descriptor will always be "firefox" so
@@ -51,7 +52,7 @@ let _browserDescriptor = null
 function getBrowserDescriptor() {
     if (_browserDescriptor !== null) return _browserDescriptor
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get(["rpcBrowserDescriptor"], (found) => {
+        chrome.storage.local.get("rpcBrowserDescriptor", (found) => {
             console.log(`[rpc-backend.js] Found rpcBrowserDescriptor: ${JSON.stringify(found, null, 2)}`)
             _browserDescriptor = found.rpcBrowserDescriptor
             if (typeof _browserDescriptor === "undefined") {
@@ -77,7 +78,7 @@ function setBrowserDescriptor(browserDescriptor) {
         chrome.storage.local.set({
             rpcBrowserDescriptor: browserDescriptor
         }, () => {
-            resolve()
+            resolve("success_ignored_value")
         })
     })
 }
@@ -90,11 +91,11 @@ function setBrowserDescriptor(browserDescriptor) {
  * @return {RpcClient}
  */
 async function getRpcClient() {
-    if (_rpcClient !== null) return _rpcClient
+    if (_rpcClient instanceof RpcClient) return _rpcClient
 
-    let activeTab = await new Promise(resolve => {
-        chrome.tabs.query({active: true}, results => {
-            let activeTab = results[0] // The "query" function returns an array of results, but when searching for the "active" tab there of course can only be one. It is the first element in the array.
+    let activeTab: Tab = await new Promise(resolve => {
+        chrome.tabs.query({active: true}, tabs => {
+            let activeTab = tabs[0] // The "query" function returns an array of results, but when searching for the "active" tab there of course can only be one. It is the first element in the array.
             resolve(activeTab)
         })
     })
@@ -204,7 +205,7 @@ class FirefoxBackgroundToContentScriptRpcClient extends RpcClient {
 
     #tabId
 
-    constructor(tabId) {
+    constructor(tabId: number) {
         super("content-script-rpc-proxy")
         this.#tabId = tabId
     }
