@@ -2,10 +2,11 @@
 // input when any of the "Scrape votes", "Expand posts", or "View posts" buttons are clicked in the popup.
 
 import {getRpcServer, getRpcClient} from "../rpc/rpc-backend.js"
+import {chrome} from "../chromium-manifest-v2/chrome-extension-types.d.ts";
 
 console.debug("[popup.js] Initializing...")
 
-let votesPageLimitEl = document.getElementById("votes-page-limit")
+let votesPageLimitEl = document.getElementById("votes-page-limit") as HTMLInputElement
 
 /**
  * Initialize everything.
@@ -46,7 +47,7 @@ let initPromise = (async function () {
             console.debug(JSON.stringify({message}, null, 2))
             if (message === "web-page-initialized") {
                 console.debug(`[popup.js] Detected that the extension source has been loaded into the web page and fully initialized `)
-                resolve()
+                resolve("success_ignored_value")
                 chrome.runtime.onMessage.removeListener(webPageInitializedListener)
             }
         })
@@ -68,12 +69,12 @@ async function execContentScript(fileName) {
         chrome.tabs.executeScript({
             file: fileName
         }, () => {
-            resolve()
+            resolve("success_ignored_value")
         })
     })
 }
 
-document.getElementById("execute-scrape-votes")
+document.getElementById("execute-scrape-votes")!
     .addEventListener("click", async () => {
         console.info(`[popup.js] Clicked the 'scrape votes' button`)
         let votesPageLimit = votesPageLimitEl.value
@@ -85,16 +86,16 @@ document.getElementById("execute-scrape-votes")
     })
 
 
-document.getElementById("execute-expand-posts")
+document.getElementById("execute-expand-posts")!
     .addEventListener("click", async () => {
         console.info(`[popup.js] Clicked the 'expand posts' button`)
         await initPromise
         let rpcClient = await getRpcClient()
-        let postsExpanded = await rpcClient.execRemoteProcedure("expand-posts")
+        let postsExpanded = await rpcClient.execRemoteProcedure("expand-posts", null)
         console.info(`[popup.js] ${postsExpanded} posts expanded!`)
     })
 
-document.getElementById("view-posts")
+document.getElementById("view-posts")!
     .addEventListener("click", async () => {
         console.info(`[popup.js] Clicked the 'view posts' button`)
 

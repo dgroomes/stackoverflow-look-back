@@ -233,6 +233,11 @@ General clean ups, TODOs and things I wish to implement for this project:
   * DONE fix modularization. The `Vote` class is getting double declared. I need to bundle `web-load-source.js`
     into the other web entrypoint files like `posts-viewer.js`
   * DONE Convert something to TypeScript
+  * DONE convert more things to TypeScript
+    * DONE `posts-viewer.js`
+    * DONE `content-script-load-source.js`
+    * DONE `popup.js`
+  * How do source maps work with TypeScript/Deno? Can I still productively debug my code in Chrome Dev Tools?
 * Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
   extension web page (`posts-viewer.html`) versus the portion needed by the frontend web page (the ".com" pages).
 * DONE Fix the sort order of Q&As in the viewer. I'm seeing questions all bunched together and then answers bunched together right
