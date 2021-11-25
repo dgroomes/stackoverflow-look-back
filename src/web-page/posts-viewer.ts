@@ -1,6 +1,6 @@
-import {Question} from "../core/post.ts"
 import {exec} from "./web-load-source.ts"
-import {PostsViewer} from "../core/PostsViewer.ts"
+import {PostsViewer} from "../core/posts/PostsViewer.ts"
+import {QuestionPost} from "../core/posts/QuestionPost.ts";
 
 console.debug("[posts-viewer.js] Initializing...")
 
@@ -43,7 +43,7 @@ function search() {
         // Build a body of text that the search term regular expression will be tested against. Question posts have
         // more content to search over (title and tags) than answer posts.
         let searchableText = post.htmlBody
-        if (post instanceof Question) {
+        if (post instanceof QuestionPost) {
             searchableText += post.title + post.tags.toString()
         }
         return regex.test(searchableText)

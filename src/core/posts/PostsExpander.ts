@@ -1,10 +1,11 @@
 // Given a collection of post IDs, expand the posts into the HTML body content and titles by querying the data from
 // the Stack Exchange Data Explorer. See the README for more info.
 
-import {instrumentJQuery, registerAjaxSuccessSpy} from "../../util/jquery-proxy.ts"
-import {Answer, Question} from "./post.ts"
-import {AppStorage} from "./AppStorage.ts"
-import {Vote} from "./vote.ts"
+import {instrumentJQuery, registerAjaxSuccessSpy} from "../../../util/jquery-proxy.ts"
+import {AppStorage} from "../AppStorage.ts"
+import {Vote} from "../votes/Vote.ts"
+import {QuestionPost} from "./QuestionPost.ts";
+import {AnswerPost} from "./AnswerPost.ts";
 
 export {PostsExpander}
 
@@ -80,9 +81,9 @@ class PostsExpander {
                                 // Extract the matched element of the capturing group into a new array.
                                 tags = Array.from(matches, match => match[1]) // Note: The element at index 1 is the capturing group match.
                             }
-                            return new Question(id, tags, title, body)
+                            return new QuestionPost(id, tags, title, body)
                         } else {
-                            return new Answer(id, parentId, body)
+                            return new AnswerPost(id, parentId, body)
                         }
                     })
 

@@ -1,5 +1,5 @@
-import {AppStorage} from "./AppStorage.ts"
-import {Post} from "./post.ts"
+import {AppStorage} from "../AppStorage.ts"
+import {Post} from "./Post.ts"
 
 export {PostsViewer}
 

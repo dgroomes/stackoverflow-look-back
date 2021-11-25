@@ -1,5 +1,5 @@
-import {Vote} from "./vote.ts"
-import {AppStorage} from "./AppStorage.ts"
+import {Vote} from "./Vote.ts"
+import {AppStorage} from "../AppStorage.ts"
 
 export {VotesScraper}
 

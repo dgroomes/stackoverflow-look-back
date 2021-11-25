@@ -1,4 +1,7 @@
-import {toJSON} from "../../util/to-json.ts"
+import {toJSON} from "../../../util/to-json.ts"
+import {QuestionVote} from "./QuestionVote.ts";
+import {AnswerVote} from "./AnswerVote.ts";
+
 export {Vote}
 
 /**
@@ -78,41 +81,3 @@ abstract class Vote {
     }
 }
 
-/**
- * A StackOverflow vote on a question.
- */
-class QuestionVote extends Vote {
-
-    constructor(id) {
-        super(id)
-    }
-
-    get type() : string {
-        return "question"
-    }
-
-    get ids() : Array<number> {
-        return [this.id]
-    }
-}
-
-/**
- * A StackOverflow vote on an answer.
- */
-class AnswerVote extends Vote {
-
-    questionId: number
-
-    constructor(id, questionId) {
-        super(id)
-        this.questionId = questionId
-    }
-
-    get type() : string {
-        return "answer"
-    }
-
-    get ids() : Array<number> {
-        return [this.id, this.questionId]
-    }
-}
