@@ -61,15 +61,15 @@ const initPromise = (async function () {
  * Execute a content script.
  *
  * @param fileName the file name of the content script
- * @return {Promise} that resolves when the content script has been loaded/executed(?)
+ * @return a promise that resolves when the content script has been loaded/executed(?)
  */
-async function execContentScript(fileName) {
+async function execContentScript(fileName: string) : Promise<void> {
     console.debug(`[popup.js] Executing content script: ${fileName}`)
     return new Promise(resolve => {
         chrome.tabs.executeScript({
             file: fileName
         }, () => {
-            resolve("success_ignored_value")
+            resolve(undefined)
         })
     })
 }

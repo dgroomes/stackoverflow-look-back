@@ -10,22 +10,18 @@ export {RpcServer, RpcClient}
  *
  * The unimplemented method "listen()" must be implemented by the concrete sub-classes.
  */
-class RpcServer {
+abstract class RpcServer {
 
     #promiseProcedures = new Map()
     #callbackProcedures = new Map()
-    #descriptor
+    readonly #descriptor
 
     /**
      * @param descriptor The descriptor describes this particular RPC server. Specifically, the descriptor should be either
      * of: "background", "content-script", or "web-page". It's possible that this range will be expanded in the future
      * but for now that's it.
      */
-    constructor(descriptor) {
-        if (this.constructor === RpcServer) {
-            throw new Error("This should never be instantiated directly. Instantiate one of the extending classes.")
-        }
-
+    protected constructor(descriptor) {
         if (!descriptor) {
             throw new Error(`Expected a truthy value for 'descriptor' but found ${descriptor}`)
         }
@@ -113,19 +109,15 @@ class RpcServer {
  * a receiving RPC server. For example, an RPC client on the web page may make an RPC request to an RPC server running
  * in a background script.
  */
-class RpcClient {
+abstract class RpcClient {
 
-    #procedureTargetReceiver
+    readonly #procedureTargetReceiver
 
     /**
      * @param procedureTargetReceiver the destination RPC server for RPC requests. This is needed to make sure the right RPC
      * server finds the request and all other RPC servers ignore it.
      */
-    constructor(procedureTargetReceiver) {
-        if (this.constructor === RpcClient) {
-            throw new Error("This should never be instantiated directly. Instantiate one of the extending classes.")
-        }
-
+    protected constructor(procedureTargetReceiver) {
         if (!procedureTargetReceiver) {
             throw new Error(`Expected a truthy value for 'procedureTargetReceiver' but found ${procedureTargetReceiver}`)
         }
@@ -140,7 +132,7 @@ class RpcClient {
      *
      * @return {Object} a correctly formatted RPC request message
      */
-    createRequest(procedureName, procedureArgs) : RpcRequestMessage {
+    createRequest(procedureName, procedureArgs): RpcRequestMessage {
         return {
             procedureTargetReceiver: this.#procedureTargetReceiver,
             procedureName,
@@ -148,7 +140,6 @@ class RpcClient {
             procedureCaptureReturnValue: false
         }
     }
-
 
     /**
      * Execute a remote procedure call by sending a message to a receiving RPC server and waiting for the response.
@@ -160,9 +151,7 @@ class RpcClient {
      * @param procedureArgs the "procedure arguments" of the remote procedure call.
      * @return {Promise} a promise containing the return value of the remote procedure call
      */
-    execRemoteProcedure(procedureName, procedureArgs) : Promise<any> {
-        throw new Error("Must be implemented on sub-classes")
-    }
+    abstract execRemoteProcedure(procedureName, procedureArgs): Promise<any>
 }
 
 interface RpcRequestMessage {

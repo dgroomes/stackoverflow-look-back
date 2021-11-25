@@ -19,9 +19,9 @@ class AppStorage {
      * Save the votes data to storage
      *
      * @param {Array<Vote>} votes
-     * @return {Promise<String>} a promise that resolves when the votes have been successfully saved. The promise's string value indicates which storage backend was used.
+     * @return {Promise<string>} a promise that resolves when the votes have been successfully saved. The promise's string value indicates which storage backend was used.
      */
-    saveVotes(votes) {
+    saveVotes(votes : Array<Vote>) {
         const votesMapped = votes.map(vote => vote.toJSON())
 
         return this.#rpcClient.execRemoteProcedure("save", {votes: votesMapped})

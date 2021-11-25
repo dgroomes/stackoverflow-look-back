@@ -1,4 +1,5 @@
 import {AppStorage} from "./AppStorage.ts";
+import {Post} from "./post.ts";
 
 export {PostsViewer}
 
@@ -9,20 +10,25 @@ declare var appStorage: AppStorage
  */
 class PostsViewer {
 
-    #posts
+    readonly #posts : Array<Post>
+
+    constructor(posts: Array<Post>) {
+        this.#posts = posts
+    }
 
     /**
      * This is the main function! Get the posts data and render it to the page.
      */
-    async init() : Promise<void> {
+    static async init() : Promise<PostsViewer> {
         const posts = await appStorage.getPosts()
         if (posts.length === 0) {
             throw new Error("Zero posts were found. This is unexpected.")
         }
 
-        this.#posts = posts
+        const postsViewer = new PostsViewer(posts)
 
-        this.render(null)
+        postsViewer.render(null)
+        return postsViewer
     }
 
     /**
@@ -42,7 +48,7 @@ class PostsViewer {
         postsEl.innerHTML = "" // Clear all existing content
 
         // Filter the posts given the optional filter function
-        let filtered
+        let filtered : Array<Post>
         if (filterFn !== null) {
             filtered = this.#posts.filter(post => filterFn(post))
             if (filtered.length === 0) return 0

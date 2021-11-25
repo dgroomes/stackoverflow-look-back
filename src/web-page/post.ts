@@ -4,7 +4,7 @@ export {Post, Question, Answer}
 /**
  * A StackOverflow post
  */
-class Post {
+abstract class Post {
 
     id: number;
     htmlBody: string;
@@ -27,10 +27,10 @@ class Post {
     }
 
     /**
-     * @param {Number} id
-     * @param {String} htmlBody the rendered HTML of the post body
+     * @param {number} id
+     * @param {string} htmlBody the rendered HTML of the post body
      */
-    constructor(id, htmlBody) {
+    protected constructor(id : number, htmlBody: string) {
         this.id = id
         this.htmlBody = htmlBody
     }
@@ -38,32 +38,24 @@ class Post {
     /**
      * Returns the type. Either "question" or "answer"
      */
-    get type() : string {
-        throw new Error("Must be implemented on sub-classes")
-    }
+    abstract get type() : string
 
     /**
      * Return the ID of the post's related question.
      */
-    get questionId() : number {
-        throw new Error("Must be implemented on sub-classes")
-    }
+    abstract get questionId() : number
 
     /**
      * This function is used by functions like "sort" to sort elements by their natural order.
      * @return {Number}
      */
-    naturalOrder() : number {
-        throw new Error("Must be implemented on sub-classes")
-    }
+    abstract naturalOrder() : number
 
     /**
      * Generate an HTML string for this post.
      * @return {string} HTML
      */
-    toHtml() : string {
-        throw new Error("Must be implemented on sub-classes")
-    }
+    abstract toHtml() : string
 
     toJSON() : object {
         return toJSON(this, "type", "questionId")
@@ -79,10 +71,10 @@ class Question extends Post {
     title: String
 
     /**
-     * @param {Number} id
+     * @param {number} id
      * @param {Array<String>} tags the tags of the post. This is non-nullable. In StackExchange, it is nullable but here we will represent the absence of tags as an empty array.
-     * @param {String} title the title of the post. This is non-null for questions but is null for answers.
-     * @param {String} htmlBody the rendered HTML of the post body
+     * @param {string} title the title of the post. This is non-null for questions but is null for answers.
+     * @param {string} htmlBody the rendered HTML of the post body
      */
     constructor(id, tags, title, htmlBody) {
         super(id, htmlBody)
@@ -127,7 +119,7 @@ class Question extends Post {
  */
 class Answer extends Post {
 
-    #questionId
+    readonly #questionId
 
     /**
      * @param {Number} id

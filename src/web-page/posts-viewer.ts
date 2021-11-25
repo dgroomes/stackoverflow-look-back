@@ -6,9 +6,9 @@ console.debug("[posts-viewer.js] Initializing...")
 
 declare var postsViewer: PostsViewer
 
-exec().then(() => {
-    postsViewer.init()
-        .then(() => console.info("Posts were rendered to HTML successfully"))
+exec().then(async () => {
+    postsViewer = await PostsViewer.init()
+    console.info("Posts were rendered to HTML successfully")
 })
 
 { // Register the search handlers for click events and 'Enter' key presses

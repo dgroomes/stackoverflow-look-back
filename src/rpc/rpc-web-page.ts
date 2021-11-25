@@ -38,7 +38,7 @@ function initRpcWebPage(browserDescriptor, webExtensionId) {
  */
 class ChromiumWebPageRpcServer extends RpcServer {
 
-    #webExtensionId
+    readonly #webExtensionId
 
     constructor(webExtensionId) {
         super("web-page-server")
@@ -106,7 +106,7 @@ class FirefoxWebPageRpcServer extends RpcServer {
  */
 class ChromiumWebPageToBackgroundRpcClient extends RpcClient {
 
-    #webExtensionId
+    readonly #webExtensionId
 
     constructor(webExtensionId) {
         super("background-server")

@@ -5,7 +5,6 @@ import {initRpcWebPage, rpcClient, rpcServer} from "../rpc/rpc-web-page.ts"
 import {PostsExpander} from "./PostsExpander.ts"
 import {AppStorage} from "./AppStorage.ts"
 import {VotesScraper} from "./VotesScraper.ts"
-import {PostsViewer} from "./PostsViewer.ts"
 
 console.debug("[web-load-source.js] Initializing...")
 
@@ -13,7 +12,6 @@ declare global {
     interface Window {
         webResourcesOrigin: string | null
         postsExpander: PostsExpander
-        postsViewer: PostsViewer
         appStorage: AppStorage
     }
 }
@@ -84,7 +82,6 @@ async function configureState() {
 
     window.appStorage = new AppStorage(rpcClient)
     window.postsExpander = new PostsExpander()
-    window.postsViewer = new PostsViewer()
 }
 
 /**

@@ -4,7 +4,7 @@ export {Vote}
 /**
  * A StackOverflow vote on a post (either a question post or an answer post).
  */
-class Vote {
+abstract class Vote {
 
     id: number
 
@@ -34,8 +34,12 @@ class Vote {
         // Extract the question ID from the URL. The question ID is always after the "questions/" part in the URL.
         // For example, 54189630 is the ID in the below URL:
         // https://stackoverflow.com/questions/54189630/kill-all-gradle-daemons-regardless-version
-        const match = /questions\/(?<id>\d+)/.exec(postUrl)
-        const questionId = parseInt((match as any).groups.id)
+        const match: RegExpExecArray = /questions\/(?<id>\d+)/.exec(postUrl)!
+
+        // noinspection TypeScriptUnresolvedVariable
+        let groups = (match as any).groups // For some reason, the "RegExpExecArray" type doesn't define the "groups" field.
+
+        const questionId = parseInt(groups.id)
 
         if (postType === "question") {
             return new QuestionVote(questionId)
@@ -53,25 +57,21 @@ class Vote {
     }
 
     /**
-     * @param {Number} id the ID of the post that was voted on
+     * @param {number} id the ID of the post that was voted on
      */
-    constructor(id: number) {
+    protected constructor(id: number) {
         this.id = id
     }
 
     /**
      * Returns the type. Either "question" or "answer"
      */
-    get type() : string {
-        throw new Error("Must be implemented on sub-classes")
-    }
+    abstract get type() : string
 
     /**
      * @return the IDs related to this post
      */
-    get ids() : Array<number> {
-        throw new Error("Must be implemented on sub-classes")
-    }
+    abstract get ids() : Array<number>
 
     toJSON() : object {
         return toJSON(this, "type")
