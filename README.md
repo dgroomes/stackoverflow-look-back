@@ -41,18 +41,25 @@ The overall flow of the tool breaks down like this:
 1. Expand the votes data into posts data using <https://data.stackexchange.com>
 1. View and search a copy of the posts data
 
-The source code is laid out in a directory structure that generally groups code by the execution context that the code
-runs in and is inviting for future additions like Manifest V3 support, or a Safari browser extension.
+The source code is laid out in a directory structure that separates generic code from the *Look Back Tool*-specific
+code. Within the *Look Back Tool* code it is generally grouped by the execution context that the code runs in and is
+inviting for future additions like Manifest V3 support, or a Safari browser extension.
 
+* `web-extension-types/`
+    * TypeScript type declaration files for browser (vendor) JavaScript APIs. This means there are `.d.ts` files for
+      Chromium's `chrome` JavaScript APIs and FireFox's `browser` JavaScript APIs. Yes there is probably an open source
+      version of this but I would prefer to minimize third-party dependencies where feasible.
+* `rpc-framework/`
+    * The code in this directory implements a generic Remote Procedure Call (RPC) framework for browser extensions. This
+      code has components that run in all contexts: background scripts, popup scripts, content scripts, and the web
+      page.
+* `src/`
+    * The code in this directory is specific to the *Look Back Tool*. 
 * `src/web-page/`
     * The code in this directory runs on the web page.
 * `src/backend/`
     * The code in this directory runs in the extension *backend* contexts: background workers, popups, and content
       scripts.
-* `src/rpc/`
-    * The code in this directory implements a generic Remote Procedure Call (RPC) framework for browser extensions. This
-      code has components that run in all contexts: background scripts, popup scripts, content scripts, and the web
-      page.
 * `src/chromium-manifest-v2/`
     * Code that supports a Manifest V2 web extension developed for Chromium browsers.
 * `src/firefox-manifest-v2/`
@@ -61,7 +68,9 @@ runs in and is inviting for future additions like Manifest V3 support, or a Safa
 Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the web
 extension layer and the web page. So, I'm purposely designing the code base to have minimal shared common code. The
 `src/rpc/` code is an exception. It is a generic browser RPC framework and so it does not co-mingle with the domain code
-and doesn't cause as much confusion. It's a lot of code too so it's nice to sequester it in its own directory.
+and doesn't cause as much confusion. It's a lot of code too so it's nice to sequester it in its own directory. UPDATE:
+This is less of a problem now since modularizing the code and the simple "copy the code" metaphor of the `deno bundle`
+strategy.
 
 The extension has been verified to work in the checked `[x]` browsers:
 
@@ -105,14 +114,14 @@ necessity.
 
 The source code is laid out in a file structure that groups code by the execution context that the code runs in:
 
-* `src/rpc/rpc.js`
+* `rpc-framework/rpc.js`
     * The code in this file is foundational common code for the RPC framework. It is used in all contexts of a web
       extension: background scripts, popup scripts, content scripts, and the web page.
-* `src/rpc/rpc-web-page.js`
+* `rpc-framework/rpc-web-page.js`
     * The code in this file runs on the web page.
-* `src/rpc/rpc-backend.js/`
+* `rpc-framework/rpc-backend.js/`
     * The code in this file runs in the extension *backend* contexts: background workers, popups, and content scripts.
-* `src/rpc/content-script.js`
+* `rpc-framework/content-script.js`
     * The code in this file runs in a content script.
 
 One thing I'm omitting with the RPC implementation is an "absolute unique identifier" to associate with each message.
@@ -127,13 +136,14 @@ Browser extensions that use the RPC Framework must follow these steps to depend 
 extension and web page contexts:
 
 1. Manifest changes
-    * The `manifest.json` file must allow access to the RPC JavaScript source code files as needed.
-      Specifically, `rpc/rpc.js`, and `rpc/rpc-backend.js` must be added to the background scripts and `rpc/rpc.js`
-      and `rpc/rpc-web-page.js` must be added to the web page.
+    * Unless you are bundling the RPC code directly into a final `bundle.js`-like file, then you must make these files
+      accessible. The `manifest.json` file must allow access to the RPC JavaScript source code files as needed.
+      Specifically, `rpc.js`, and `rpc-backend.js` must be added to the background scripts and `rpc.js`
+      and `rpc-web-page.js` must be added to the web page.
 1. Initialize configuration in the background
     * The background script must invoke `initRpcBackground(...)`
 1. Load the content scripts
-    * The content script `/rpc/rpc-content-script.js` must be executed.
+    * The content script `rpc-content-script.js` must be executed.
 1. Initialize objects in the web page
     * The web page must initialize the RPC objects on the web page by calling `initRpcWebPage(...)`
 
@@ -219,6 +229,9 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
+* [ ] IN PROGRESS Modularize the source code layout. I want the `rpc/` code far away from the other code, so it's clear that it is
+      a standalone component. Similarly, I want a `core/` component which is the core of the SO Look Back Tool and it
+      should be far away from the vendor-specific code (stuff like web extension IDs and manifests)  
 * [ ] Fix the `build.sh` script to not exit when TypeScript compilation fails when the `--watch` option is used
 * [ ] Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
   extension web page (`posts-viewer.html`) versus the portion needed by the frontend web page (the ".com" pages).

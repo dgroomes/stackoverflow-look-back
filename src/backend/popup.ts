@@ -1,8 +1,8 @@
 // This code runs in the popup. It bootstraps the content scripts which then bootstrap the web page. It waits for user
 // input when any of the "Scrape votes", "Expand posts", or "View posts" buttons are clicked in the popup.
 
-import {getRpcServer, getRpcClient} from "../rpc/rpc-backend.ts"
-import {chrome} from "../chromium-manifest-v2/chrome-extension-types.d.ts";
+import {getRpcServer, getRpcClient} from "../../rpc-framework/rpc-backend.ts"
+import {chrome} from "../../web-extension-types/chrome-extension-types.d.ts"
 
 console.debug("[popup.js] Initializing...")
 
@@ -38,7 +38,7 @@ const initPromise = (async function () {
 
     rpcServer.listen()
 
-    await execContentScript("/rpc/rpc-content-script.js")
+    await execContentScript("/rpc-framework/rpc-content-script.js")
 
     const webPageInitialized = new Promise(resolve => {
         console.debug(`[popup.js] [${Date.now()}] Registering listener for 'web-page-initialized'`)

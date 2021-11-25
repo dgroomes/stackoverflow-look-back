@@ -5,7 +5,7 @@
 // content scripts for any domain logic that could be implemented instead in the background scripts or on the web page.
 // See the "My Bias Against Content Scripts" section in the README for more information.
 
-import {chrome} from "../chromium-manifest-v2/chrome-extension-types.d.ts"
+import {chrome} from "../../web-extension-types/chrome-extension-types.d.ts"
 
 declare global {
     // Is this the idiomatic way to refer to global variables assigned to the "window" object?

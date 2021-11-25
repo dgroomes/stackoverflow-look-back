@@ -1,7 +1,7 @@
 // This code is designed to run on the web page.
 // This is a component of the RPC framework.
 
-import {chrome} from "../chromium-manifest-v2/chrome-extension-types.d.ts"
+import {chrome} from "../web-extension-types/chrome-extension-types.d.ts"
 
 export {initRpcWebPage, rpcClient, rpcServer}
 import {RpcServer, RpcClient} from "./rpc.ts"

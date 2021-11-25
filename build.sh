@@ -45,7 +45,7 @@ build_distribution() {
   # Delete the build directory and everything inside of it if it already exists and then create it again.
   mkdir -p "$vendor_output_dir"
   rm -rf "$vendor_output_dir"
-  mkdir -p "$vendor_output_dir/backend" "$vendor_output_dir/rpc" "$vendor_output_dir/web-page"
+  mkdir -p "$vendor_output_dir/backend" "$vendor_output_dir/rpc-framework" "$vendor_output_dir/web-page"
 
   # Copy over the vendor-specific Manifest file and bundle the vendor-specific initialization JavaScript file
   cp "$vendor_source_dir/manifest.json" "$vendor_output_dir"
@@ -63,7 +63,7 @@ build_distribution() {
   # Bundle the entrypoint-type JavaScript files
   deno_bundle "$project_dir/src/backend/popup.ts" "$vendor_output_dir/backend/popup.js"
   deno_bundle "$project_dir/src/backend/content-script-load-source.ts" "$vendor_output_dir/backend/content-script-load-source.js"
-  deno_bundle "$project_dir/src/rpc/rpc-content-script.ts" "$vendor_output_dir/rpc/rpc-content-script.js"
+  deno_bundle "$project_dir/rpc-framework/rpc-content-script.ts" "$vendor_output_dir/rpc-framework/rpc-content-script.js"
   deno_bundle "$project_dir/src/web-page/web-injected.ts" "$vendor_output_dir/web-page/web-injected.js"
   deno_bundle "$project_dir/src/web-page/posts-viewer.ts" "$vendor_output_dir/web-page/posts-viewer.js"
 }
