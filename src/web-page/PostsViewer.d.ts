@@ -1,6 +1,6 @@
 // Learn more about TypeScript type declaration files (files ending in ".d.ts") from the docs: https://www.typescriptlang.org/docs/handbook/2/type-declarations.html
 
-import {Post} from "./post.d.ts";
+import {Post} from "./post.ts";
 export {PostsViewer}
 
 interface PostsViewer {
