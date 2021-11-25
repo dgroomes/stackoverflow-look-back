@@ -1,6 +1,9 @@
 import {Vote} from "./vote.ts"
+import {AppStorage} from "./AppStorage.ts";
 
 export {VotesScraper}
+
+declare var appStorage: AppStorage
 
 /**
  * Scrape your own StackOverflow votes data from your profile page. See the README.
@@ -14,7 +17,7 @@ class VotesScraper {
     #votesPageLimit
     #votesPageObserver
     votesTab // Get a handle on the "Votes tab" HTML element
-    votes = [] // The votes data will be scraped from the HTML and collected into this array as instances of the "Vote" class
+    votes: Array<Vote> = [] // The votes data will be scraped from the HTML and collected into this array as instances of the "Vote" class
     attempts = 0
 
     /**
@@ -127,7 +130,7 @@ row: ${row.outerHTML}
             return
         }
 
-        let el = document.querySelector('a[rel=next]')
+        let el = document.querySelector('a[rel=next]') as HTMLButtonElement
         if (el === null) {
             console.info("All pages of the votes tab have been visited. Saving the votes data to storage...")
             save()
