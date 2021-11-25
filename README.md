@@ -219,20 +219,12 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* DONE Convert everything to TypeScript
-  * DONE Convert the `init.js` files to TypeScript 
-  * DONE Convert `rpc-backend.js` to TypeScript
-  * DONE Convert all of the RPC framework to TypeScript
-  * DONE Convert web page stuff to TypeScript
-* Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
+* [ ] Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
   extension web page (`posts-viewer.html`) versus the portion needed by the frontend web page (the ".com" pages).
-* OBSOLETE (now that TypeScript is in the picture, it is a strong counter force to this problem) This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
-  finding basic problems. For example, I changed the signature of the RPC client, and it's pretty easy to miss a call
-  site and update the args.
-* Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
+* [ ] Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
-* Multi-term search. The search bar should take each word and apply an "AND" search
-* Implement a "recents" feature? Maybe the most relevant StackOverflow posts are the ones I just added! I'm revisiting
+* [ ] Multi-term search. The search bar should take each word and apply an "AND" search
+* [ ] Implement a "recents" feature? Maybe the most relevant StackOverflow posts are the ones I just added! I'm revisiting
   them continually until I understand them (concepts) or memorize them (commands or code snippets).
 
 ## Finished Wish List items
@@ -444,7 +436,24 @@ These are the finished items from the Wish List:
   is not following its question.
     * (Answer: yes the "questionId" is a non-normal field and needed be included in the toJSON) Is there a defect where the question ID field is null on answers? For example, answer 37943159 has a null question ID.
       Why? This is a problem for the sort order.
-
+* DONE Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like
+  that.
+* DONE Defect. If you click the extension button more than once, it is problematic because it runs the content scripts
+  every time, which mean multiple window listeners are added because of `content-script-messaging-proxy.js`.
+    * DONE When the popup is opened multiple times, the content scripts must skip the "load source" and "initialize RPC
+      proxy"
+      work. Use a flag on the `window` to keep track of the state.
+    * DONE There is some other issue where if you execute "Scrape votes" multiple times, it just grows. Some old objects
+      stay around. So when you execute it a second time, it kicks off two scrapers. And when you execute a third time,
+      it kicks off three!
+* DONE Convert everything to TypeScript
+    * DONE Convert the `init.js` files to TypeScript
+    * DONE Convert `rpc-backend.js` to TypeScript
+    * DONE Convert all of the RPC framework to TypeScript
+    * DONE Convert web page stuff to TypeScript
+* OBSOLETE (now that TypeScript is in the picture, it is a strong counter force to this problem) This project has ballooned and I could really use some ESLint or something to do the undifferentiated heavy lifting of
+  finding basic problems. For example, I changed the signature of the RPC client, and it's pretty easy to miss a call
+  site and update the args.
 
 ## Notes
 
@@ -466,16 +475,6 @@ These are the finished items from the Wish List:
   designed? Is there an idiomatic ES6 class way? Or this a quirk of classes?
 * One of the significant changes of Chrome's Manifest V3 over Manifest V2 is
   the [Action API unification](https://developer.chrome.com/docs/extensions/mv3/intro/mv3-migration/#action-api-unification)
-* DONE Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like
-  that.
-* DONE Defect. If you click the extension button more than once, it is problematic because it runs the content scripts
-  every time, which mean multiple window listeners are added because of `content-script-messaging-proxy.js`.
-    * DONE When the popup is opened multiple times, the content scripts must skip the "load source" and "initialize RPC
-      proxy"
-      work. Use a flag on the `window` to keep track of the state.
-    * DONE There is some other issue where if you execute "Scrape votes" multiple times, it just grows. Some old objects
-      stay around. So when you execute it a second time, it kicks off two scrapers. And when you execute a third time,
-      it kicks off three!
 
 ## Reference
 
