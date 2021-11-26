@@ -29,6 +29,13 @@ inviting for future additions like Manifest V3 support, or a Safari browser exte
     * The code in this directory implements a generic Remote Procedure Call (RPC) framework for browser extensions. This
       code has components that run in all contexts: background scripts, popup scripts, content scripts, and the web
       page.
+* `web-extension-framework/`
+    * EXPERIMENTAL and WORK IN PROGRESS
+    * The code in this directory implements a general-purpose browser extension framework. It depends on the lower-level
+      `rpc-framework` (todo: or should it not?). The main value proposition of this framework is the heavy lifting it does in regards to injecting
+      code into the web page and orchestrating the lifecycle timing.
+    * A program design rule for this framework is to never support serializing/deserializing code and using `eval()`.
+    * For more information, see [Web Extension Framework](#web-extension-framework)
 * `util/`
     * Miscellaneous utility code that is not specific to the *Look Back Tool*. 
 * `src/`
@@ -125,6 +132,48 @@ extension and web page contexts:
 1. Initialize objects in the web page
     * The web page must initialize the RPC objects on the web page by calling `initRpcWebPage(...)`
 
+## Web Extension Framework
+
+`web-extension-framework/` is a Manifest V2 (Manifest V3 is not supported) web extension framework for injecting a
+JavaScript file into the web page. It depends on `rpc-framework/`.
+
+Caveats:
+
+* If you do not need to inject JavaScript code into the web page, then you probably don't need this framework.
+* This framework only supports injecting one JavaScript file into the web page. This is because of the implementation
+  detail around the hardcoded "page-script-satisfied" signal. It could be made dynamic with more complexity but I don't
+  need that.
+
+The API is complicated only because the architecture of a web extension can be complicated. Some extensions will use all
+JavaScript execution environments: background scripts, popup scripts, content scripts and web page scripts. It's
+challenging conceptually to even think about all these environments when we are used to programming in just one
+environment like the web page, or maybe a NodeJS app. Plus, writing a program for this environment requires a lot of
+message passing code, Promises code and logging (for debugging) code. That's where `web-extension-framework/` comes in.
+However, the framework cannot completely abstract away the JavaScript execution environments and these things are part
+of the framework API. To offset the essential complexity of the API, there is detailed API documentation, design notes
+and inline code comments.
+
+The API is best introduced by way of example. Suppose we are developing a *Detect Code Libraries* (DCL) web extension
+using `web-extension-framework/`. This extension adds code the web page to detect what JavaScript libraries are loaded,
+like jQuery, React, Vue, Lodash, etc. The "detected libraries" data is send from the web page back to the extension
+background script and saved into Web Storage where the user can later browse the data. Now, consider how the
+detection feature must be implemented. JavaScript must be injected into the web page so that it may look for global
+variables like `jQuery` and `React`. Injecting JavaScript code into the web page can only be done from a content script.
+And injecting a content script must be done from a background or popup script. Phew, that's a lot of JavaScript execution
+environments! Keep in mind these components:
+
+1) The DCL background script
+    * `dcl-background-script.js`
+2) The DCL content script
+    * `dcl-content-script.js`
+3) The DCL web page script
+    * `dcl-page-script.js`
+
+The programmer must write each of these files. It is not possible to abstract away `dcl-content-script.js` or
+`dcl-page-script.js` without serializing/deserializing JavaScript code and using `eval()`, which we are not willing to do.
+So, the API of `web-extension-framework/` requires the programmer to still write all of these files but offers functions
+to reduce the boilerplate and handle message passing and lifecycle timing.
+
 ## Instructions
 
 Follow these instructions to install the tool as a Chrome browser extension and use it:
@@ -207,8 +256,13 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* [ ] Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
+* [ ] IN PROGRESS Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
   extension web page (`posts-viewer.html`) versus the portion needed by the frontend web page (the ".com" pages).
+  * This is a large effort. I need to re-think (for the Nth time) how best to "kick off work" in the web page. First
+    thought is that the heavy-lifting done in `content-script-load-source.ts` is non-specific to the *Look Back Tool*
+    and that it can be extract into yet another framework, a "web-extension-framework" (which itself might depend on
+    the lower-level `rpc-framework`). Let's try this out... 
+  * IN PROGRESS prototype the `web-extension-framework`
 * [ ] Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
 * [ ] Multi-term search. The search bar should take each word and apply an "AND" search

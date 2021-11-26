@@ -83,7 +83,7 @@ interface Tabs {
     /** https://developer.chrome.com/docs/extensions/reference/tabs/#method-executeScript */
     executeScript(
         details: InjectDetails,
-        callback: () => void
+        callback?: () => void
     ): void
 
     /** https://developer.chrome.com/docs/extensions/reference/tabs/#method-create */
