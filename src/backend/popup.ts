@@ -3,6 +3,7 @@
 
 import {getRpcServer, getRpcClient} from "../../rpc-framework/rpc-backend.ts"
 import {chrome} from "../../web-extension-types/chrome-extension-types.d.ts"
+import {executeInstrumentedContentScript} from "../../web-extension-framework/background-wiring.ts"
 
 console.debug("[popup.js] Initializing...")
 
@@ -38,23 +39,8 @@ const initPromise = (async function () {
 
     rpcServer.listen()
 
-    await execContentScript("/rpc-framework/rpc-content-script.js")
-
-    const webPageInitialized = new Promise(resolve => {
-        console.debug(`[popup.js] [${Date.now()}] Registering listener for 'web-page-initialized'`)
-        chrome.runtime.onMessage.addListener(function webPageInitializedListener(message, _sender, _sendResponse) {
-            console.debug("[popup.js] Received a message from the extension messaging system:")
-            console.debug(JSON.stringify({message}, null, 2))
-            if (message === "web-page-initialized") {
-                console.debug(`[popup.js] Detected that the extension source has been loaded into the web page and fully initialized `)
-                resolve("success_ignored_value")
-                chrome.runtime.onMessage.removeListener(webPageInitializedListener)
-            }
-        })
-    })
-
-    await execContentScript("/backend/content-script-load-source.js")
-    await webPageInitialized
+    await execContentScript("/rpc-framework/rpc-content-script.js") // todo this invocation feels like it should be incorporated into the web-extension-framework
+    await executeInstrumentedContentScript("/backend/content-script-bootstrapper.js")
 })()
 
 /**

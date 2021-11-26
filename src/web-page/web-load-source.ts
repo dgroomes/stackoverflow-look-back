@@ -1,5 +1,6 @@
 // This code runs on the web page. It does some initialization to wire up the main objects and variables.
 
+import {satisfied} from "../../web-extension-framework/page-wiring.ts";
 export {exec}
 import {initRpcWebPage, rpcClient, rpcServer} from "../../rpc-framework/rpc-web-page.ts"
 import {PostsExpander} from "../core/posts/PostsExpander.ts"
@@ -63,7 +64,7 @@ function detectEnvironment() {
         return
     }
 
-    const script = document.getElementById("web-injected") as HTMLScriptElement
+    const script = document.getElementById("web-extension-framework-injected-page-script") as HTMLScriptElement
     detectFromExtensionUrl(script.src)
 }
 
@@ -91,5 +92,5 @@ async function exec() {
     detectEnvironment()
     await configureState()
     console.debug(`[web-load-source.js] [${Date.now()}] Fully initialized.`)
-    window.postMessage("web-page-initialized", "*")
+    satisfied()
 }
