@@ -17,7 +17,8 @@ declare global {
     }
 }
 
-if (!window.rpcContentScriptInitialized) {
+// Protect against double-loading the RPC content-script machinery if it's already been loaded.
+if (window.rpcContentScriptInitialized === undefined) {
     console.debug("[rpc-content-script.js] Loading...")
     window.rpcContentScriptInitialized = true
     window.addEventListener("message", webPageRpcClientsListener)

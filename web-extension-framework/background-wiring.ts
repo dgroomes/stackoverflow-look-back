@@ -13,6 +13,7 @@ export {executeInstrumentedContentScript}
  * signal.
  */
 async function executeInstrumentedContentScript(fileName) : Promise<void> {
+    await execContentScript("/rpc-framework/rpc-content-script.js")
     console.debug(`[inject-script.js] Executing content script: ${fileName}`)
 
     // Set up a messaging system listener that waits for the "page-script-satisfied" signal.
@@ -44,3 +45,19 @@ async function executeInstrumentedContentScript(fileName) : Promise<void> {
     await pageScriptSatisfied
 }
 
+/**
+ * Execute a content script.
+ *
+ * @param fileName the file name of the content script
+ * @return a promise that resolves when the content script has been loaded/executed(?)
+ */
+async function execContentScript(fileName: string) : Promise<void> {
+    console.debug(`[popup.js] Executing content script: ${fileName}`)
+    return new Promise(resolve => {
+        chrome.tabs.executeScript({
+            file: fileName
+        }, () => {
+            resolve(undefined)
+        })
+    })
+}
