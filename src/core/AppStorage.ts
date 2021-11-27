@@ -1,7 +1,7 @@
 import {Vote} from "./votes/Vote.ts"
 import {Post} from "./posts/Post.ts"
-import {RpcClient} from "../../rpc-framework/rpc.ts"
-import {chrome} from "../../web-extension-types/chrome-extension-types.d.ts"
+import {RpcClient} from "../../web-extension-framework/rpc-framework/rpc.ts"
+import {chrome} from "../../web-extension-framework/web-extension-types/chrome-extension-types.d.ts"
 export {AppStorage}
 
 /**

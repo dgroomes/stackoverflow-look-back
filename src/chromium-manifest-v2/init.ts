@@ -2,8 +2,8 @@
 //
 // This declares the permissions that dictate which pages the extension are enabled for.
 
-import {initRpcBackground } from '../../rpc-framework/rpc-backend.ts'
-import {chrome} from "../../web-extension-types/chrome-extension-types.d.ts"
+import {initRpcBackground } from '../../web-extension-framework/rpc-framework/rpc-backend.ts'
+import {chrome} from "../../web-extension-framework/web-extension-types/chrome-extension-types.d.ts"
 
 console.debug("[chromium-manifest-v2/init.js] Initializing...")
 

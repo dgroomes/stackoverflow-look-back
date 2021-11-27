@@ -1,7 +1,7 @@
 import {PostsViewer} from "../core/posts/PostsViewer.ts"
 import {QuestionPost} from "../core/posts/QuestionPost.ts";
 import {AppStorage} from "../core/AppStorage.ts";
-import {PageWiring} from "../../web-extension-framework/page-wiring.ts";
+import {PageWiring} from "../../web-extension-framework/web-extension-framework/page-wiring.ts";
 
 const init: Promise<PostsViewer> = (async function init(): Promise<PostsViewer> {
     console.debug("[posts-viewer.js] Initializing...");

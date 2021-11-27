@@ -1,4 +1,4 @@
-import {PageWiring} from "../../web-extension-framework/page-wiring.ts";
+import {PageWiring} from "../../web-extension-framework/web-extension-framework/page-wiring.ts";
 import {AppStorage} from "../core/AppStorage.ts";
 import {PostsExpander} from "../core/posts/PostsExpander.ts";
 
