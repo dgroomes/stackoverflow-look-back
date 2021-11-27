@@ -1,5 +1,49 @@
 import {chrome} from "../web-extension-types/chrome-extension-types.d.ts"
-export {executeInstrumentedContentScript}
+import {RpcClient, RpcServer} from "../rpc-framework/rpc.ts";
+import {getRpcClient, getRpcServer} from "../rpc-framework/rpc-backend.ts";
+export {BackendWiring}
+
+/**
+ * The BackendWiring class is the "web-extension-framework" API to code that runs in backend contexts like a background
+ * script or a popup.
+ */
+class BackendWiring {
+
+    rpcServer: RpcServer
+    rpcClient: RpcClient
+    #contentScriptFileName : string
+
+    constructor(contentScriptFileName: string, rpcClient: RpcClient, rpcServer: RpcServer) {
+        this.#contentScriptFileName = contentScriptFileName;
+        this.rpcClient = rpcClient;
+        this.rpcServer = rpcServer;
+    }
+
+    /**
+     * Initialize the backend components of "web-extension-framework".
+     *
+     * - Create an RPC server in the background script that will receive remote procedure call (RPC) requests from the front-end
+     *   and then executes those requests.
+     */
+    static async initialize(contentScriptFileName: string) : Promise<BackendWiring> {
+        const rpcServer = await getRpcServer();
+        const rpcClient = await getRpcClient()
+        return new BackendWiring(contentScriptFileName, rpcClient, rpcServer);
+    }
+
+    /**
+     * This function must be invoked when any initialization logic is finished.
+     *
+     * Calling this function triggers the initialization of the content-script and web page components.
+     *
+     * @return promise The promise resolves when the "page-script-satisfied" signal has been confirmed.
+     */
+    async satisfied(): Promise<void> {
+        console.log("[backend-wiring.js] Satisfied. The backend RPC server will start listening now and the frontend components will be loaded.")
+        this.rpcServer.listen()
+        await executeInstrumentedContentScript(this.#contentScriptFileName)
+    }
+}
 
 /**
  * Execute a "web-page-bootstrapping content script JavaScript file" as a content script.

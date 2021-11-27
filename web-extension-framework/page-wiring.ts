@@ -35,7 +35,7 @@ class PageWiring {
         this.webResourcesOrigin = webResourcesOrigin;
     }
 
-    static initialize = function initialize(): PageWiring {
+    static initialize() : PageWiring {
         const {browserDescriptor, webExtensionId, webResourcesOrigin} = detectEnvironment()
 
         const [rpcClient, rpcServer] = initRpcWebPage(browserDescriptor, webExtensionId)

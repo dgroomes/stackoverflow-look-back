@@ -268,7 +268,7 @@ General clean ups, TODOs and things I wish to implement for this project:
   * Note: I am not consistent with the way I separate or fail to separate "this is for the web page" with
     "this is for a popup script". Sometimes I say, "this is for the web page and nothing else", but really it can be
     for a popup script too because a popup script has its own web page (sort of... it has a page-like thing...).
-* Create a `BackgroundWiring` abstraction similar to `PageWiring`
+* [x] DONE Create a `BackendWiring` abstraction similar to `PageWiring`
 * The web-extension-framework and rpc-framework should be migrated to their own repo. I will be very happy
   when I can remove all of that code from this repo and focus again on the Look Back Tool features!
 * [ ] Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
