@@ -1,13 +1,14 @@
 import {exec} from "./web-load-source.ts"
 import {PostsViewer} from "../core/posts/PostsViewer.ts"
 import {QuestionPost} from "../core/posts/QuestionPost.ts";
+import {AppStorage} from "../core/AppStorage.ts";
 
 console.debug("[posts-viewer.js] Initializing...")
 
 declare var postsViewer: PostsViewer
 
-exec().then(async () => {
-    postsViewer = await PostsViewer.init()
+exec().then(async (pageWiring) => {
+    postsViewer = await PostsViewer.init(new AppStorage(pageWiring.rpcClient))
     console.info("Posts were rendered to HTML successfully")
 })
 

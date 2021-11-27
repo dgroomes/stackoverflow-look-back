@@ -29,7 +29,7 @@ async function injectInstrumentedPageScript(fileName: string) : Promise<void> {
         console.debug("[content-script-wiring.js] Injecting an instrumented page script...")
         window.injectInstrumentedPageScript_status = "in-progress";
     } else if (window.injectInstrumentedPageScript_status === "in-progress") {
-        console.debug("[content-script-wiring.js] Already loaded.");
+        console.error("[content-script-wiring.js] Already loaded.");
         throw new Error(`[content-script-functions.ts] The injection is in 'in-progress'. This is undefined behavior.`)
     } else if (window.injectInstrumentedPageScript_status === "satisfied") {
         // If the page script had previously been loaded and signaled "page-script-satisfied", then we can do the

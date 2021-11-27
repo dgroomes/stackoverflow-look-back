@@ -2,12 +2,16 @@
 // This is a component of the RPC framework.
 
 import {chrome} from "../web-extension-types/chrome-extension-types.d.ts"
+import {RpcClient, RpcServer} from "./rpc.ts"
 
-export {initRpcWebPage, rpcClient, rpcServer}
-import {RpcServer, RpcClient} from "./rpc.ts"
+export {initRpcWebPage}
 
-declare var rpcClient: RpcClient
-declare var rpcServer: RpcServer
+// Define a global "window" variable that we can use to keep track of the lifecycle.
+declare global {
+    interface Window {
+        initRpcWebPage_status: string
+    }
+}
 
 /**
  *  Initialize the web page objects of the RPC framework. Programs that depend on the RPC framework must call this
@@ -19,15 +23,28 @@ declare var rpcServer: RpcServer
  *  @param browserDescriptor either "chromium" or "firefox" are supported
  *  @param webExtensionId
  */
-function initRpcWebPage(browserDescriptor, webExtensionId) {
-    console.debug("[rpc-web-page.js] Initializing...")
+function initRpcWebPage(browserDescriptor, webExtensionId) : [RpcClient, RpcServer] {
+    if (window.initRpcWebPage_status === undefined) {
+        console.debug("[rpc-web-page.js] Initializing...")
+        window.initRpcWebPage_status = "in-progress";
+    } else if (window.initRpcWebPage_status === "in-progress") {
+        let msg = `[rpc-web-page.ts] The RPC framework initialization on the web page is already 'in-progress'. This is undefined behavior.`;
+        console.error(msg);
+        throw new Error(msg)
+    } else if (window.initRpcWebPage_status === "initialized") {
+        let msg = `[rpc-web-page.ts] The RPC framework was already initialized on the web page. It is not allowed to initialize it again.`;
+        console.error(msg)
+        throw new Error(msg)
+    }
 
     if (browserDescriptor === "chromium") {
-        rpcClient = new ChromiumWebPageToBackgroundRpcClient(webExtensionId)
-        rpcServer = new ChromiumWebPageRpcServer(webExtensionId)
+        const rpcClient = new ChromiumWebPageToBackgroundRpcClient(webExtensionId);
+        const rpcServer = new ChromiumWebPageRpcServer(webExtensionId);
+        return [rpcClient, rpcServer];
     } else if (browserDescriptor === "firefox") {
-        rpcClient = new FirefoxWebPageToContentScriptRpcClient(webExtensionId)
-        rpcServer = new FirefoxWebPageRpcServer()
+        const rpcClient = new FirefoxWebPageToContentScriptRpcClient(webExtensionId);
+        const rpcServer = new FirefoxWebPageRpcServer();
+        return [rpcClient, rpcServer];
     } else {
         throw new Error(`Unexpected browser: '${browserDescriptor}'. Expected either 'chromium' or 'firefox'`)
     }

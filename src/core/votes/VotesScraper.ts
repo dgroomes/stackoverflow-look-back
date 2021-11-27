@@ -3,8 +3,6 @@ import {AppStorage} from "../AppStorage.ts"
 
 export {VotesScraper}
 
-declare var appStorage: AppStorage
-
 /**
  * Scrape your own StackOverflow votes data from your profile page. See the README.
  *
@@ -16,15 +14,18 @@ class VotesScraper {
 
     readonly #votesPageLimit
     #votesPageObserver
+    #appStorage: AppStorage
     votesTab // Get a handle on the "Votes tab" HTML element
     votes: Array<Vote> = [] // The votes data will be scraped from the HTML and collected into this array as instances of the "Vote" class
     attempts = 0
 
     /**
      * @param votesPageLimit the scraping process will be limited to this many pages of the votes data
+     * @param appStorage
      */
-    constructor(votesPageLimit) {
-        this.#votesPageLimit = votesPageLimit
+    constructor(votesPageLimit : number, appStorage: AppStorage) {
+        this.#votesPageLimit = votesPageLimit;
+        this.#appStorage = appStorage;
     }
 
     /**
@@ -114,7 +115,7 @@ row: ${row.outerHTML}
         const votes = this.votes
         const save = () => {
             this.#votesPageObserver.disconnect()
-            appStorage.saveVotes(votes)
+            this.#appStorage.saveVotes(votes)
                 .then(() => {
                     console.info(`The votes data has been saved successfully`)
                     resolve(votes.length)

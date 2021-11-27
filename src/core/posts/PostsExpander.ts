@@ -9,10 +9,15 @@ import {AnswerPost} from "./AnswerPost.ts";
 
 export {PostsExpander}
 
-declare var webResourcesOrigin: string
-declare var appStorage: AppStorage
-
 class PostsExpander {
+
+    #webResourcesOrigin: string
+    #appStorage: AppStorage
+
+    constructor(webResourcesOrigin: string, appStorage: AppStorage) {
+        this.#webResourcesOrigin = webResourcesOrigin;
+        this.#appStorage = appStorage;
+    }
 
     /**
      * Expand a list of post IDs into post objects by querying from the Stack Exchange Data Explorer
@@ -26,7 +31,7 @@ class PostsExpander {
         })
 
         // Fetch the source code for the SQL query
-        const sql = await fetch(`${webResourcesOrigin}/web-page/get-posts-by-ids.sql`)
+        const sql = await fetch(`${this.#webResourcesOrigin}/web-page/get-posts-by-ids.sql`)
             .then(response => response.text());
 
         (<any>document.querySelector('.CodeMirror')).CodeMirror.setValue(sql) // Set the SQL query
@@ -45,7 +50,7 @@ class PostsExpander {
      */
     async expandPosts() {
 
-        const votes: Array<Vote> = await appStorage.getVotes()
+        const votes: Array<Vote> = await this.#appStorage.getVotes()
 
         const promise = new Promise(resolve => {
             instrumentJQuery()
@@ -87,7 +92,7 @@ class PostsExpander {
                         }
                     })
 
-                    await appStorage.savePosts(posts)
+                    await this.#appStorage.savePosts(posts)
                     console.info(`The posts data has been successfully expanded for ${posts.length} posts and saved to storage!`)
                     resolve(posts.length)
                 }

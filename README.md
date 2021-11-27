@@ -30,11 +30,8 @@ inviting for future additions like Manifest V3 support, or a Safari browser exte
       code has components that run in all contexts: background scripts, popup scripts, content scripts, and the web
       page.
 * `web-extension-framework/`
-    * EXPERIMENTAL and WORK IN PROGRESS
-    * The code in this directory implements a general-purpose browser extension framework. It depends on the lower-level
-      `rpc-framework` (todo: or should it not?). The main value proposition of this framework is the heavy lifting it does in regards to injecting
-      code into the web page and orchestrating the lifecycle timing.
-    * A program design rule for this framework is to never support serializing/deserializing code and using `eval()`.
+    * The code in this directory implements an RPC-centric browser extension framework. It depends on the lower-level
+      `rpc-framework`.
     * For more information, see [Web Extension Framework](#web-extension-framework)
 * `util/`
     * Miscellaneous utility code that is not specific to the *Look Back Tool*. 
@@ -134,11 +131,14 @@ extension and web page contexts:
 
 ## Web Extension Framework
 
-`web-extension-framework/` is a Manifest V2 (Manifest V3 is not supported) web extension framework for injecting a
-JavaScript file into the web page. It depends on `rpc-framework/`.
+`web-extension-framework/` is an RPC-centric web extension framework.
 
-Caveats:
+Here are some key points:
 
+* It supports Manifest V2 APIs only (Manifest V3 APIs are not supported)
+* It is useful for injecting JavaScript files into the web page
+* It is useful for two-way communication between components. E.g. web-page-to-background, popup-to-background, etc.
+* It depends on `rpc-framework/`
 * If you do not need to inject JavaScript code into the web page, then you probably don't need this framework.
 * This framework only supports injecting one JavaScript file into the web page. This is because of the implementation
   detail around the hardcoded "page-script-satisfied" signal. It could be made dynamic with more complexity but I don't
@@ -146,21 +146,21 @@ Caveats:
 
 The API is complicated only because the architecture of a web extension can be complicated. Some extensions will use all
 JavaScript execution environments: background scripts, popup scripts, content scripts and web page scripts. It's
-challenging conceptually to even think about all these environments when we are used to programming in just one
+challenging conceptually to even think about all these environments because we are used to programming in just one
 environment like the web page, or maybe a NodeJS app. Plus, writing a program for this environment requires a lot of
 message passing code, Promises code and logging (for debugging) code. That's where `web-extension-framework/` comes in.
 However, the framework cannot completely abstract away the JavaScript execution environments and these things are part
 of the framework API. To offset the essential complexity of the API, there is detailed API documentation, design notes
-and inline code comments.
+and inline code comments. This code is meant to be read.
 
 The API is best introduced by way of example. Suppose we are developing a *Detect Code Libraries* (DCL) web extension
-using `web-extension-framework/`. This extension adds code the web page to detect what JavaScript libraries are loaded,
-like jQuery, React, Vue, Lodash, etc. The "detected libraries" data is send from the web page back to the extension
+using `web-extension-framework/`. This extension adds code to the web page to detect what JavaScript libraries are loaded,
+like jQuery, React, Vue, Lodash, etc. The "detected libraries" data is sent from the web page back to the extension
 background script and saved into Web Storage where the user can later browse the data. Now, consider how the
 detection feature must be implemented. JavaScript must be injected into the web page so that it may look for global
 variables like `jQuery` and `React`. Injecting JavaScript code into the web page can only be done from a content script.
-And injecting a content script must be done from a background or popup script. Phew, that's a lot of JavaScript execution
-environments! Keep in mind these components:
+And injecting a content script must be done from a background or popup script! Phew, that's a lot of JavaScript execution
+environments. Keep in mind these components:
 
 1) The DCL background script
     * `dcl-background-script.js`
@@ -169,8 +169,10 @@ environments! Keep in mind these components:
 3) The DCL web page script
     * `dcl-page-script.js`
 
-The programmer must write each of these files. It is not possible to abstract away `dcl-content-script.js` or
-`dcl-page-script.js` without serializing/deserializing JavaScript code and using `eval()`, which we are not willing to do.
+The programmer must write each of these files. It is not possible for `web-extension-framework` to abstract away
+`dcl-content-script.js` or `dcl-page-script.js`. Abstracting away those files would require dynamic JavaScript,
+serializing/deserializing JavaScript code, and using `eval()`, which we are not willing to do.
+
 So, the API of `web-extension-framework/` requires the programmer to still write all of these files but offers functions
 to reduce the boilerplate and handle message passing and lifecycle timing.
 
@@ -263,6 +265,12 @@ General clean ups, TODOs and things I wish to implement for this project:
     and that it can be extract into yet another framework, a "web-extension-framework" (which itself might depend on
     the lower-level `rpc-framework`). Let's try this out... 
   * IN PROGRESS prototype the `web-extension-framework`
+    * IN PROGRESS incorporate the `rpc-framework` into the `web-extension-framework`
+    * Note: I am not consistent with the way I separate or fail to separate "this is for the web page" with
+      "this is for a popup script". Sometimes I say, "this is for the web page and nothing else", but really it can be
+      for a popup script too because a popup script has its own web page (sort of... it has a page-like thing...).
+    * Note: the web-extension-framework and rpc-framework should be migrated to their own repo. I will be very happy
+      when I can remove all of that code from this repo and focus again on the Look Back Tool features!
 * [ ] Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
 * [ ] Multi-term search. The search bar should take each word and apply an "AND" search
