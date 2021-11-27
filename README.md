@@ -17,22 +17,9 @@ The overall flow of the tool breaks down like this:
 1. Expand the votes data into posts data using <https://data.stackexchange.com>
 1. View and search a copy of the posts data
 
-(Update: this is in flux as I experiment with the code layout since modularizing and moving to TypeScript) The source code is laid out in a directory structure that separates generic code from the *Look Back Tool*-specific
-code. Within the *Look Back Tool* code it is generally grouped by the execution context that the code runs in and is
-inviting for future additions like Manifest V3 support, or a Safari browser extension.
+The source code is generally grouped by the execution context that the code runs in and is inviting for future additions
+like Manifest V3 support, or a Safari browser extension.
 
-* `web-extension-types/`
-    * TypeScript type declaration files for browser (vendor) JavaScript APIs. This means there are `.d.ts` files for
-      Chromium's `chrome` JavaScript APIs and FireFox's `browser` JavaScript APIs. Yes there is probably an open source
-      version of this but I would prefer to minimize third-party dependencies where feasible.
-* `rpc-framework/`
-    * The code in this directory implements a generic Remote Procedure Call (RPC) framework for browser extensions. This
-      code has components that run in all contexts: background scripts, popup scripts, content scripts, and the web
-      page.
-* `web-extension-framework/`
-    * The code in this directory implements an RPC-centric browser extension framework. It depends on the lower-level
-      `rpc-framework`.
-    * For more information, see [Web Extension Framework](#web-extension-framework)
 * `util/`
     * Miscellaneous utility code that is not specific to the *Look Back Tool*. 
 * `src/`
@@ -47,12 +34,8 @@ inviting for future additions like Manifest V3 support, or a Safari browser exte
 * `src/firefox-manifest-v2/`
     * Code that supports a Manifest V2 web extension developed for Firefox.
 
-Note: after trial and error, I've found it difficult or confusing to define common code that gets used in both the web
-extension layer and the web page. So, I'm purposely designing the code base to have minimal shared common code. The
-`src/rpc/` code is an exception. It is a generic browser RPC framework and so it does not co-mingle with the domain code
-and doesn't cause as much confusion. It's a lot of code too so it's nice to sequester it in its own directory. UPDATE:
-This is less of a problem now since modularizing the code and the simple "copy the code" metaphor of the `deno bundle`
-strategy.
+There is one library dependency for the project: <https://github.com/dgroomes/web-extension-framework>. The *web-extension-framework*
+is an RPC-centric web extension framework that was originally developed as part of the *Look Back Tool* codebase.
 
 The extension has been verified to work in the checked `[x]` browsers:
 
@@ -261,8 +244,11 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* [ ] The web-extension-framework and rpc-framework should be migrated to their own repo. I will be very happy
+* [ ] IN PROGRESS The web-extension-framework and rpc-framework should be migrated to their own repo. I will be very happy
   when I can remove all of that code from this repo and focus again on the Look Back Tool features!
+  * DONE Add code to a new repo: <https://github.com/dgroomes/web-extension-framework>
+  * DONE Delete the now redundant framework code
+  * Depend on the new code as a Git sub-module
 * [ ] Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
 * [ ] Multi-term search. The search bar should take each word and apply an "AND" search
