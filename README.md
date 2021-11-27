@@ -261,14 +261,6 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* [x] DONE Clean up the relationship between `web-load-source.ts`, `posts-viewer.ts`, `web-injected.ts` and `content-script-bootstrapper.ts`.
-  * This work depends on the completion of the `web-extension-framework/`. 
-* [x] DONE implement the `web-extension-framework`
-  * DONE incorporate the `rpc-framework` into the `web-extension-framework`
-  * Note: I am not consistent with the way I separate or fail to separate "this is for the web page" with
-    "this is for a popup script". Sometimes I say, "this is for the web page and nothing else", but really it can be
-    for a popup script too because a popup script has its own web page (sort of... it has a page-like thing...).
-* [x] DONE Create a `BackendWiring` abstraction similar to `PageWiring`
 * [ ] The web-extension-framework and rpc-framework should be migrated to their own repo. I will be very happy
   when I can remove all of that code from this repo and focus again on the Look Back Tool features!
 * [ ] Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
@@ -508,6 +500,14 @@ These are the finished items from the Wish List:
   a standalone component. Similarly, I want a `core/` component which is the core of the SO Look Back Tool and it
   should be far away from the vendor-specific code (stuff like web extension IDs and manifests)
 * [x] DONE (It's not perfect, it should exit earlier. But I don't want to deal with Bash traps/catch yet) Fix the `build.sh` script to not exit when TypeScript compilation fails when the `--watch` option is used
+* [x] DONE Clean up the relationship between `web-load-source.ts`, `posts-viewer.ts`, `web-injected.ts` and `content-script-bootstrapper.ts`.
+    * This work depends on the completion of the `web-extension-framework/`.
+* [x] DONE implement the `web-extension-framework`
+    * DONE incorporate the `rpc-framework` into the `web-extension-framework`
+    * Note: I am not consistent with the way I separate or fail to separate "this is for the web page" with
+      "this is for a popup script". Sometimes I say, "this is for the web page and nothing else", but really it can be
+      for a popup script too because a popup script has its own web page (sort of... it has a page-like thing...).
+* [x] DONE Create a `BackendWiring` abstraction similar to `PageWiring`
 
 ## Background
 
