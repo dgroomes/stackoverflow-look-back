@@ -1,0 +1,3 @@
+[submodule "web-extension-framework"]
+	path = web-extension-framework
+	url = https://github.com/dgroomes/web-extension-framework

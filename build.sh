@@ -69,7 +69,7 @@ build_distribution() {
   deno_bundle "$project_dir/src/backend/posts-content-script.ts" "$vendor_output_dir/backend/posts-content-script.js"
   deno_bundle "$project_dir/src/web-page/posts-page-script.ts" "$vendor_output_dir/web-page/posts-page-script.js"
 
-  deno_bundle "$project_dir/rpc-framework/rpc-content-script.ts" "$vendor_output_dir/rpc-framework/rpc-content-script.js"
+  deno_bundle "$project_dir/web-extension-framework/rpc-framework/rpc-content-script.ts" "$vendor_output_dir/rpc-framework/rpc-content-script.js"
   deno_bundle "$project_dir/src/web-page/posts-viewer.ts" "$vendor_output_dir/web-page/posts-viewer.js"
 }
 
