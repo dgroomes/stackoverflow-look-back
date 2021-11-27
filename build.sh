@@ -103,7 +103,7 @@ preconditions
 if [[ "$watch" == "true" ]]; then
   echo "Building with the '--watch' option. The distributions will be built again when any source code changes."
   build_all
-  fswatch -0 src/ rpc-framework/ util/ web-extension-types/ | while read -d "" event; do build_all; done
+  fswatch -0 src/ util/ web-extension-framework/ | while read -d "" event; do build_all; done
 else
   build_all
 fi
