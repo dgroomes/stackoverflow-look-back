@@ -261,7 +261,7 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* [ ] Clean up the relationship between `web-load-source.ts`, `posts-viewer.ts`, `web-injected.ts` and `content-script-bootstrapper.ts`.
+* [x] DONE Clean up the relationship between `web-load-source.ts`, `posts-viewer.ts`, `web-injected.ts` and `content-script-bootstrapper.ts`.
   * This work depends on the completion of the `web-extension-framework/`. 
 * [x] DONE implement the `web-extension-framework`
   * DONE incorporate the `rpc-framework` into the `web-extension-framework`
@@ -269,7 +269,7 @@ General clean ups, TODOs and things I wish to implement for this project:
     "this is for a popup script". Sometimes I say, "this is for the web page and nothing else", but really it can be
     for a popup script too because a popup script has its own web page (sort of... it has a page-like thing...).
 * [x] DONE Create a `BackendWiring` abstraction similar to `PageWiring`
-* The web-extension-framework and rpc-framework should be migrated to their own repo. I will be very happy
+* [ ] The web-extension-framework and rpc-framework should be migrated to their own repo. I will be very happy
   when I can remove all of that code from this repo and focus again on the Look Back Tool features!
 * [ ] Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.

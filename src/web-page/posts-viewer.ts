@@ -1,32 +1,35 @@
-import {exec} from "./web-load-source.ts"
 import {PostsViewer} from "../core/posts/PostsViewer.ts"
 import {QuestionPost} from "../core/posts/QuestionPost.ts";
 import {AppStorage} from "../core/AppStorage.ts";
+import {PageWiring} from "../../web-extension-framework/page-wiring.ts";
 
-console.debug("[posts-viewer.js] Initializing...")
+const init: Promise<PostsViewer> = (async function init(): Promise<PostsViewer> {
+    console.debug("[posts-viewer.js] Initializing...");
+    const pageWiring = PageWiring.initialize();
+    const postsViewer = await PostsViewer.init(new AppStorage(pageWiring.rpcClient));
+    console.info("Initialized. Posts were rendered to HTML successfully");
 
-declare var postsViewer: PostsViewer
+    pageWiring.satisfied();
 
-exec().then(async (pageWiring) => {
-    postsViewer = await PostsViewer.init(new AppStorage(pageWiring.rpcClient))
-    console.info("Posts were rendered to HTML successfully")
-})
+    return postsViewer;
+})();
 
 { // Register the search handlers for click events and 'Enter' key presses
-    document.getElementById("search-box")!.addEventListener("keyup", (event) => {
+    document.getElementById("search-box")!.addEventListener("keyup", async (event) => {
         if (event.key === "Enter") {
-            search()
+            await search();
         }
-    })
-    document.getElementById("search-button")!.addEventListener("click", () => {
-        search()
-    })
+    });
+    document.getElementById("search-button")!.addEventListener("click", async () => {
+        await search();
+    });
 }
 
 /**
  * Narrow the rendered StackOverflow posts data by the given search term.
  */
-function search() {
+async function search() {
+    const postsViewer: PostsViewer = await init;
     const searchTerm = (<HTMLInputElement>document.getElementById("search-box")!).value
     const searchResultsDescriptor = document.getElementById("search-results-descriptor")!
 
