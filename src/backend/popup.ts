@@ -39,26 +39,8 @@ const initPromise = (async function () {
 
     rpcServer.listen()
 
-    await execContentScript("/rpc-framework/rpc-content-script.js") // todo this invocation feels like it should be incorporated into the web-extension-framework
     await executeInstrumentedContentScript("/backend/content-script-bootstrapper.js")
 })()
-
-/**
- * Execute a content script.
- *
- * @param fileName the file name of the content script
- * @return a promise that resolves when the content script has been loaded/executed(?)
- */
-async function execContentScript(fileName: string) : Promise<void> {
-    console.debug(`[popup.js] Executing content script: ${fileName}`)
-    return new Promise(resolve => {
-        chrome.tabs.executeScript({
-            file: fileName
-        }, () => {
-            resolve(undefined)
-        })
-    })
-}
 
 document.getElementById("execute-scrape-votes")!
     .addEventListener("click", async () => {

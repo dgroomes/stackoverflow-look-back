@@ -149,9 +149,12 @@ JavaScript execution environments: background scripts, popup scripts, content sc
 challenging conceptually to even think about all these environments because we are used to programming in just one
 environment like the web page, or maybe a NodeJS app. Plus, writing a program for this environment requires a lot of
 message passing code, Promises code and logging (for debugging) code. That's where `web-extension-framework/` comes in.
-However, the framework cannot completely abstract away the JavaScript execution environments and these things are part
-of the framework API. To offset the essential complexity of the API, there is detailed API documentation, design notes
-and inline code comments. This code is meant to be read.
+
+However, the framework cannot abstract away the JavaScript execution environments. The user of the API still needs to
+know how web extensions work and about each of the Java execution environments. In that sense, this API does not offer
+a strong abstraction but rather a *leaky abstration*. To make up for this, the framework offers block-level API
+documentation, design notes and inline code comments. The framework code is meant to be read. Please study it before
+using it!
 
 The API is best introduced by way of example. Suppose we are developing a *Detect Code Libraries* (DCL) web extension
 using `web-extension-framework/`. This extension adds code to the web page to detect what JavaScript libraries are loaded,
@@ -258,19 +261,16 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* [ ] IN PROGRESS Clean up `web-load-source.js`. Consider how to separate portions of `web-load-source.js` that are needed by the
-  extension web page (`posts-viewer.html`) versus the portion needed by the frontend web page (the ".com" pages).
-  * This is a large effort. I need to re-think (for the Nth time) how best to "kick off work" in the web page. First
-    thought is that the heavy-lifting done in `content-script-load-source.ts` is non-specific to the *Look Back Tool*
-    and that it can be extract into yet another framework, a "web-extension-framework" (which itself might depend on
-    the lower-level `rpc-framework`). Let's try this out... 
-  * IN PROGRESS prototype the `web-extension-framework`
-    * IN PROGRESS incorporate the `rpc-framework` into the `web-extension-framework`
-    * Note: I am not consistent with the way I separate or fail to separate "this is for the web page" with
-      "this is for a popup script". Sometimes I say, "this is for the web page and nothing else", but really it can be
-      for a popup script too because a popup script has its own web page (sort of... it has a page-like thing...).
-    * Note: the web-extension-framework and rpc-framework should be migrated to their own repo. I will be very happy
-      when I can remove all of that code from this repo and focus again on the Look Back Tool features!
+* [ ] Clean up the relationship between `web-load-source.ts`, `posts-viewer.ts`, `web-injected.ts` and `content-script-bootstrapper.ts`.
+  * This work depends on the completion of the `web-extension-framework/`. 
+* [x] DONE implement the `web-extension-framework`
+  * DONE incorporate the `rpc-framework` into the `web-extension-framework`
+  * Note: I am not consistent with the way I separate or fail to separate "this is for the web page" with
+    "this is for a popup script". Sometimes I say, "this is for the web page and nothing else", but really it can be
+    for a popup script too because a popup script has its own web page (sort of... it has a page-like thing...).
+* Create a `BackgroundWiring` abstraction similar to `PageWiring`
+* The web-extension-framework and rpc-framework should be migrated to their own repo. I will be very happy
+  when I can remove all of that code from this repo and focus again on the Look Back Tool features!
 * [ ] Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
 * [ ] Multi-term search. The search bar should take each word and apply an "AND" search
