@@ -146,11 +146,6 @@ Follow these instructions to install it in Opera:
 
 General clean ups, TODOs and things I wish to implement for this project:
 
-* [x] DONE The web-extension-framework and rpc-framework should be migrated to their own repo. I will be very happy
-  when I can remove all of that code from this repo and focus again on the Look Back Tool features!
-  * DONE Add code to a new repo: <https://github.com/dgroomes/web-extension-framework>
-  * DONE Delete the now redundant framework code
-  * DONE Depend on the new code as a Git sub-module
 * [ ] Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
 * [ ] Multi-term search. The search bar should take each word and apply an "AND" search
@@ -396,6 +391,11 @@ These are the finished items from the Wish List:
       "this is for a popup script". Sometimes I say, "this is for the web page and nothing else", but really it can be
       for a popup script too because a popup script has its own web page (sort of... it has a page-like thing...).
 * [x] DONE Create a `BackendWiring` abstraction similar to `PageWiring`
+* [x] DONE The web-extension-framework and rpc-framework should be migrated to their own repo. I will be very happy
+  when I can remove all of that code from this repo and focus again on the Look Back Tool features!
+    * DONE Add code to a new repo: <https://github.com/dgroomes/web-extension-framework>
+    * DONE Delete the now redundant framework code
+    * DONE Depend on the new code as a Git sub-module
 
 ## Background
 
