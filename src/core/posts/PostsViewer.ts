@@ -1,9 +1,7 @@
-import {AppStorage} from "../AppStorage.ts"
-import {Post} from "./Post.ts"
+import {AppStorage} from "../AppStorage.ts";
+import {Post} from "./Post.ts";
 
 export {PostsViewer}
-
-declare var appStorage: AppStorage
 
 /**
  * View the posts data on the page.
@@ -19,7 +17,7 @@ class PostsViewer {
     /**
      * This is the main function! Get the posts data and render it to the page.
      */
-    static async init() : Promise<PostsViewer> {
+    static async init(appStorage: AppStorage) : Promise<PostsViewer> {
         const posts = await appStorage.getPosts()
         if (posts.length === 0) {
             throw new Error("Zero posts were found. This is unexpected.")
