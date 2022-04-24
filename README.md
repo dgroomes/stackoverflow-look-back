@@ -160,7 +160,6 @@ General clean ups, TODOs and things I wish to implement for this project:
 * [ ] Multi-term search. The search bar should take each word and apply an "AND" search
 * [ ] Implement a "recents" feature? Maybe the most relevant StackOverflow posts are the ones I just added! I'm revisiting
   them continually until I understand them (concepts) or memorize them (commands or code snippets).
-* [ ] IN PROGRESS Defect. The stackoverflow-look-back is not working. There have been changes to the site.
 
 ## Finished Wish List items
 
@@ -406,6 +405,7 @@ These are the finished items from the Wish List:
     * DONE Add code to a new repo: <https://github.com/dgroomes/web-extension-framework>
     * DONE Delete the now redundant framework code
     * DONE Depend on the new code as a Git sub-module
+* [x] DONE Defect. The stackoverflow-look-back is not working. There have been changes to the site.
 
 ## Background
 
