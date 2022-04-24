@@ -38,7 +38,7 @@ document.getElementById("execute-scrape-votes")!
 
         const votesPageLimit = (document.getElementById("votes-page-limit") as HTMLInputElement).value;
 
-        const votesScraped = backendWiring.rpcClient.execRemoteProcedure("scrape-votes", {votesPageLimit});
+        const votesScraped = await backendWiring.rpcClient.execRemoteProcedure("scrape-votes", {votesPageLimit});
         console.info(`[popup.js] ${votesScraped} votes scraped!`);
     });
 

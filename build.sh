@@ -34,7 +34,7 @@ preconditions() {
 
 # Delegate to the "deno bundle ..." command
 deno_bundle() {
-  deno bundle --quiet --config deno.jsonc "${@}"
+  deno bundle --quiet --config deno.json "${@}"
 }
 
 build_distribution() {

@@ -66,12 +66,19 @@ just relies on standard web APIs instead of non-standard browser extension APIs 
 
 Follow these instructions to install the tool as a Chrome browser extension and use it:
 
+1. Install [Deno](https://deno.land/)
+    * > A modern runtime for JavaScript and TypeScript.
 1. Clone the `web-extension-framework` dependency:
-    * `git submodule add https://github.com/dgroomes/web-extension-framework`
+    * ```shell
+      git submodule add https://github.com/dgroomes/web-extension-framework
+      ```
 1. Build the extension distributions:
-    * `./build.sh`
+    * ```shell
+      ./build.sh
+      ```
+    * This takes about a minute! I'm assuming the TypeScript type checking takes a lot of time. 
 1. Open Chrome's extension settings page
-    * Open Chrome to the URL: `chrome://extensions`
+    * Open Chrome to the URL: <chrome://extensions>
     * Alternatively, follow the instructions in the [Firefox](#firefox) section below to install the extension in
       Firefox
     * Alternatively, follow the instructions in the [Opera](#opera) section below to install the extension in Opera
@@ -116,7 +123,9 @@ Although this tool was developed as a Chrome extension, it can also be installed
 Follow these instructions to install it in Firefox:
 
 1. Build the web extension for Firefox
-    * `./build-for-firefox.sh`
+    * ```shell
+      ./build-for-firefox.sh
+      ```
 1. Open Firefox to the debug page
     * Open Firefox
     * Paste and go to this URL: <about:debugging#/runtime/this-firefox>
@@ -151,35 +160,36 @@ General clean ups, TODOs and things I wish to implement for this project:
 * [ ] Multi-term search. The search bar should take each word and apply an "AND" search
 * [ ] Implement a "recents" feature? Maybe the most relevant StackOverflow posts are the ones I just added! I'm revisiting
   them continually until I understand them (concepts) or memorize them (commands or code snippets).
+* [ ] IN PROGRESS Defect. The stackoverflow-look-back is not working. There have been changes to the site.
 
 ## Finished Wish List items
 
 These are the finished items from the Wish List:
 
-* DONE Make an `entrypoint.js` file instead of re-using both `scrape-votes.js` and `expand-posts.js` independently
-* DONE Get more re-use out of code. For example, re-use the Votes class between the scrape votes functionality and
+* [x] DONE Make an `entrypoint.js` file instead of re-using both `scrape-votes.js` and `expand-posts.js` independently
+* [x] DONE Get more re-use out of code. For example, re-use the Votes class between the scrape votes functionality and
   expand posts functionality
-* DONE Get post data for questions that were not up-voted but where there was an up-voted answer to that question. This
+* [x] DONE Get post data for questions that were not up-voted but where there was an up-voted answer to that question. This
   is a common case. I thought it was rare because I assumed that when I upvote an answer that I would have already
   upvoted the question. But this isn't the case. I have a about two hundred of these cases. Also, even if I wanted to
   up-vote the question, some are actually locked! For example, one of the very first things I wanted to search for in my
   SO static data was for how to get the query parameters of the URL from JavaScript. But the question and answer didn't
   show up because I didn't upvote the question, only the answer, and it turns out
   the [question itself is locked](https://stackoverflow.com/q/901115/)!
-* DONE Create a browser extension for this. The main benefit should be the removal of the manual steps like opening
+* [x] DONE Create a browser extension for this. The main benefit should be the removal of the manual steps like opening
   three different web pages and moving the downloaded files to different directories.
-* DONE (Update I think it's a race condition with the JavaScript doc load order) There are some occasional caching
+* [x] DONE (Update I think it's a race condition with the JavaScript doc load order) There are some occasional caching
   problems. Sometimes when I load a page, it saves "AppStorage" not define and stuff like that. I think it's a caching
   problem because when I "hard reload and empty caches" it works. But then later it might fail again although I haven't
   even changed the code so I don't understand how the cache could still be stale, and thus still be a problem. Not sure.
   But it's annoying.
-* DONE Create a Chrome Manifest v2 extension. This would enable making a Firefox extension, which is still on v2 but is
+* [x] DONE Create a Chrome Manifest v2 extension. This would enable making a Firefox extension, which is still on v2 but is
   working on supporting v3 sometime in 2022.
-* DONE Build a Firefox extension for the tool. For the most part, code can be re-used, but when it comes to the
+* [x] DONE Build a Firefox extension for the tool. For the most part, code can be re-used, but when it comes to the
   extension APIs themselves, there are significant differences. In fact, porting the extension to Firefox has been one
   of the most challenging software efforts I've done in recent years! In part, because I've been away from JavaScript
   dev for so long but also because the standardization of extension APIs is still a work-in-progress.
-* DONE Drop the Manifest V3 implementation. I originally implemented the Chrome extension using the Manifest V3 format
+* [x] DONE Drop the Manifest V3 implementation. I originally implemented the Chrome extension using the Manifest V3 format
   for the simple reason that the Chrome getting started docs for extension development uses Manifest V3. This was my
   first web extension. Now that I've ported this to Firefox, I know much more about the extension landscape, especially
   the APIs. For example, Firefox is working on Manifest V3 support and it is a large effort which will take until early
@@ -189,7 +199,7 @@ These are the finished items from the Wish List:
   Manifest V3 version of the extension today when I can pay that implementation cost when the time comes that Manifest
   V2 support ends. The cost will almost definitely be lower then than now because of the inevitable enrichment of docs,
   StackOverflow posts, etc over time. So, drop the Manifest V3 support.
-* DONE Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post data in a
+* [x] DONE Create an extension HTML page as an alternative to `generate-html.html`. This page will render the post data in a
   similar way but it will stop short of the downloading step. This page is meant to be used as an ephemeral view. Why?
   This is mostly just convenient so that I don't have to download the generated HTML and open it in a new tab over and
   over again while iterating on the UI.
@@ -207,13 +217,13 @@ These are the finished items from the Wish List:
       from any page. This should be a "browser action" instead of a
       "page action" (I'm so glad I dropped the Manifest V3 support because then I'd have to solve for the unified
       actions way too).
-* DONE (Although this is a memory hog) Fix the CSS grid problem
-* DONE Known issue: The visual elements in the page break after the 1500th post in Chrome. I think this is because of an
+* [x] DONE (Although this is a memory hog) Fix the CSS grid problem
+* [x] DONE Known issue: The visual elements in the page break after the 1500th post in Chrome. I think this is because of an
   internal limit on CSS Grid sizes. See the note in
   the [CSS Grid w3 standards page](https://www.w3.org/TR/css-grid-1/#overlarge-grids). It mentions 1500, and 3000 and
   when I go to exactly 1501 posts (there will be 2 * 1501 = 3002) the last post doesn't get rendered correctly. I think
   that's the limit. This issue does not happen Safari.
-* DONE (implemented for only a single search term) Consider creating a search bar where multiple terms can be search at
+* [x] DONE (implemented for only a single search term) Consider creating a search bar where multiple terms can be search at
   once. Originally, I was hoping `Cmd + F` would be good enough for search but when the search term is SQL or bash, a
   lot of results come up and it's useful to add a second search term to reduce the result. This would add quite a bit of
   code to the page though.
@@ -227,9 +237,9 @@ These are the finished items from the Wish List:
         * <https://github.com/GoogleChrome/chrome-extensions-samples>. Only the "apps" examples use modules but Chrome
           Apps aren't extension. Chrome Apps are deprecated.
         * <https://github.com/mdn/webextensions-examples>
-* DONE Use info and debug log levels. I think Firefox and Chrome now have good filtering for that in the dev console so
+* [x] DONE Use info and debug log levels. I think Firefox and Chrome now have good filtering for that in the dev console so
   it's pretty useful
-* DONE Remove the automatic trigger of opening the `generate-html.html` page after the post data is expanded and instead
+* [x] DONE Remove the automatic trigger of opening the `generate-html.html` page after the post data is expanded and instead
   go to an only on-demand trigger for this, a la the "View posts" button. This is symmetric to the way we trigger "
   Scrape votes"
   and "Expand posts". This is useful for a technical constraint: it's hard to implement a
@@ -238,9 +248,9 @@ These are the finished items from the Wish List:
   forward the "Expand posts" trigger to the web page 3) execute and wait for the response
   from `PostExpander.expandPosts`
   and return the response to the content script and finally 4) the content script returns the response to the extension
-* DONE Solidify on a "Posts viewer" name for the `generate-html.html` (do all the code renaming) and create a "download"
+* [x] DONE Solidify on a "Posts viewer" name for the `generate-html.html` (do all the code renaming) and create a "download"
   option as a button on this page.
-* DONE Consider adding RPC from the extension to the web page. Currently there is only the other way where the extension
+* [x] DONE Consider adding RPC from the extension to the web page. Currently there is only the other way where the extension
   background script is the RPC server and the web page is the RPC client. But the other way would create a needed
   communication channel. Currently, the way that the extension communicates commands to the web page is an awkward "load
   another tiny script on the page" strategy. The many little content scripts and web scripts added to handle the
@@ -277,20 +287,20 @@ These are the finished items from the Wish List:
         * DONE Prototype a "server to front-end" RPC for Firefox. Why Firefox? Because it already incorporates the
           `content-script-messaging-proxy.js` so it will be easier. And if the prototype works, there's a much clearer
           path for a general implementation and/or a Chromium implementation.
-* DONE Standardize on RPC class naming convention.
+* [x] DONE Standardize on RPC class naming convention.
     * For clients, the name should follow: 1) BrowserDescriptor 2) SourceDescription 3) DestinationDescriptor 4) "
       RpcClient"
     * For servers, the name should follow: 1) BrowserDescriptor 2) DestinationDescriptor 3) "RpcServer".
       The class comments should follow the same order.
-* DONE Consider turning `content-script-messaging-proxy.js` into a specific component of the RPC system. The genericness
+* [x] DONE Consider turning `content-script-messaging-proxy.js` into a specific component of the RPC system. The genericness
   of it is becoming more confusing I think. This work will include baking in the "procedure target RPC" in the RpcClient
   and RpcServer classes and also handling it in the content script proxy.
-* DONE Consider how to move the generic RPC code in `extension-entrypoint.js` and the generic RPC code in
+* [x] DONE Consider how to move the generic RPC code in `extension-entrypoint.js` and the generic RPC code in
   `web-load-source.js` into the `src/rpc/` directory. Ideally, all generic RPC code should live separately from the
   other code. It should be such that the RPC framework is good enough to use by even another project!
-* DONE Get rid of the symlinks. It doesn't work on Windows. I think I need a build script, like the Firefox build
+* [x] DONE Get rid of the symlinks. It doesn't work on Windows. I think I need a build script, like the Firefox build
   script. It be should be pretty easy to make a Windows bat script or maybe Powershell.
-* DONE Embed the "browserDescriptor" into the RPC Framework so that it may use it to instantiate the correct concrete
+* [x] DONE Embed the "browserDescriptor" into the RPC Framework so that it may use it to instantiate the correct concrete
   sub-classes of RpcServer and RpcClient. Because there are multiple contexts (background, popup, content script, and
   web page), I think its useful to save the browserDescriptor in storage.
     * DONE Create an `rpc-background-init.js` file. This should have a function to take the browserDescriptor as a
@@ -300,19 +310,19 @@ These are the finished items from the Wish List:
       factory" function. I assume there will be a Chromium-specific and Firefox-specific versions of this client in the
       near future.
         * DONE Create an `rpc-storage.js` file that has functions to get and save the browserDescriptor
-* DONE Send a response from the web page RPC server to the popup client. With this feature, it enables the popup to give
+* [x] DONE Send a response from the web page RPC server to the popup client. With this feature, it enables the popup to give
   feedback in the UI, like "Scraping..." and "120 votes scraped so far...". There won't be as much a need to open the
   dev tools anymore to verify if it the tool is working or not.
     * DONE Implement for Chrome.
     * DONE Implement for Firefox
-* DONE There is no need to fetch the votes page limit from the web page. It can be passed as an argument of the remote
+* [x] DONE There is no need to fetch the votes page limit from the web page. It can be passed as an argument of the remote
   procedure call from the background.
-* DONE Clean up the References. Organize MDN links together.
-* DONE Remove the 'votesPageLimit' from storage and instead use an input box in the extension popup. The storage is not
+* [x] DONE Clean up the References. Organize MDN links together.
+* [x] DONE Remove the 'votesPageLimit' from storage and instead use an input box in the extension popup. The storage is not
   worth the code complexity. Plus the feature is not even really useful. Might as well remove the code and make the
   limit even more obvious by putting it right next to the "Scrape votes" button. This removes the discovery problem for
   that config.
-* DONE Tags. Add question tags to the data and to the UI. Sometimes, a question does not actually contain the relevant concept.
+* [x] DONE Tags. Add question tags to the data and to the UI. Sometimes, a question does not actually contain the relevant concept.
   For example, a question like "How to get the current time in seconds" with the tag "JavaScript" would not show up if
   you search "JavaScript", but I want it to show up.
     * DONE. Get a working SQL query that returns tags. Is it an array type in SQL?
@@ -333,7 +343,7 @@ These are the finished items from the Wish List:
       of the restriction described in the earlier item.
     * Delete the `<script src="...">` tags. These should not be included in the download. The downloaded file has to be
       completely static, no external dependencies can be downloaded at runtime.
-* DONE Bundle JavaScript source code with Deno. Deno let's us write TypeScript!
+* [x] DONE Bundle JavaScript source code with Deno. Deno let's us write TypeScript!
     * What is the first minimal step in incorporating Deno? I think we want to use Deno's `bundle` command to create a
       bundled entrypoint JavaScript. But on the other hand, I've discovered that it's inconvenient in general to use
       modules in a browser extension context. So, I'm not sure... Can the `init.js` file be bundled?
@@ -356,14 +366,14 @@ These are the finished items from the Wish List:
     * ANSWERED How do source maps work with TypeScript/Deno? Can I still productively debug my code in Chrome Dev Tools?.
       Answer: `deno bundle ...` does not support sourcemaps but it is an [open issue](https://github.com/denoland/deno/issues/8577)
       with a show of support from the Deno core team.
-* DONE Fix the sort order of Q&As in the viewer. I'm seeing questions all bunched together and then answers bunched together right
+* [x] DONE Fix the sort order of Q&As in the viewer. I'm seeing questions all bunched together and then answers bunched together right
   afterwards. Questions should always be following by their answers, but this isn't happening. For example, [this answer](https://stackoverflow.com/questions/37920923/how-to-check-whether-kafka-server-is-running/49852168#49852168)
   is not following its question.
     * (Answer: yes the "questionId" is a non-normal field and needed be included in the toJSON) Is there a defect where the question ID field is null on answers? For example, answer 37943159 has a null question ID.
       Why? This is a problem for the sort order.
-* DONE Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like
+* [x] DONE Change the project name. Drop the "static" name and replace it with "extractor", or "viewer" or something like
   that.
-* DONE Defect. If you click the extension button more than once, it is problematic because it runs the content scripts
+* [x] DONE Defect. If you click the extension button more than once, it is problematic because it runs the content scripts
   every time, which mean multiple window listeners are added because of `content-script-messaging-proxy.js`.
     * DONE When the popup is opened multiple times, the content scripts must skip the "load source" and "initialize RPC
       proxy"
@@ -371,7 +381,7 @@ These are the finished items from the Wish List:
     * DONE There is some other issue where if you execute "Scrape votes" multiple times, it just grows. Some old objects
       stay around. So when you execute it a second time, it kicks off two scrapers. And when you execute a third time,
       it kicks off three!
-* DONE Convert everything to TypeScript
+* [x] DONE Convert everything to TypeScript
     * DONE Convert the `init.js` files to TypeScript
     * DONE Convert `rpc-backend.js` to TypeScript
     * DONE Convert all of the RPC framework to TypeScript

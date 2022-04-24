@@ -15,7 +15,7 @@ class VotesScraper {
     readonly #votesPageLimit
     #votesPageObserver
     #appStorage: AppStorage
-    votesTab // Get a handle on the "Votes tab" HTML element
+    votesTab?: HTMLElement // Get a handle on the "Votes tab" HTML element
     votes: Array<Vote> = [] // The votes data will be scraped from the HTML and collected into this array as instances of the "Vote" class
     attempts = 0
 
@@ -28,20 +28,25 @@ class VotesScraper {
         this.#appStorage = appStorage;
     }
 
+    private readonly VOTES_TAB = "user-tab-votes";
+
     /**
      * This is the main function
      * @return {Promise} a promise that resolves when the scraping has completed. The promise value is the number of votes scraped.
      */
-    scrapeVotes() {
+    scrapeVotes() : Promise<number> {
         console.info(`Scraping votes...  [limit=${this.#votesPageLimit}]`)
-        this.votesTab = document.getElementById("user-tab-votes")
+        this.votesTab = this.queryVotesTab()
 
-        let _resolve
+        let _resolve: (number) => void;
+        const scrapeCompletedPromise = new Promise<number>(resolve => {
+            _resolve = resolve;
+        })
         this.#votesPageObserver = new MutationObserver(mutations => {
-            for (const mutation of mutations) {
-                if (!this.votesTab.isConnected) {
-                    // The votes tab was disconnected! It must have been replaced by a new.
-                    this.votesTab = document.getElementById("user-tab-votes")
+            for (const _mutation of mutations) {
+                if (!this.votesTab!.isConnected) {
+                    // The votes tab was disconnected! It must have been replaced by a new element.
+                    this.votesTab = this.queryVotesTab()
                     this.scrapeCurrentPage()
                     setTimeout(() => this.nextVotesPage(_resolve), 1000) // Trigger the next votes page, but with rate limiting
                     return
@@ -54,13 +59,18 @@ class VotesScraper {
             childList: true, // Monitor for the addition and removal of elements on the target element,
         })
 
-        const scrapeCompletedPromise = new Promise(resolve => {
-            _resolve = resolve
-        })
+        this.scrapeCurrentPage();
+        this.nextVotesPage(_resolve!);
+        return scrapeCompletedPromise;
+    }
 
-        this.scrapeCurrentPage()
-        this.nextVotesPage(_resolve)
-        return scrapeCompletedPromise
+    /**
+     * Find the votes tab element.
+     */
+    private queryVotesTab() : HTMLElement {
+        const el = document.getElementById(this.VOTES_TAB)
+        if (el === null) throw new Error(`Expected to find the '${this.VOTES_TAB}' element but didn't find it. The site must have changed.`)
+        return el;
     }
 
     /**
@@ -69,38 +79,28 @@ class VotesScraper {
     scrapeCurrentPage() {
         this.attempts++
 
-        // Get all row elements of the "Votes cast" table.
+        // Get all votes in the "Votes" section.
         //
-        // Each row represents an up-voted question OR up-voted answer. (Does it include up-voted comments?). All rows have
-        // the 'data-postid' attribute so we can query using that fact.
-        const votesRows = this.votesTab.querySelectorAll('tr[data-postid]')
-
-        // Extract the data from each vote row HTML element.
+        // Answer vote elements have an anchor tag ('a') with a class named "answer-hyperlink"
+        // Question vote elements have an anchor tag ('a') with a class named "question-hyperlink"
         //
-        // Note that each row will either be an up-voted question or up-voted answer:
-        // * Answer rows will always have an anchor tag ('a') with a class named "answer-hyperlink"
-        // * Question rows will always have an anchor tag ('a') with a class named "question-hyperlink"
-        for (const row of votesRows) {
+        // Does this section include up-voted comments?
+        const answerVotes: NodeListOf<HTMLAnchorElement> = this.votesTab!.querySelectorAll('a.answer-hyperlink')
+        const questionVotes: NodeListOf<HTMLAnchorElement> = this.votesTab!.querySelectorAll('a.question-hyperlink')
 
-            // All rows will have an anchor tag which links to the up-voted post. This anchor tag is always inside of a
-            // 'b' tag.
-            const anchor = row.querySelector('b a')
+        const votesCount = answerVotes.length + questionVotes.length
+        if (votesCount === 0) throw new Error("Didn't find any vote elements! The site must have changed.")
 
-            let postType
-            if (anchor.classList.contains('question-hyperlink')) {
-                postType = "question"
-            } else if (anchor.classList.contains('answer-hyperlink')) {
-                postType = "answer"
-            } else {
-                throw new Error(`Did not find the expected HTML class that identifies this row as a question or answer. 
-anchor tag: ${anchor.outerHTML}
-row: ${row.outerHTML}
-`)
-            }
-
-            const vote = Vote.parseFromUrl(anchor.href, postType)
+        // Parse the data from each vote element
+        for (const el of answerVotes) {
+            const vote = Vote.parseFromUrl(el.href, 'answer')
             this.votes.push(vote)
         }
+        for (const el of questionVotes) {
+            const vote = Vote.parseFromUrl(el.href, 'question')
+            this.votes.push(vote)
+        }
+
         console.info(`Found ${this.votes.length} total votes!`)
     }
 
