@@ -3,7 +3,7 @@ import {QuestionPost} from "../core/posts/QuestionPost.ts";
 import {AppStorage} from "../core/AppStorage.ts";
 import {
     BrowserExtensionFramework
-} from "../../web-extension-framework/browser-extension-framework/api/browser-extension-framework.ts";
+} from "../../browser-extension-framework/browser-extension-framework/api/browser-extension-framework.ts";
 
 const init: Promise<PostsViewer> = (async function init(): Promise<PostsViewer> {
     console.debug("[posts-viewer.js] Initializing...");

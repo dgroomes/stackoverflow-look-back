@@ -36,7 +36,7 @@ like Manifest V3 support, or a Safari browser extension.
 * `src/firefox-manifest-v2/`
     * Code that supports a Manifest V2 web extension developed for Firefox.
 
-There is one library dependency for the project: <https://github.com/dgroomes/web-extension-framework>. The *web-extension-framework*
+There is one library dependency for the project: <https://github.com/dgroomes/browser-extension-framework>. The *BrowserExtensionFramework*
 is an RPC-centric web extension framework that was originally developed as part of the *Look Back Tool* codebase.
 
 The extension has been verified to work in the checked `[x]` browsers:
@@ -73,7 +73,7 @@ Follow these instructions to install the tool as a Chrome browser extension and 
 
 1. Install [Deno](https://deno.land/)
     * > A modern runtime for JavaScript and TypeScript.
-2. Clone the BrowserExtensionFramework (todo deal with the directory name change from web-extension-framework to browser-extension-framework) dependency:
+2. Clone the BrowserExtensionFramework dependency:
     * ```shell
       git submodule add https://github.com/dgroomes/browser-extension-framework
       ```
@@ -86,7 +86,7 @@ Follow these instructions to install the tool as a Chrome browser extension and 
 5. Build BrowserExtensionFramework
     * Navigate into the directory with the following command.
     * ```shell
-      cd web-extension-framework/browser-extension-framework
+      cd browser-extension-framework/browser-extension-framework
       ```
     * Then install and build the library with the following commands.
     * ```shell
@@ -188,7 +188,8 @@ General clean ups, TODOs and things I wish to implement for this project:
     it has no NPM dependencies of its own. The effect of this is that we have full access to the source that we need to change
     (convert the import statements)) Update the Git submodule, build it, and then can I consume it from Deno? It might be possible if I turn
     off type validation... but I think the imports just won't work.
-  * Migrate to Webpack and ts-loader.
+  * Migrate to Webpack and ts-loader. Build BrowserExtensionFramework with `npm pack` and reference it from `stackoverflow-look-back`
+    as an NPM dependency like `file:browser-extension-framework/browser-extension-framework/browser-extension-framework-0.1.0.tgz`
 
 ## Finished Wish List items
 

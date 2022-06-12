@@ -2,7 +2,7 @@
 //
 // This declares the permissions that dictate which pages the extension are enabled for.
 
-import {chrome} from "../../web-extension-framework/browser-types/chromium-types/global.d.ts"
+import {chrome} from "../../browser-extension-framework/browser-types/chromium-types/global.d.ts"
 
 console.debug("[chromium-manifest-v2/init.js] Initializing...")
 

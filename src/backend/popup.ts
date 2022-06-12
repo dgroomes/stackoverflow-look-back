@@ -1,9 +1,9 @@
 // This code runs in the popup. It bootstraps the content scripts which then bootstrap the web page. It waits for user
 // input when any of the "Scrape votes", "Expand posts", or "View posts" buttons are clicked in the popup.
 
-import {chrome} from "../../web-extension-framework/browser-types/chromium-types/global.d.ts"
-import {BackendWiring} from "../../web-extension-framework/browser-extension-framework/api/backend-wiring.ts"
-import {BrowserDescriptor, BrowserExtensionFramework} from "../../web-extension-framework/browser-extension-framework/api/browser-extension-framework.ts";
+import {chrome} from "../../browser-extension-framework/browser-types/chromium-types/global.d.ts"
+import {BackendWiring} from "../../browser-extension-framework/browser-extension-framework/api/backend-wiring.ts"
+import {BrowserDescriptor, BrowserExtensionFramework} from "../../browser-extension-framework/browser-extension-framework/api/browser-extension-framework.ts";
 
 console.debug("[popup.js] Initializing...")
 

@@ -62,7 +62,7 @@ build_distribution() {
   deno_bundle "$project_dir/src/web-page/votes-page-script.ts" "$vendor_output_dir/web-page/votes-page-script.js"
   deno_bundle "$project_dir/src/web-page/posts-page-script.ts" "$vendor_output_dir/web-page/posts-page-script.js"
 
-  cp "$project_dir/web-extension-framework/browser-extension-framework/dist/content-script-middleware.js" "$vendor_output_dir"
+  cp "$project_dir/browser-extension-framework/browser-extension-framework/dist/content-script-middleware.js" "$vendor_output_dir"
   deno_bundle "$project_dir/src/web-page/posts-viewer.ts" "$vendor_output_dir/web-page/posts-viewer.js"
 }
 
@@ -96,7 +96,7 @@ preconditions
 if [[ "$watch" == "true" ]]; then
   echo "Building with the '--watch' option. The distributions will be built again when any source code changes."
   build_all
-  fswatch -0 src/ util/ web-extension-framework/ | while read -d "" event; do build_all; done
+  fswatch -0 src/ util/ browser-extension-framework/ | while read -d "" event; do build_all; done
 else
   build_all
 fi
