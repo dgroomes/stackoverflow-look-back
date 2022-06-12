@@ -51,7 +51,7 @@ build_distribution() {
   cp "$vendor_source_dir/manifest.json" "$vendor_output_dir"
   deno_bundle "$vendor_source_dir/init.ts" "$vendor_output_dir/init.js"
 
-  # Copy over non-JavaScript files (don't bother using fancy shell scripting here. Just copy over the few files explicitly)
+  # Copy over non-TypeScript files (don't bother using fancy shell scripting here. Just copy over the few files explicitly)
   cp \
     "$project_dir/src/web-page/get-posts-by-ids.sql" \
     "$project_dir/src/web-page/posts-viewer.html" \
@@ -60,7 +60,7 @@ build_distribution() {
 
   cp "$project_dir/src/backend/popup.html" "$vendor_output_dir/backend"
 
-  # Bundle the entrypoint-type JavaScript files
+  # Compile ("bundle") the TypeScript entrypoint-type files into JavaScript
   deno_bundle "$project_dir/src/backend/popup.ts" "$vendor_output_dir/backend/popup.js"
 
   deno_bundle "$project_dir/src/backend/votes-content-script.ts" "$vendor_output_dir/backend/votes-content-script.js"

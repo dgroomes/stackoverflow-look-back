@@ -2,12 +2,14 @@
 
 🛠 Extract and search the posts you've up-voted on StackOverflow. ***Look back*** on your data.
 
----
+
+## Description
 
 I need to quickly browse and re-learn from questions I've up-voted in the past. This is a browser extension for doing
 that. See [Background](#background) for more information.
 
 **NOTE**: This was developed on macOS and for my own personal use.
+
 
 ## Design
 
@@ -45,6 +47,7 @@ The extension has been verified to work in the checked `[x]` browsers:
 * [ ] Edge
 * [ ] Safari
 
+
 ### My Bias Against Content Scripts
 
 In my opinion, content scripts are not compelling and I don't quite get their necessity in browser extension technical
@@ -55,12 +58,14 @@ the place of content scripts? I know by design, they have access to the DOM whil
 But why? I'm sure there are good reasons. But the three different exec environments and their unique capabilities and
 restrictions has made it difficult to design and implement my own code.
 
+
 ### My Bias for Web APIs
 
 A corollary to my bias against content scripts is my bias for Web APIs. Most of the source code for this extension
 actually executes on the web page, where standard Web APIs can be used. This code executes the domain logic like the
 data scraping and HTML generation. As such, this code is perfectly portable to other "evergreen" browsers because it
 just relies on standard web APIs instead of non-standard browser extension APIs (i.e. Manifest V2 and V3).
+
 
 ## Instructions
 
@@ -116,16 +121,11 @@ Follow these instructions to install the tool as a Chrome browser extension and 
     * Click the "View posts" button
     * Explore the data!
 
+
 ## Firefox
 
-Although this tool was developed as a Chrome extension, it can also be installed as a web extension in Firefox!
+The tool can also be installed as a web extension in Firefox! Follow these instructions to install it:
 
-Follow these instructions to install it in Firefox:
-
-1. Build the web extension for Firefox
-    * ```shell
-      ./build-for-firefox.sh
-      ```
 1. Open Firefox to the debug page
     * Open Firefox
     * Paste and go to this URL: <about:debugging#/runtime/this-firefox>
@@ -134,6 +134,7 @@ Follow these instructions to install it in Firefox:
     * In the file finder window that opens, find the file `build/firefox-manifest-v2-web-extension/manifest.json` and
       click *Open*
     * It's installed!
+
 
 ## Opera
 
@@ -151,6 +152,7 @@ Follow these instructions to install it in Opera:
     * In the file finder window that opens, find the directory `src/extension/chromium-manifest-v2` and click *Select*
     * It's installed!
 
+
 ## Wish List
 
 General clean ups, TODOs and things I wish to implement for this project:
@@ -160,6 +162,8 @@ General clean ups, TODOs and things I wish to implement for this project:
 * [ ] Multi-term search. The search bar should take each word and apply an "AND" search
 * [ ] Implement a "recents" feature? Maybe the most relevant StackOverflow posts are the ones I just added! I'm revisiting
   them continually until I understand them (concepts) or memorize them (commands or code snippets).
+* [ ] Replace Deno with Webpack and ts-loader. Similar to the [work I did in the BrowserExtensionFramework](https://github.com/dgroomes/browser-extension-framework/commit/f459a1165b632eeeb265c8e137256c4fd353eb36).
+
 
 ## Finished Wish List items
 
@@ -407,6 +411,7 @@ These are the finished items from the Wish List:
     * DONE Depend on the new code as a Git sub-module
 * [x] DONE Defect. The stackoverflow-look-back is not working. There have been changes to the site.
 
+
 ## Background
 
 Here is some background on this project and some of my research which contextualizes the "why" of this project.
@@ -461,9 +466,11 @@ Here is some background on this project and some of my research which contextual
   other unintended side effects. Plus I'm confused how to declare global variables in TypeScript. I should stick the to
   the `window` right?
 
+
 ## Reference
 
 Materials I referenced when building this tool and deep diving on learning.
+
 
 ### MDN Web Docs
 
@@ -490,6 +497,7 @@ Materials I referenced when building this tool and deep diving on learning.
 * [MDN Web Docs: extension storage API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage)
     * > Enables extensions to store and retrieve data, and listen for changes to stored items.
 
+
 ### Chrome extension docs
 
 * [Chrome extensions docs](https://developer.chrome.com/docs/extensions/mv3/getstarted/)
@@ -497,6 +505,7 @@ Materials I referenced when building this tool and deep diving on learning.
     * Consider using this API to intercept requests instead of using a Proxy object on the web page
 * [Chrome extension docs: Manifest V2 Getting started](https://developer.chrome.com/docs/extensions/mv2/getstarted/)
 * [Chrome extension docs: chrome.browserAction](https://developer.chrome.com/docs/extensions/reference/browserAction/)
+
 
 ### Other
 
