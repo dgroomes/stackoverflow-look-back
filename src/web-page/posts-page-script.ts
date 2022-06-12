@@ -1,16 +1,16 @@
-import {PageWiring} from "../../web-extension-framework/web-extension-framework/page-wiring.ts";
+import {
+    BrowserExtensionFramework
+} from "../../web-extension-framework/browser-extension-framework/api/browser-extension-framework.ts";
 import {AppStorage} from "../core/AppStorage.ts";
 import {PostsExpander} from "../core/posts/PostsExpander.ts";
 
-(async function () {
-    console.debug("[posts-page-script.js] Initializing...");
-    const pageWiring = PageWiring.initialize();
-    const appStorage = new AppStorage(pageWiring.rpcClient);
-    const postsExpander = new PostsExpander(pageWiring.webResourcesOrigin, appStorage);
+console.debug("[posts-page-script.js] Initializing...");
+const pageWiring = BrowserExtensionFramework.initializePageWiring();
+const appStorage = new AppStorage(pageWiring.rpcClient);
+const postsExpander = new PostsExpander(appStorage);
 
-    pageWiring.rpcServer.registerPromiseProcedure("expand-posts", (_procedureArgs) => {
-        return postsExpander.expandPosts();
-    });
+pageWiring.rpcServer.registerPromiseProcedure("expand-posts", (_procedureArgs) => {
+    return postsExpander.expandPosts();
+});
 
-    pageWiring.satisfied()
-})().then(() => console.log("[posts-page-script.js] Initialized."));
+pageWiring.satisfied()

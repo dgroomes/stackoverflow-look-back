@@ -73,53 +73,71 @@ Follow these instructions to install the tool as a Chrome browser extension and 
 
 1. Install [Deno](https://deno.land/)
     * > A modern runtime for JavaScript and TypeScript.
-1. Clone the `web-extension-framework` dependency:
+2. Clone the BrowserExtensionFramework (todo deal with the directory name change from web-extension-framework to browser-extension-framework) dependency:
     * ```shell
-      git submodule add https://github.com/dgroomes/web-extension-framework
+      git submodule add https://github.com/dgroomes/browser-extension-framework
       ```
-1. Build the extension distributions:
+3. Convert framework `import` statements
+    * This is an unfortunate work-around during the migration process from the old Deno-based web-extension-framework to the new Webpack-based BrowserExtensionFramework.
+    * Deno requires the file extension in `import` statements (for example: `import {chrome} from "../../web-extension-framework/browser-types/chromium-types/global.d.ts"`)
+      but BrowserExtensionFramework is written using the Webpack and `ts-loader` style and does not have the file extension
+      in `import` statements. We have to convert, by hand, all the import statements in the framework code. You might be
+      able to use import maps to solve this problem, but I've been burned by those before.
+5. Build BrowserExtensionFramework
+    * Navigate into the directory with the following command.
+    * ```shell
+      cd web-extension-framework/browser-extension-framework
+      ```
+    * Then install and build the library with the following commands.
+    * ```shell
+      npm install
+      ```
+   * ```shell
+      npm build
+      ```
+6. Build the extension distributions:
     * ```shell
       ./build.sh
       ```
     * This takes about a minute! I'm assuming the TypeScript type checking takes a lot of time. 
-1. Open Chrome's extension settings page
+7. Open Chrome's extension settings page
     * Open Chrome to the URL: <chrome://extensions>
     * Alternatively, follow the instructions in the [Firefox](#firefox) section below to install the extension in
       Firefox
     * Alternatively, follow the instructions in the [Opera](#opera) section below to install the extension in Opera
-1. Enable developer mode
+8. Enable developer mode
     * Enable the *Developer mode* toggle control in the upper right corner of the page
-1. Install the extension
+9. Install the extension
     * Click the *Load unpacked* button
     * In the file finder window that opens, find the extension distribution
       directory `build/chromium-manifest-v2-web-extension/`, single click it to highlight it, and click the *Select*
       button.
     * It's installed!
-1. Open StackOverflow
-    * Go to <https://stackoverflow.com/> in your browser
-1. Log in
-1. Open your profile
-    * Click your picture in the top right corner to open your profile
-1. Open the "Votes" tab
-    * Find the "Votes" tab and click it.
-    * For me, my Votes tab navigates to this URL: <https://stackoverflow.com/users/1333713/david-groomes?tab=votes>
-1. Scrape the votes data
-    * Open the extensions menu by pressing the puzzle icon in the top right of the window
-        * Alternatively, for Opera, it is a cube button
-        * Alternatively, for Firefox, there is NOT an extensions menu and instead you invoke the extension directly by
-          clicking a puzzle icon button on the right side of the URL bar.
-    * Click the "stackoverflow-look-back" extension entry
-    * A popup will show up with buttons titled "Scrape votes" and "Expand posts". Click "Scrape votes" and check the
-      console logs. The votes data will have been scraped and saved to browser storage.
-1. Expand the post data
-    * Go to the [Stack Exchange Data Explorer](https://data.stackexchange.com/stackoverflow/query/new)
-        * If not logged in, then log in and navigate back to the original page.
-    * Repeat the earlier steps to open the extension entry
-    * The same popup will appear. Click "Expand posts". The post data will be expanded and saved into browser storage.
-1. View the posts
-    * While on the same StackExchange page, repeat the earlier steps to open the extension entry
-    * Click the "View posts" button
-    * Explore the data!
+10. Open StackOverflow
+     * Go to <https://stackoverflow.com/> in your browser
+11. Log in
+12. Open your profile
+     * Click your picture in the top right corner to open your profile
+13. Open the "Votes" tab
+     * Find the "Votes" tab and click it.
+     * For me, my Votes tab navigates to this URL: <https://stackoverflow.com/users/1333713/david-groomes?tab=votes>
+14. Scrape the votes data
+     * Open the extensions menu by pressing the puzzle icon in the top right of the window
+         * Alternatively, for Opera, it is a cube button
+         * Alternatively, for Firefox, there is NOT an extensions menu and instead you invoke the extension directly by
+           clicking a puzzle icon button on the right side of the URL bar.
+     * Click the "stackoverflow-look-back" extension entry
+     * A popup will show up with buttons titled "Scrape votes" and "Expand posts". Click "Scrape votes" and check the
+       console logs. The votes data will have been scraped and saved to browser storage.
+15. Expand the post data
+     * Go to the [Stack Exchange Data Explorer](https://data.stackexchange.com/stackoverflow/query/new)
+         * If not logged in, then log in and navigate back to the original page.
+     * Repeat the earlier steps to open the extension entry
+     * The same popup will appear. Click "Expand posts". The post data will be expanded and saved into browser storage.
+16. View the posts
+     * While on the same StackExchange page, repeat the earlier steps to open the extension entry
+     * Click the "View posts" button
+     * Explore the data!
 
 
 ## Firefox
@@ -162,8 +180,15 @@ General clean ups, TODOs and things I wish to implement for this project:
 * [ ] Multi-term search. The search bar should take each word and apply an "AND" search
 * [ ] Implement a "recents" feature? Maybe the most relevant StackOverflow posts are the ones I just added! I'm revisiting
   them continually until I understand them (concepts) or memorize them (commands or code snippets).
-* [ ] Replace Deno with Webpack and ts-loader. Similar to the [work I did in the BrowserExtensionFramework](https://github.com/dgroomes/browser-extension-framework/commit/f459a1165b632eeeb265c8e137256c4fd353eb36).
-
+* [ ] IN PROGRESS Replace Deno with Webpack and ts-loader. Similar to the [work I did in the BrowserExtensionFramework](https://github.com/dgroomes/browser-extension-framework/commit/f459a1165b632eeeb265c8e137256c4fd353eb36).
+  * This is going to be at least a decent amount of work. It could be full of pitfalls. I at least proved out the BrowserExtensionFramework
+    on Webpack and NPM and even validated it with the sample extension named *Detect Code Libraries* in that same project.
+    How can I split this work into multiple, completable, tasks?
+  * DONE (this was easy for the only reason that we're consuming BrowserExtensionFramework was a Git submodule and that
+    it has no NPM dependencies of its own. The effect of this is that we have full access to the source that we need to change
+    (convert the import statements)) Update the Git submodule, build it, and then can I consume it from Deno? It might be possible if I turn
+    off type validation... but I think the imports just won't work.
+  * Migrate to Webpack and ts-loader.
 
 ## Finished Wish List items
 

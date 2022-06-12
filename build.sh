@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 # Build the web extension distributions from the source code.
 #
-# This is a light-weight process as far as build processes go for typical software projects. All this script does is
-# copy some files around. There are no dependency download steps or compilation steps.
-#
-# Specifically, this will create the directories:
+# Specifically, this will create the directory:
 #   * build/chromium-manifest-v2-web-extension/
-#   * build/firefox-manifest-v2-web-extension/
 #
 # The contents of these directories are ready to be loaded into the browser as web extensions! See the README for
 # instructions.
@@ -23,7 +19,8 @@ fi
 set -eu
 
 project_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-extension_sources=(firefox-manifest-v2 chromium-manifest-v2)
+# We can't support Firefox because I can't test with it.
+extension_sources=(chromium-manifest-v2)
 
 preconditions() {
   if ! which deno &> /dev/null; then
@@ -53,7 +50,6 @@ build_distribution() {
 
   # Copy over non-TypeScript files (don't bother using fancy shell scripting here. Just copy over the few files explicitly)
   cp \
-    "$project_dir/src/web-page/get-posts-by-ids.sql" \
     "$project_dir/src/web-page/posts-viewer.html" \
     "$project_dir/src/web-page/posts-viewer.css" \
     "$vendor_output_dir/web-page"
@@ -63,13 +59,10 @@ build_distribution() {
   # Compile ("bundle") the TypeScript entrypoint-type files into JavaScript
   deno_bundle "$project_dir/src/backend/popup.ts" "$vendor_output_dir/backend/popup.js"
 
-  deno_bundle "$project_dir/src/backend/votes-content-script.ts" "$vendor_output_dir/backend/votes-content-script.js"
   deno_bundle "$project_dir/src/web-page/votes-page-script.ts" "$vendor_output_dir/web-page/votes-page-script.js"
-
-  deno_bundle "$project_dir/src/backend/posts-content-script.ts" "$vendor_output_dir/backend/posts-content-script.js"
   deno_bundle "$project_dir/src/web-page/posts-page-script.ts" "$vendor_output_dir/web-page/posts-page-script.js"
 
-  deno_bundle "$project_dir/web-extension-framework/rpc-framework/rpc-content-script.ts" "$vendor_output_dir/rpc-framework/rpc-content-script.js"
+  cp "$project_dir/web-extension-framework/browser-extension-framework/dist/content-script-middleware.js" "$vendor_output_dir"
   deno_bundle "$project_dir/src/web-page/posts-viewer.ts" "$vendor_output_dir/web-page/posts-viewer.js"
 }
 

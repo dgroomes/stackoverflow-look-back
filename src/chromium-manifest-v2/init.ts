@@ -2,14 +2,11 @@
 //
 // This declares the permissions that dictate which pages the extension are enabled for.
 
-import {initRpcBackground } from '../../web-extension-framework/rpc-framework/rpc-backend.ts'
-import {chrome} from "../../web-extension-framework/web-extension-types/chrome-extension-types.d.ts"
+import {chrome} from "../../web-extension-framework/browser-types/chromium-types/global.d.ts"
 
 console.debug("[chromium-manifest-v2/init.js] Initializing...")
 
-chrome.runtime.onInstalled.addListener(async () => {
-    await initRpcBackground("chromium")
-
+chrome.runtime.onInstalled.addListener(() => {
     chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
         chrome.declarativeContent.onPageChanged.addRules([{
             conditions: [
@@ -23,4 +20,5 @@ chrome.runtime.onInstalled.addListener(async () => {
             actions: [new chrome.declarativeContent.ShowPageAction()]
         }])
     })
+    console.debug("Installed.")
 })

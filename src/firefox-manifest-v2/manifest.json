@@ -15,7 +15,6 @@
     "https://data.stackexchange.com/*"
   ],
   "web_accessible_resources": [
-    "web-page/get-posts-by-ids.sql",
     "web-page/posts-viewer.css",
     "web-page/posts-viewer.html",
     "web-page/votes-page-script.js",

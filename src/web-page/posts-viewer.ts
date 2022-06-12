@@ -1,11 +1,13 @@
 import {PostsViewer} from "../core/posts/PostsViewer.ts"
 import {QuestionPost} from "../core/posts/QuestionPost.ts";
 import {AppStorage} from "../core/AppStorage.ts";
-import {PageWiring} from "../../web-extension-framework/web-extension-framework/page-wiring.ts";
+import {
+    BrowserExtensionFramework
+} from "../../web-extension-framework/browser-extension-framework/api/browser-extension-framework.ts";
 
 const init: Promise<PostsViewer> = (async function init(): Promise<PostsViewer> {
     console.debug("[posts-viewer.js] Initializing...");
-    const pageWiring = PageWiring.initialize();
+    const pageWiring = BrowserExtensionFramework.initializePageWiring();
     const postsViewer = await PostsViewer.init(new AppStorage(pageWiring.rpcClient));
     console.info("Initialized. Posts were rendered to HTML successfully");
 

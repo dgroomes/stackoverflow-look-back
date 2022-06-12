@@ -1,9 +1,9 @@
-import {PageWiring} from "../../web-extension-framework/web-extension-framework/page-wiring.ts";
+import {BrowserExtensionFramework} from "../../web-extension-framework/browser-extension-framework/api/browser-extension-framework.ts";
 import {AppStorage} from "../core/AppStorage.ts";
 import {VotesScraper} from "../core/votes/VotesScraper.ts";
 
 console.debug("[votes-page-script.js] Initializing...");
-const pageWiring = PageWiring.initialize();
+const pageWiring = BrowserExtensionFramework.initializePageWiring();
 const appStorage = new AppStorage(pageWiring.rpcClient);
 
 pageWiring.rpcServer.registerPromiseProcedure("scrape-votes", (procedureArgs: { votesPageLimit: number }) => {

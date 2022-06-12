@@ -1,7 +1,7 @@
 import {Vote} from "./votes/Vote.ts"
 import {Post} from "./posts/Post.ts"
-import {RpcClient} from "../../web-extension-framework/rpc-framework/rpc.ts"
-import {chrome} from "../../web-extension-framework/web-extension-types/chrome-extension-types.d.ts"
+import {RpcClient} from "../../web-extension-framework/browser-extension-framework/rpc/rpc.ts"
+import {chrome} from "../../web-extension-framework/browser-types/chromium-types/global.d.ts"
 export {AppStorage}
 
 /**
@@ -33,7 +33,7 @@ class AppStorage {
     async getVotes() : Promise<Array<Vote>> {
         return this.#rpcClient.execRemoteProcedure("get", {key: "votes"})
             .then(returnValue => {
-                return returnValue.votes.map(voteData => Vote.deserialize(voteData))
+                return (returnValue as any).votes.map(voteData => Vote.deserialize(voteData))
             })
     }
 

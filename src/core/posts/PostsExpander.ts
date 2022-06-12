@@ -11,11 +11,9 @@ export {PostsExpander}
 
 class PostsExpander {
 
-    #webResourcesOrigin: string
     #appStorage: AppStorage
 
-    constructor(webResourcesOrigin: string, appStorage: AppStorage) {
-        this.#webResourcesOrigin = webResourcesOrigin;
+    constructor(appStorage: AppStorage) {
         this.#appStorage = appStorage;
     }
 
@@ -24,15 +22,28 @@ class PostsExpander {
      *
      * @param {Array<Number>} ids the list of post IDs
      */
-    async expandByIds(ids) {
+    expandByIds(ids) {
         console.debug({
             message: "Querying for post information for posts with IDs",
             id: ids
         })
 
-        // Fetch the source code for the SQL query
-        const sql = await fetch(`${this.#webResourcesOrigin}/web-page/get-posts-by-ids.sql`)
-            .then(response => response.text());
+        const sql = `
+-- SQL Server SQL query to get posts by post IDs in the Stack Exchange Data Explorer (SEDE)
+
+-- Parameterize the query on post IDs. There's not a good way to parameterize on a list so just use an nvarchar and split
+-- the string on commas in the query. Beware of the the upper limit for an "in" clause. Although I doubt I'll hit it.
+DECLARE @PostIds NVARCHAR(max) = ##PostIds## -- For example '39126853,4437573,1464812'
+
+SELECT Id,
+       ParentId,
+       PostTypeId,
+       Tags,
+       Title,
+       Body
+FROM Posts
+WHERE Id in (SELECT value FROM STRING_SPLIT(@PostIds, ','));
+`;
 
         (<any>document.querySelector('.CodeMirror')).CodeMirror.setValue(sql) // Set the SQL query
 
