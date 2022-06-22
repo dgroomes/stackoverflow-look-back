@@ -1,9 +1,8 @@
 // This code runs in the popup. It bootstraps the content scripts which then bootstrap the web page. It waits for user
 // input when any of the "Scrape votes", "Expand posts", or "View posts" buttons are clicked in the popup.
 
-import {chrome} from "../../browser-extension-framework/browser-types/chromium-types/global.d.ts"
-import {BackendWiring} from "../../browser-extension-framework/browser-extension-framework/api/backend-wiring.ts"
-import {BrowserDescriptor, BrowserExtensionFramework} from "../../browser-extension-framework/browser-extension-framework/api/browser-extension-framework.ts";
+import {BackendWiring} from "@dgroomes/browser-extension-framework"
+import * as BrowserExtensionFramework from "@dgroomes/browser-extension-framework"
 
 console.debug("[popup.js] Initializing...")
 
@@ -33,7 +32,7 @@ document.getElementById("execute-scrape-votes")!
         console.info(`[popup.js] Clicked the 'scrape votes' button`);
 
         // Note: we're not supporting Firefox because I can't actually test with Firefox.
-        const backendWiring = await BrowserExtensionFramework.initializeBackendWiring(BrowserDescriptor.CHROMIUM);
+        const backendWiring = await BrowserExtensionFramework.initializeBackendWiring("chromium");
         await backendWiring.injectInstrumentedPageScript("web-page/votes-page-script.js")
 
         await registerProcedures(backendWiring);
@@ -50,7 +49,7 @@ document.getElementById("execute-expand-posts")!
         console.info(`[popup.js] Clicked the 'expand posts' button`);
 
         // Note: we're not supporting Firefox because I can't actually test with Firefox.
-        const backendWiring = await BrowserExtensionFramework.initializeBackendWiring(BrowserDescriptor.CHROMIUM);
+        const backendWiring = await BrowserExtensionFramework.initializeBackendWiring("chromium");
         await backendWiring.injectInstrumentedPageScript("web-page/posts-page-script.js")
 
         await registerProcedures(backendWiring);

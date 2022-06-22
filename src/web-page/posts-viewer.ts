@@ -1,9 +1,7 @@
-import {PostsViewer} from "../core/posts/PostsViewer.ts"
-import {QuestionPost} from "../core/posts/QuestionPost.ts";
-import {AppStorage} from "../core/AppStorage.ts";
-import {
-    BrowserExtensionFramework
-} from "../../browser-extension-framework/browser-extension-framework/api/browser-extension-framework.ts";
+import {PostsViewer} from "../core/posts/PostsViewer"
+import {QuestionPost} from "../core/posts/QuestionPost"
+import {AppStorage} from "../core/AppStorage"
+import * as BrowserExtensionFramework from "@dgroomes/browser-extension-framework"
 
 const init: Promise<PostsViewer> = (async function init(): Promise<PostsViewer> {
     console.debug("[posts-viewer.js] Initializing...");

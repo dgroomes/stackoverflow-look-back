@@ -1,5 +1,6 @@
-import {Vote} from "./Vote.ts"
-import {AppStorage} from "../AppStorage.ts"
+import {Vote} from "./Vote"
+import {AppStorage} from "../AppStorage"
+import * as votes from "./votes"
 
 export {VotesScraper}
 
@@ -93,11 +94,11 @@ class VotesScraper {
 
         // Parse the data from each vote element
         for (const el of answerVotes) {
-            const vote = Vote.parseFromUrl(el.href, 'answer')
+            const vote = votes.parseFromUrl(el.href, 'answer')
             this.votes.push(vote)
         }
         for (const el of questionVotes) {
-            const vote = Vote.parseFromUrl(el.href, 'question')
+            const vote = votes.parseFromUrl(el.href, 'question')
             this.votes.push(vote)
         }
 

@@ -1,0 +1,19 @@
+{
+  "name": "stackoverflow-look-back",
+  "description": "Extract and search the posts you've up-voted on StackOverflow. ***Look back*** on your data.",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "webpack --mode development"
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.6.3",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2"
+  },
+  "dependencies": {
+    "@dgroomes/browser-extension-framework": "file:browser-extension-framework/framework/dgroomes-browser-extension-framework-0.1.0.tgz"
+  }
+}

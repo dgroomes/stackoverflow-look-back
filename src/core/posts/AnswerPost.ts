@@ -1,4 +1,4 @@
-import {Post} from "./Post.ts";
+import {Post} from "./Post";
 
 /**
  * A StackOverflow answer post
@@ -8,8 +8,8 @@ class AnswerPost extends Post {
     readonly #questionId
 
     /**
-     * @param {Number} id
-     * @param {Number} questionId the ID of the answer's question post. The question post is considered the parent of the answer post.
+     * @param id The ID of the post
+     * @param questionId the ID of the answer's question post. The question post is considered the parent of the answer post.
      * @param {String} htmlBody the rendered HTML of the post body
      */
     constructor(id, questionId, htmlBody) {

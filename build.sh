@@ -19,34 +19,33 @@ fi
 set -eu
 
 project_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+bef_dir="$project_dir/browser-extension-framework"
+bef_dist="$bef_dir/framework/dgroomes-browser-extension-framework-0.1.0.tgz"
+
 # We can't support Firefox because I can't test with it.
 extension_sources=(chromium-manifest-v2)
 
 preconditions() {
-  if ! which deno &> /dev/null; then
-    echo >&2 "The 'deno' command was not found. Please install Deno. See https://deno.land/."
+  if [[ ! -f "$bef_dist" ]]; then
+    echo >&2 "The BrowserExtensionFramework distribution was not found in '$bef_dist'. Build the BrowserExtensionFramework distribution by following the instructions in the README"
     exit 1
   fi
-}
-
-# Delegate to the "deno bundle ..." command
-deno_bundle() {
-  deno bundle --quiet --config deno.json "${@}"
 }
 
 build_distribution() {
   local extension_source="$1"
   local vendor_source_dir="$project_dir/src/${extension_source}"
   local vendor_output_dir="$project_dir/build/${extension_source}-web-extension"
+  local webpack_output_dir="$project_dir/dist"
 
   # Delete the build directory and everything inside of it if it already exists and then create it again.
   mkdir -p "$vendor_output_dir"
   rm -rf "$vendor_output_dir"
   mkdir -p "$vendor_output_dir/backend" "$vendor_output_dir/rpc-framework" "$vendor_output_dir/web-page"
 
-  # Copy over the vendor-specific Manifest file and bundle the vendor-specific initialization JavaScript file
+  # Copy over the vendor-specific Manifest file and the vendor-specific initialization JavaScript file
   cp "$vendor_source_dir/manifest.json" "$vendor_output_dir"
-  deno_bundle "$vendor_source_dir/init.ts" "$vendor_output_dir/init.js"
+  cp "$webpack_output_dir/$extension_source-init.js" "$vendor_output_dir/init.js"
 
   # Copy over non-TypeScript files (don't bother using fancy shell scripting here. Just copy over the few files explicitly)
   cp \
@@ -56,14 +55,14 @@ build_distribution() {
 
   cp "$project_dir/src/backend/popup.html" "$vendor_output_dir/backend"
 
-  # Compile ("bundle") the TypeScript entrypoint-type files into JavaScript
-  deno_bundle "$project_dir/src/backend/popup.ts" "$vendor_output_dir/backend/popup.js"
+  # Copy over the entrypoint-type files
+  cp "$webpack_output_dir/popup.js" "$vendor_output_dir/backend/popup.js"
 
-  deno_bundle "$project_dir/src/web-page/votes-page-script.ts" "$vendor_output_dir/web-page/votes-page-script.js"
-  deno_bundle "$project_dir/src/web-page/posts-page-script.ts" "$vendor_output_dir/web-page/posts-page-script.js"
+  cp "$webpack_output_dir/votes-page-script.js" "$vendor_output_dir/web-page/votes-page-script.js"
+  cp "$webpack_output_dir/posts-page-script.js" "$vendor_output_dir/web-page/posts-page-script.js"
 
-  cp "$project_dir/browser-extension-framework/browser-extension-framework/dist/content-script-middleware.js" "$vendor_output_dir"
-  deno_bundle "$project_dir/src/web-page/posts-viewer.ts" "$vendor_output_dir/web-page/posts-viewer.js"
+  cp "$project_dir/node_modules/@dgroomes/browser-extension-framework/dist/content-script-middleware.js" "$vendor_output_dir"
+  cp "$webpack_output_dir/posts-viewer.js" "$vendor_output_dir/web-page/posts-viewer.js"
 }
 
 build_all() {

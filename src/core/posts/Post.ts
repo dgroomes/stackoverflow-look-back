@@ -1,6 +1,4 @@
-import {toJSON} from "../../../util/to-json.ts"
-import {QuestionPost} from "./QuestionPost.ts";
-import {AnswerPost} from "./AnswerPost.ts";
+import {toJSON} from "../../../util/to-json"
 
 export {Post}
 
@@ -13,24 +11,7 @@ abstract class Post {
     htmlBody: string;
 
     /**
-     * Deserialize from a data object to a concrete Post instance.
-     * @param postData a regular object that includes the raw post data
-     * @return {Post} a Post object. It's an instance of either Question or Answer.
-     */
-    static deserialize(postData : any) : Post {
-        const {type, id, htmlBody} = postData
-
-        if (type === "question") {
-            return new QuestionPost(id, postData.tags, postData.title, htmlBody)
-        } else if (postData.type === "answer") {
-            return new AnswerPost(id, postData.questionId, htmlBody)
-        } else {
-            throw new Error(`Unrecognized post type '${type}'`)
-        }
-    }
-
-    /**
-     * @param {number} id
+     * @param id The ID of the post
      * @param {string} htmlBody the rendered HTML of the post body
      */
     protected constructor(id : number, htmlBody: string) {

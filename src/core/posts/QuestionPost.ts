@@ -1,4 +1,4 @@
-import {Post} from "./Post.ts";
+import {Post} from "./Post"
 
 /**
  * A StackOverflow question post
@@ -9,12 +9,12 @@ class QuestionPost extends Post {
     title: String
 
     /**
-     * @param {number} id
-     * @param {Array<String>} tags the tags of the post. This is non-nullable. In StackExchange, it is nullable but here we will represent the absence of tags as an empty array.
-     * @param {string} title the title of the post. This is non-null for questions but is null for answers.
-     * @param {string} htmlBody the rendered HTML of the post body
+     * @param id The ID of the post
+     * @param tags the tags of the post. This is non-nullable. In StackExchange, it is nullable but here we will represent the absence of tags as an empty array.
+     * @param title the title of the post. This is non-null for questions but is null for answers.
+     * @param htmlBody the rendered HTML of the post body
      */
-    constructor(id, tags, title, htmlBody) {
+    constructor(id : number, tags: string[], title: string, htmlBody: string) {
         super(id, htmlBody)
         this.tags = tags
         this.title = title

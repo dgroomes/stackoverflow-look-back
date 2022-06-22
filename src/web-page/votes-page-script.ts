@@ -1,6 +1,6 @@
-import {BrowserExtensionFramework} from "../../browser-extension-framework/browser-extension-framework/api/browser-extension-framework.ts";
-import {AppStorage} from "../core/AppStorage.ts";
-import {VotesScraper} from "../core/votes/VotesScraper.ts";
+import * as BrowserExtensionFramework from "@dgroomes/browser-extension-framework"
+import {AppStorage} from "../core/AppStorage"
+import {VotesScraper} from "../core/votes/VotesScraper"
 
 console.debug("[votes-page-script.js] Initializing...");
 const pageWiring = BrowserExtensionFramework.initializePageWiring();

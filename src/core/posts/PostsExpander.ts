@@ -1,11 +1,11 @@
 // Given a collection of post IDs, expand the posts into the HTML body content and titles by querying the data from
 // the Stack Exchange Data Explorer. See the README for more info.
 
-import {instrumentJQuery, registerAjaxSuccessSpy} from "../../../util/jquery-proxy.ts"
-import {AppStorage} from "../AppStorage.ts"
-import {Vote} from "../votes/Vote.ts"
-import {QuestionPost} from "./QuestionPost.ts";
-import {AnswerPost} from "./AnswerPost.ts";
+import {instrumentJQuery, registerAjaxSuccessSpy} from "../../../util/jquery-proxy"
+import {AppStorage} from "../AppStorage"
+import {Vote} from "../votes/Vote"
+import {QuestionPost} from "./QuestionPost"
+import {AnswerPost} from "./AnswerPost"
 
 export {PostsExpander}
 

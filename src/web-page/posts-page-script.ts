@@ -1,8 +1,6 @@
-import {
-    BrowserExtensionFramework
-} from "../../browser-extension-framework/browser-extension-framework/api/browser-extension-framework.ts";
-import {AppStorage} from "../core/AppStorage.ts";
-import {PostsExpander} from "../core/posts/PostsExpander.ts";
+import * as BrowserExtensionFramework from "@dgroomes/browser-extension-framework"
+import {AppStorage} from "../core/AppStorage"
+import {PostsExpander} from "../core/posts/PostsExpander"
 
 console.debug("[posts-page-script.js] Initializing...");
 const pageWiring = BrowserExtensionFramework.initializePageWiring();

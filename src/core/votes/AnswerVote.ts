@@ -1,4 +1,4 @@
-import {Vote} from "./Vote.ts";
+import {Vote} from "./Vote"
 
 /**
  * A StackOverflow vote on an answer.

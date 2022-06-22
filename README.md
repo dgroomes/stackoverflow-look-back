@@ -71,57 +71,48 @@ just relies on standard web APIs instead of non-standard browser extension APIs 
 
 Follow these instructions to install the tool as a Chrome browser extension and use it:
 
-1. Install [Deno](https://deno.land/)
-    * > A modern runtime for JavaScript and TypeScript.
-2. Clone the BrowserExtensionFramework dependency:
+1. Install [npm](https://www.npmjs.com/)
+2. Clone the BrowserExtensionFramework (BEF) Git submodule:
     * ```shell
-      git submodule add https://github.com/dgroomes/browser-extension-framework
+      git submodule update --init
       ```
-3. Convert framework `import` statements
-    * This is an unfortunate work-around during the migration process from the old Deno-based web-extension-framework to the new Webpack-based BrowserExtensionFramework.
-    * Deno requires the file extension in `import` statements (for example: `import {chrome} from "../../web-extension-framework/browser-types/chromium-types/global.d.ts"`)
-      but BrowserExtensionFramework is written using the Webpack and `ts-loader` style and does not have the file extension
-      in `import` statements. We have to convert, by hand, all the import statements in the framework code. You might be
-      able to use import maps to solve this problem, but I've been burned by those before.
-5. Build BrowserExtensionFramework
-    * Navigate into the directory with the following command.
+3. Build the BEF distribution
+    * Follow the build instructions in the BEF README. It is located at `browser-extension-framework/README.md`.
+4. Install BEF:
     * ```shell
-      cd browser-extension-framework/browser-extension-framework
+      npm install browser-extension-framework/framework/dgroomes-browser-extension-framework-0.1.0.tgz
       ```
-    * Then install and build the library with the following commands.
+5. Run the Webpack build:
     * ```shell
-      npm install
+      npm run build
       ```
-   * ```shell
-      npm build
-      ```
-6. Build the extension distributions:
+7. Build the extension distributions:
     * ```shell
       ./build.sh
       ```
     * This takes about a minute! I'm assuming the TypeScript type checking takes a lot of time. 
-7. Open Chrome's extension settings page
+8. Open Chrome's extension settings page
     * Open Chrome to the URL: <chrome://extensions>
     * Alternatively, follow the instructions in the [Firefox](#firefox) section below to install the extension in
       Firefox
     * Alternatively, follow the instructions in the [Opera](#opera) section below to install the extension in Opera
-8. Enable developer mode
+9. Enable developer mode
     * Enable the *Developer mode* toggle control in the upper right corner of the page
-9. Install the extension
-    * Click the *Load unpacked* button
-    * In the file finder window that opens, find the extension distribution
-      directory `build/chromium-manifest-v2-web-extension/`, single click it to highlight it, and click the *Select*
-      button.
-    * It's installed!
-10. Open StackOverflow
+10. Install the extension
+     * Click the *Load unpacked* button
+     * In the file finder window that opens, find the extension distribution
+       directory `build/chromium-manifest-v2-web-extension/`, single click it to highlight it, and click the *Select*
+       button.
+     * It's installed!
+11. Open StackOverflow
      * Go to <https://stackoverflow.com/> in your browser
-11. Log in
-12. Open your profile
+12. Log in
+13. Open your profile
      * Click your picture in the top right corner to open your profile
-13. Open the "Votes" tab
+14. Open the "Votes" tab
      * Find the "Votes" tab and click it.
      * For me, my Votes tab navigates to this URL: <https://stackoverflow.com/users/1333713/david-groomes?tab=votes>
-14. Scrape the votes data
+15. Scrape the votes data
      * Open the extensions menu by pressing the puzzle icon in the top right of the window
          * Alternatively, for Opera, it is a cube button
          * Alternatively, for Firefox, there is NOT an extensions menu and instead you invoke the extension directly by
@@ -129,12 +120,12 @@ Follow these instructions to install the tool as a Chrome browser extension and 
      * Click the "stackoverflow-look-back" extension entry
      * A popup will show up with buttons titled "Scrape votes" and "Expand posts". Click "Scrape votes" and check the
        console logs. The votes data will have been scraped and saved to browser storage.
-15. Expand the post data
+16. Expand the post data
      * Go to the [Stack Exchange Data Explorer](https://data.stackexchange.com/stackoverflow/query/new)
          * If not logged in, then log in and navigate back to the original page.
      * Repeat the earlier steps to open the extension entry
      * The same popup will appear. Click "Expand posts". The post data will be expanded and saved into browser storage.
-16. View the posts
+17. View the posts
      * While on the same StackExchange page, repeat the earlier steps to open the extension entry
      * Click the "View posts" button
      * Explore the data!
@@ -180,7 +171,7 @@ General clean ups, TODOs and things I wish to implement for this project:
 * [ ] Multi-term search. The search bar should take each word and apply an "AND" search
 * [ ] Implement a "recents" feature? Maybe the most relevant StackOverflow posts are the ones I just added! I'm revisiting
   them continually until I understand them (concepts) or memorize them (commands or code snippets).
-* [ ] IN PROGRESS Replace Deno with Webpack and ts-loader. Similar to the [work I did in the BrowserExtensionFramework](https://github.com/dgroomes/browser-extension-framework/commit/f459a1165b632eeeb265c8e137256c4fd353eb36).
+* [x] DONE Replace Deno with Webpack and ts-loader. Similar to the [work I did in the BrowserExtensionFramework](https://github.com/dgroomes/browser-extension-framework/commit/f459a1165b632eeeb265c8e137256c4fd353eb36).
   * This is going to be at least a decent amount of work. It could be full of pitfalls. I at least proved out the BrowserExtensionFramework
     on Webpack and NPM and even validated it with the sample extension named *Detect Code Libraries* in that same project.
     How can I split this work into multiple, completable, tasks?
@@ -188,7 +179,7 @@ General clean ups, TODOs and things I wish to implement for this project:
     it has no NPM dependencies of its own. The effect of this is that we have full access to the source that we need to change
     (convert the import statements)) Update the Git submodule, build it, and then can I consume it from Deno? It might be possible if I turn
     off type validation... but I think the imports just won't work.
-  * Migrate to Webpack and ts-loader. Build BrowserExtensionFramework with `npm pack` and reference it from `stackoverflow-look-back`
+  * DONE Migrate to Webpack and ts-loader, and use the latest BEF. Build BEF with `npm pack` and reference it from `stackoverflow-look-back`
     as an NPM dependency like `file:browser-extension-framework/browser-extension-framework/browser-extension-framework-0.1.0.tgz`
 
 ## Finished Wish List items
