@@ -171,16 +171,7 @@ General clean ups, TODOs and things I wish to implement for this project:
 * [ ] Multi-term search. The search bar should take each word and apply an "AND" search
 * [ ] Implement a "recents" feature? Maybe the most relevant StackOverflow posts are the ones I just added! I'm revisiting
   them continually until I understand them (concepts) or memorize them (commands or code snippets).
-* [x] DONE Replace Deno with Webpack and ts-loader. Similar to the [work I did in the BrowserExtensionFramework](https://github.com/dgroomes/browser-extension-framework/commit/f459a1165b632eeeb265c8e137256c4fd353eb36).
-  * This is going to be at least a decent amount of work. It could be full of pitfalls. I at least proved out the BrowserExtensionFramework
-    on Webpack and NPM and even validated it with the sample extension named *Detect Code Libraries* in that same project.
-    How can I split this work into multiple, completable, tasks?
-  * DONE (this was easy for the only reason that we're consuming BrowserExtensionFramework was a Git submodule and that
-    it has no NPM dependencies of its own. The effect of this is that we have full access to the source that we need to change
-    (convert the import statements)) Update the Git submodule, build it, and then can I consume it from Deno? It might be possible if I turn
-    off type validation... but I think the imports just won't work.
-  * DONE Migrate to Webpack and ts-loader, and use the latest BEF. Build BEF with `npm pack` and reference it from `stackoverflow-look-back`
-    as an NPM dependency like `file:browser-extension-framework/browser-extension-framework/browser-extension-framework-0.1.0.tgz`
+
 
 ## Finished Wish List items
 
@@ -427,6 +418,16 @@ These are the finished items from the Wish List:
     * DONE Delete the now redundant framework code
     * DONE Depend on the new code as a Git sub-module
 * [x] DONE Defect. The stackoverflow-look-back is not working. There have been changes to the site.
+* [x] DONE Replace Deno with Webpack and ts-loader. Similar to the [work I did in the BrowserExtensionFramework](https://github.com/dgroomes/browser-extension-framework/commit/f459a1165b632eeeb265c8e137256c4fd353eb36).
+    * This is going to be at least a decent amount of work. It could be full of pitfalls. I at least proved out the BrowserExtensionFramework
+      on Webpack and NPM and even validated it with the sample extension named *Detect Code Libraries* in that same project.
+      How can I split this work into multiple, completable, tasks?
+    * DONE (this was easy for the only reason that we're consuming BrowserExtensionFramework was a Git submodule and that
+      it has no NPM dependencies of its own. The effect of this is that we have full access to the source that we need to change
+      (convert the import statements)) Update the Git submodule, build it, and then can I consume it from Deno? It might be possible if I turn
+      off type validation... but I think the imports just won't work.
+    * DONE Migrate to Webpack and ts-loader, and use the latest BEF. Build BEF with `npm pack` and reference it from `stackoverflow-look-back`
+      as an NPM dependency like `file:browser-extension-framework/browser-extension-framework/browser-extension-framework-0.1.0.tgz`
 
 
 ## Background
