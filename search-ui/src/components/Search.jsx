@@ -6,6 +6,8 @@ import {Configure, Highlight, Hits, InstantSearch, Pagination, SearchBox,} from 
 const APP_ID = process.env.NEXT_PUBLIC_APP_ID;
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
+const INDEX_NAME = "posts_full";
+
 const searchClient = algoliasearch(APP_ID, API_KEY);
 
 /**
@@ -14,7 +16,7 @@ const searchClient = algoliasearch(APP_ID, API_KEY);
 export default function Search() {
     return (
         <div className="container">
-            <InstantSearch searchClient={searchClient} indexName="sample_stackoverflow_posts">
+            <InstantSearch searchClient={searchClient} indexName={INDEX_NAME}>
                 <Configure hitsPerPage={8}/>
                 <div className="search-panel">
                     <div className="search-panel__results">
@@ -31,18 +33,30 @@ export default function Search() {
     );
 }
 
+/**
+ * Given a post's data, build a URL to the post.
+ *
+ * Interestingly, answer posts can be reached by the same "questions/" URL path as questions. StackOverflow just redirects
+ * to the right URL. This is convenient!
+ */
+function Link({post}) {
+    const url = `https://stackoverflow.com/questions/${post.id}`;
+    return <a href={url}>link</a>;
+}
+
 function Hit({hit}) {
     return (
         <article>
             <h1>
-                <Highlight attribute="post_title" hit={hit}/>
+                <Highlight attribute="title" hit={hit}/>
             </h1>
             <p>
-                <Highlight attribute="author_name" hit={hit}/>
+                <Highlight attribute="htmlBody" hit={hit}/>
             </p>
             <p>
-                <Highlight attribute="content" hit={hit}/>
+                <Highlight attribute="tags" hit={hit}/>
             </p>
+            <Link post={hit}></Link>
         </article>
     );
 }
