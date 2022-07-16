@@ -5,8 +5,8 @@
 
 ## Description
 
-I need to quickly browse and re-learn from questions I've up-voted in the past. This is a browser extension for doing
-that. See [Background](#background) for more information.
+I need to quickly browse and re-learn from questions I've up-voted in the past. This is a browser extension and search UI
+for doing that. See [Background](#background) for more information.
 
 **NOTE**: This was developed on macOS and for my own personal use.
 
@@ -42,7 +42,7 @@ is an RPC-centric web extension framework that was originally developed as part 
 The extension has been verified to work in the checked `[x]` browsers:
 
 * [x] Firefox (version 91)
-* [x] Chrome (version 92)
+* [x] Chrome (version 103)
 * [x] Opera (version 78)
 * [ ] Edge
 * [ ] Safari
@@ -171,7 +171,9 @@ General clean ups, TODOs and things I wish to implement for this project:
 * [ ] Multi-term search. The search bar should take each word and apply an "AND" search
 * [ ] Implement a "recents" feature? Maybe the most relevant StackOverflow posts are the ones I just added! I'm revisiting
   them continually until I understand them (concepts) or memorize them (commands or code snippets).
-
+* [ ] Remove the viewer with a standalone "Search UI". I've already implemented a good deal of this effort in `search-ui/`.
+      It is a single-page app built with Next.js and the posts data lives in Algolia. The UI uses Algolia's sophisticated
+      component library. I'm impressed with the developer experience of Algolia (and I also notice the price tag $$$).
 
 ## Finished Wish List items
 
