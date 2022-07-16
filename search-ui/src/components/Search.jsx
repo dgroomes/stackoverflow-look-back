@@ -1,5 +1,6 @@
 import algoliasearch from "algoliasearch/lite";
 import {Configure, Highlight, Hits, InstantSearch, Pagination, SearchBox,} from "react-instantsearch-hooks-web";
+import {StackOverflowPostLink} from "./StackOverflowPostLink";
 
 // Algolia app IDs and API keys are not exactly secrets because they are used client-side where anyone can see them. But
 // I'll still omit them and instead load them from the environment. Fortunately this is easy with Next.js.
@@ -33,17 +34,6 @@ export default function Search() {
     );
 }
 
-/**
- * Given a post's data, build a URL to the post.
- *
- * Interestingly, answer posts can be reached by the same "questions/" URL path as questions. StackOverflow just redirects
- * to the right URL. This is convenient!
- */
-function Link({post}) {
-    const url = `https://stackoverflow.com/questions/${post.id}`;
-    return <a href={url}>link</a>;
-}
-
 function Hit({hit}) {
     return (
         <article>
@@ -56,7 +46,7 @@ function Hit({hit}) {
             <p>
                 <Highlight attribute="tags" hit={hit}/>
             </p>
-            <Link post={hit}></Link>
+            <StackOverflowPostLink post={hit}></StackOverflowPostLink>
         </article>
     );
 }
