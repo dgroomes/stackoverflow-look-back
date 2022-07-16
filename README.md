@@ -174,6 +174,10 @@ General clean ups, TODOs and things I wish to implement for this project:
 * [ ] Remove the viewer with a standalone "Search UI". I've already implemented a good deal of this effort in `search-ui/`.
       It is a single-page app built with Next.js and the posts data lives in Algolia. The UI uses Algolia's sophisticated
       component library. I'm impressed with the developer experience of Algolia (and I also notice the price tag $$$).
+* [ ] Handle case insensitivity in the search result highlighting. Unfortunately I this means the algorithm has to be
+      changed considerably. Something to do with carrying a pair of "the original text section" and a "normalized
+      (lowercased) text section" and somehow preserving case in the original phrase. Maybe regex are the right choice but
+      then I have to escape the regexes if the matched term has regex special characters (which maybe they never do?).
 
 ## Finished Wish List items
 

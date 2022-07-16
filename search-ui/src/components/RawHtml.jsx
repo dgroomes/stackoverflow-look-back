@@ -22,17 +22,21 @@ function htmlStringToElements(rawHtml) {
  * This uses a recursive algorithm. For illustrative purposes it logs to the console.
  *
  * @param {Element} el
- * @return {ReactElement | string}
+ * @param {function} textNodeHandler - An optional transformer function. Turns a text node into a React element.
+ * @return {Array<ReactElement | string | null>}
  */
-function elementToReact(el) {
+function elementToReact(el, textNodeHandler) {
     const tagName = el.tagName?.toLowerCase(); // Note: 'React.createElement' prefers lowercase tag names for HTML elements.
     const childNodes = Array.from(el.childNodes);
     if (childNodes.length > 0) {
-        const childReactElements = childNodes.map(childNode => elementToReact(childNode)).filter(el => {
-            // In the edge case that we found an unsupported node type, we'll just filter it out.
-            return el !== null
-        });
-        return React.createElement(tagName, null, ...childReactElements);
+        const childElementsOrStrings = childNodes
+            .flatMap(childNode => elementToReact(childNode, textNodeHandler))
+            .filter(el => {
+                // In the edge case that we found an unsupported node type, we'll just filter it out.
+                return el !== null
+            });
+        let reactElement = React.createElement(tagName, null, ...childElementsOrStrings);
+        return [reactElement];
     } else {
         // This is a "bottom out" point. The recursion stops here. The element is either a text node, a comment node,
         // and maybe some other types. I'm not totally sure. Reference the docs to understand the different node
@@ -40,22 +44,33 @@ function elementToReact(el) {
         // For simplicity, let's only support text nodes.
         const nodeType = el.nodeType;
         if (nodeType === Node.TEXT_NODE) {
-            return el.textContent;
+            let textContent = el.textContent;
+            if (textNodeHandler) {
+                return textNodeHandler(textContent);
+            }
+            return [textContent];
         } else {
             console.warn(`Unsupported node type: ${nodeType}. Consider improving this function to support this type`);
-            return null;
+            return [null];
         }
     }
 }
 
 /**
- * Turn raw HTML into a React element.
+ * Turn raw HTML into a React element. Optionally, include a 'textNodeHandler' function to further transform a text node
+ * into more elements (to support highlighting the search results.)
  *
  * The raw HTML (a string) should be given as a child property.
  * @return {React.ReactElement}
  */
 export function RawHtml(props) {
     const children = React.Children.toArray(props.children);
+    let textNodeHandler;
+    if ('textNodeHandler' in props) {
+        textNodeHandler = props.textNodeHandler;
+    } else {
+        textNodeHandler = null;
+    }
     const numberOfChildren = children.length;
     if (numberOfChildren === 0) {
         console.error("Expected to find exactly one child element to the 'RawHtml' element but found none.")
@@ -69,7 +84,7 @@ export function RawHtml(props) {
     const rawHtml = children[0];
     const htmlElements = htmlStringToElements(rawHtml);
     const htmlElementsArray = Array.from(htmlElements);
-    const reactElements = htmlElementsArray.map(el => elementToReact(el));
+    const reactElements = htmlElementsArray.map(el => elementToReact(el, textNodeHandler));
 
     return (<>
         {reactElements}
