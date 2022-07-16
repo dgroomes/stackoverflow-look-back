@@ -18,6 +18,11 @@ Follow these instructions to build and run the UI:
 1. Open the page and try it out
    * Open the browser to <http://localhost:3000>.
 
+To build the site for deployment to GitHub Pages, use a special environment variable. The build command looks like this:
+
+```shell
+npm run build-target-gh-pages
+```
 
 ## Reference
 

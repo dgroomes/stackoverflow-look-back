@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && next export",
-    "build-target-gh-pages": "DEPLOY_TO_GITHUB_PAGES=true next build && next export -o docs && touch docs/.nojekyll",
+    "build-target-gh-pages": "DEPLOY_TO_GITHUB_PAGES=true next build && next export -o ../docs && touch ../docs/.nojekyll",
     "start": "next start"
   },
   "dependencies": {
