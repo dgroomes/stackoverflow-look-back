@@ -1,6 +1,7 @@
 import algoliasearch from "algoliasearch/lite";
 import {Configure, Highlight, Hits, InstantSearch, Pagination, SearchBox,} from "react-instantsearch-hooks-web";
 import {StackOverflowPostLink} from "./StackOverflowPostLink";
+import {RawHtml} from "./RawHtml";
 
 // Algolia app IDs and API keys are not exactly secrets because they are used client-side where anyone can see them. But
 // I'll still omit them and instead load them from the environment. Fortunately this is easy with Next.js.
@@ -41,7 +42,7 @@ function Hit({hit}) {
                 <Highlight attribute="title" hit={hit}/>
             </h1>
             <p>
-                <Highlight attribute="htmlBody" hit={hit}/>
+                <RawHtml>{hit.htmlBody}</RawHtml>
             </p>
             <p>
                 <Highlight attribute="tags" hit={hit}/>
