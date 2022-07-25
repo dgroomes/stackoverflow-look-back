@@ -8,7 +8,7 @@
 I need to quickly browse and re-learn from questions I've up-voted in the past. This is a browser extension and search UI
 for doing that. See [Background](#background) for more information.
 
-**NOTE**: This was developed on macOS and for my own personal use.
+**NOTE**: This project was developed on macOS. It is for my own personal use.
 
 
 ## Design
@@ -17,10 +17,22 @@ The overall flow of the tool breaks down like this:
 
 1. Scrape your votes data from <https://stackoverflow.com>
 1. Expand the votes data into posts data using <https://data.stackexchange.com>
-1. View and search a copy of the posts data
+1. View and search the posts 
 
-The source code is generally grouped by the execution context that the code runs in and is inviting for future additions
-like Manifest V3 support, or a Safari browser extension.
+The application is made up of several distinct programs:
+
+1. A browser extension
+   * The code is in [`src/`](src/)
+2. A search frontend
+   * This is implemented as a React application with NextJS.
+   * The code is in [`search-ui/`](search-ui/)
+3. A search backend
+   * Algolia is used as the search back-end
+   * For local development and experimentation, these is also a Lucene-based web server in [`search-api/`](search-api/).
+     This acts as a substitute for Algolia.
+
+The source code of the browser extension is generally grouped by the execution context that the code runs in and is inviting
+for future additions like Manifest V3 support, or a Safari browser extension.
 
 * `util/`
     * Miscellaneous utility code that is not specific to the *Look Back Tool*. 
@@ -36,7 +48,7 @@ like Manifest V3 support, or a Safari browser extension.
 * `src/firefox-manifest-v2/`
     * Code that supports a Manifest V2 web extension developed for Firefox.
 
-There is one library dependency for the project: <https://github.com/dgroomes/browser-extension-framework>. The *BrowserExtensionFramework*
+There is one library dependency for the extension: <https://github.com/dgroomes/browser-extension-framework>. The *BrowserExtensionFramework*
 is an RPC-centric web extension framework that was originally developed as part of the *Look Back Tool* codebase.
 
 The extension has been verified to work in the checked `[x]` browsers:
@@ -125,10 +137,15 @@ Follow these instructions to install the tool as a Chrome browser extension and 
          * If not logged in, then log in and navigate back to the original page.
      * Repeat the earlier steps to open the extension entry
      * The same popup will appear. Click "Expand posts". The post data will be expanded and saved into browser storage.
-17. View the posts
+17. Download the posts data
      * While on the same StackExchange page, repeat the earlier steps to open the extension entry
      * Click the "View posts" button
-     * Explore the data!
+     * Click the download button. Now, you have a copy of the data in a JSON file.
+18. Upload to Algolia
+     * You're on your own for this step. Algolia is really easy to use.
+19. Search the posts
+     * Follow the instructions in [`search-ui`](search-ui/) to run the search UI.
+     * Finally, search for that one post you up-voted that has the magic incantation of code that you urgently need!
 
 
 ## Firefox
@@ -168,16 +185,25 @@ General clean ups, TODOs and things I wish to implement for this project:
 
 * [ ] Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
-* [ ] Multi-term search. The search bar should take each word and apply an "AND" search
 * [ ] Implement a "recents" feature? Maybe the most relevant StackOverflow posts are the ones I just added! I'm revisiting
   them continually until I understand them (concepts) or memorize them (commands or code snippets).
-* [ ] Remove the viewer with a standalone "Search UI". I've already implemented a good deal of this effort in `search-ui/`.
+* [x] DONE Replace the viewer stuff with a standalone "Search UI". I've already implemented a good deal of this effort in `search-ui/`.
       It is a single-page app built with Next.js and the posts data lives in Algolia. The UI uses Algolia's sophisticated
       component library. I'm impressed with the developer experience of Algolia (and I also notice the price tag $$$).
 * [ ] Handle case insensitivity in the search result highlighting. Unfortunately I this means the algorithm has to be
       changed considerably. Something to do with carrying a pair of "the original text section" and a "normalized
       (lowercased) text section" and somehow preserving case in the original phrase. Maybe regex are the right choice but
       then I have to escape the regexes if the matched term has regex special characters (which maybe they never do?).
+* [ ] Facet search. Those are the clickable search categories you see in many search UIs.
+* [ ] Show the question title.
+* [ ] Give a visual indication that an entry is an answer to a question. Question entries, by contrast, will show
+  unadorned.
+* [ ] Fix redundant calls to `toJSON`. The whole purpose of that design is that it is called implicitly by the browser `JSON.stringify`
+      API.
+* [ ] Consider what to improve about indexing `htmlBody`. Unfortunately SEDE only provides the HTML body and doesn't have
+  an option for just the content. That's perfectly reasonable. But it's awkward to index the markup. Doesn't it have any
+  negative effect on search results? If not, then I can live with it. If I really wanted I could parse out the text nodes.
+
 
 ## Finished Wish List items
 
@@ -434,7 +460,9 @@ These are the finished items from the Wish List:
       off type validation... but I think the imports just won't work.
     * DONE Migrate to Webpack and ts-loader, and use the latest BEF. Build BEF with `npm pack` and reference it from `stackoverflow-look-back`
       as an NPM dependency like `file:browser-extension-framework/browser-extension-framework/browser-extension-framework-0.1.0.tgz`
-
+* [x] OBSOLETE (The `search-ui` supportes this) Multi-term search. The search bar should take each word and apply an "AND" search
+* [x] DONE (Done. Wow Algolia made that easier than I could have imagined.) Exclude the `type` field from being searched. It doesn't matter much, but it's confusing to see it as a highlighted
+      result. UPDATE: Algolia calls these "searchable attributes".
 
 ## Background
 
@@ -443,7 +471,7 @@ Here is some background on this project and some of my research which contextual
 * Does StackOverflow already support this? [stackoverflow.com](https://stackoverflow.com) does not have search functionality for posts
   that you've up-voted. By contrast, there is a way to search for posts that you've bookmarked (née favorited) using
   the search option `inbookmarks:mine`. See the search page <https://stackoverflow.com/search> for all search
-  options. I've bookmarked 117 posts whereas I've up-voted 1,850 posts! **I want search coverage on my votes** (
+  options. I've bookmarked 121 posts whereas I've up-voted 2,200 posts! **I want search coverage on my votes** (
   Hello StackOverflow, if you see this, consider this a feature request, or at least, a user experience data point!
   Thank you). Here are some related questions by other people:
     * ["How do I search for posts I've interacted on, with a particular word in them?"](https://meta.stackoverflow.com/q/302648)

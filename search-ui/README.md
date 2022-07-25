@@ -31,6 +31,7 @@ like this:
 NEXT_PUBLIC_SEARCH_CLIENT=search-api npm run dev
 ```
 
+
 ## Reference
 
 * [Algolia](https://www.algolia.com/)

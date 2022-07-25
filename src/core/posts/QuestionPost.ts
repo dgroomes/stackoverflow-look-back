@@ -31,25 +31,6 @@ class QuestionPost extends Post {
     naturalOrder() {
         return this.id
     }
-
-    toHtml() {
-        return `<div>
-    <a class="question-answer-moniker" href="https://stackoverflow.com/q/${this.id}">Q</a>
-</div>
-<div>
-    <h1 class="question-title">${this.title}</h1>
-    <div class="question-tags">${this.#tagsHtml()}</div>
-    ${this.htmlBody}
-</div>`
-    }
-
-    #tagsHtml() {
-        let html = ''
-        for (const tag of this.tags) {
-            html += `<span>${tag}</span>`
-        }
-        return html
-    }
 }
 
 export {QuestionPost};
