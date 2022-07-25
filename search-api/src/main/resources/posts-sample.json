@@ -1,0 +1,30 @@
+[
+  {
+    "htmlBody": "<p>I'm using Bash. I have a Bash script. How can I tell if the script is a symlink, from within the script?</p>\n",
+    "id": 1,
+    "questionId": 1,
+    "tags": [
+      "bash",
+      "symlink"
+    ],
+    "title": "Detect symlinks in Bash script",
+    "type": "question"
+  },
+  {
+    "htmlBody": "<p>I'm using the <pre><code>less</code></pre> Unix command. How do I do case insensitive search?</p>",
+    "id": 3,
+    "questionId": 3,
+    "tags": [
+      "unix",
+      "search"
+    ],
+    "title": "Case insensitive search with less?",
+    "type": "question"
+  },
+  {
+    "htmlBody": "<p>Try turning it off and on again.</p>\n",
+    "id": 5,
+    "questionId": 4,
+    "type": "answer"
+  }
+]
