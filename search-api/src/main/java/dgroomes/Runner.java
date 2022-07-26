@@ -1,5 +1,8 @@
 package dgroomes;
 
+import dgroomes.http.HttpHandler;
+import dgroomes.http.LoggingExceptionListener;
+import dgroomes.search.SearchSystem;
 import org.apache.hc.core5.http.impl.bootstrap.HttpServer;
 import org.apache.hc.core5.http.impl.bootstrap.ServerBootstrap;
 import org.apache.hc.core5.io.CloseMode;
@@ -26,7 +29,7 @@ public class Runner {
     try (Directory indexDir = new ByteBuffersDirectory();
          Analyzer analyzer = new StandardAnalyzer()) {
 
-      TimeZoneSearchSystem searchSystem = TimeZoneSearchSystem.init(indexDir, analyzer);
+      SearchSystem searchSystem = SearchSystem.init(indexDir, analyzer);
       runServerContinuously(searchSystem);
     } catch (IOException e) {
       log.error("Unexpected error", e);
@@ -37,11 +40,12 @@ public class Runner {
   /**
    * Run the HTTP server. This runs continuously until the process is stopped with "Ctrl + C".
    */
-  private static void runServerContinuously(TimeZoneSearchSystem timeZoneSearchSystem) throws IOException {
+  private static void runServerContinuously(SearchSystem timeZoneSearchSystem) throws IOException {
     var simulatorHttpHandler = new HttpHandler(timeZoneSearchSystem);
 
     ServerBootstrap builder = ServerBootstrap.bootstrap()
             .setListenerPort(PORT)
+            .setExceptionListener(new LoggingExceptionListener())
             .register("*", simulatorHttpHandler);
 
     try (HttpServer server = builder.create()) {

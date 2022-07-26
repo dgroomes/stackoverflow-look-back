@@ -1,5 +1,8 @@
-package dgroomes;
+package dgroomes.http;
 
+import dgroomes.posts.Post;
+import dgroomes.search.SearchResult;
+import dgroomes.search.SearchSystem;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.HttpException;
@@ -8,7 +11,6 @@ import org.apache.hc.core5.http.io.HttpRequestHandler;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.hc.core5.net.URIBuilder;
-import org.apache.lucene.document.Document;
 
 import java.io.IOException;
 import java.net.URI;
@@ -21,11 +23,11 @@ import java.util.stream.Collectors;
 /**
  * This handles incoming HTTP requests that represent searches.
  */
-class HttpHandler implements HttpRequestHandler {
+public class HttpHandler implements HttpRequestHandler {
 
-  private final TimeZoneSearchSystem timeZoneSearchSystem;
+  private final SearchSystem timeZoneSearchSystem;
 
-  public HttpHandler(TimeZoneSearchSystem timeZoneSearchSystem) {
+  public HttpHandler(SearchSystem timeZoneSearchSystem) {
     this.timeZoneSearchSystem = timeZoneSearchSystem;
   }
 
@@ -39,10 +41,10 @@ class HttpHandler implements HttpRequestHandler {
     }
 
     var keyword = keywordOpt.get();
-    List<Document> results = timeZoneSearchSystem.search(keyword);
+    List<SearchResult<Post>> results = timeZoneSearchSystem.search(keyword);
 
     var msgBody = results.stream()
-            .map(doc -> doc.get(Indexer.FIELD_TIME_ZONE_DISPLAY_NAME))
+            .map(result -> result.doc().get(SearchSystem.FIELD_HTML_BODY))
             .sorted()
             .map(timeZone -> {
               // Indent it for easier reading.

@@ -28,7 +28,10 @@ Follow these instructions to build and run a Lucene demo program:
      ```
 3. Make some search requests
    * ```shell
-     todo
+     curl --request GET --url 'http://localhost:8080/?keyword=bash'
+     ```
+   * ```shell
+     curl --request GET --url 'http://localhost:8080/?keyword=us*'
      ```
 4. Stop the server
    * Stop the server process with `Ctrl + C`.
@@ -37,9 +40,9 @@ Follow these instructions to build and run a Lucene demo program:
 
 Stuff that needs implementing/designing/deciding:
 
-* [ ] Read the sample posts
-* [ ] Index the sample posts (the htmlBody)
+* [ ] DONE Read the sample posts
+* [ ] DONE Index the sample posts (the htmlBody)
 * [ ] Nice to have. Can we index the htmlBody and the tags separately?
 * [ ] JSONify the API response (so it can be used the search-ui).
-* [ ] Adapt search-ui to point optionally to Algolio or search-api. This should be decently possible, a lot of projects
+* [ ] Adapt search-ui to point optionally to Algolia or search-api. This should be decently possible, a lot of projects
       use the algolia-ui tools and don't use Algolia API.

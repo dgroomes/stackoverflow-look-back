@@ -1,8 +1,13 @@
-package dgroomes;
+package dgroomes.search;
 
+import dgroomes.Posts;
+import dgroomes.posts.Post;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -17,25 +22,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.Map;
 
 /**
- * This class encapsulates a "search system".
- *
+ * This class encapsulates a "search system" over the StackOverflow post data.
+ * <p>
  * It exposes a search API via a public method and it encapsulates the internals of the data-under-search (the Lucene index).
- * The data-under-search is toy data. It's a set of time zones names.
  */
-public class TimeZoneSearchSystem {
+public class SearchSystem {
 
-  private static final Logger log = LoggerFactory.getLogger(TimeZoneSearchSystem.class);
+  public static final String FIELD_HTML_BODY = "html_body";
+  private static final Logger log = LoggerFactory.getLogger(SearchSystem.class);
 
   private final Directory indexDir;
   private final Analyzer analyzer;
 
-  public TimeZoneSearchSystem(Directory indexDir, Analyzer analyzer) {
+  private final Map<Long, Post> postsById = new HashMap<>();
+
+  public SearchSystem(Directory indexDir, Analyzer analyzer) {
     this.indexDir = indexDir;
     this.analyzer = analyzer;
   }
@@ -43,14 +49,14 @@ public class TimeZoneSearchSystem {
   /**
    * Initialize the search system. This will execute the indexing process and the method returns when indexing is
    * complete.
-   *
+   * <p>
    * It would be nice to encapsulate the {@link Directory} and {@link Analyzer} instances as implementation details
    * inside this initialization method, but I would prefer to have control over the lifecycle of these objects by
    * having the calling code inject them, and the calling code also close the objects using a try-with-resources block.
    * It's a trade-off.
    */
-  public static TimeZoneSearchSystem init(Directory indexDir, Analyzer analyzer) {
-    TimeZoneSearchSystem timeZoneSearchSystem = new TimeZoneSearchSystem(indexDir, analyzer);
+  public static SearchSystem init(Directory indexDir, Analyzer analyzer) {
+    SearchSystem timeZoneSearchSystem = new SearchSystem(indexDir, analyzer);
     timeZoneSearchSystem.indexData();
     return timeZoneSearchSystem;
   }
@@ -58,22 +64,22 @@ public class TimeZoneSearchSystem {
   /**
    * Search for the given keyword.
    */
-  public List<Document> search(String keyword) {
-    DirectoryReader reader = null;
+  public List<SearchResult<Post>> search(String keyword) {
+    DirectoryReader reader; // todo I need to close this.
     try {
       reader = DirectoryReader.open(indexDir);
     } catch (IOException e) {
       throw new IllegalStateException("Unexpected error opening the Lucene index", e);
     }
 
-    log.info("Searching for time zones using the keyword: '{}'", keyword);
+    log.info("Searching for entities using the keyword: '{}'", keyword);
     IndexSearcher searcher = new IndexSearcher(reader);
     StandardQueryParser queryParser = new StandardQueryParser(new StandardAnalyzer());
 
     List<ScoreDoc> hits;
 
     try {
-      Query query = queryParser.parse(keyword, Indexer.FIELD_TIME_ZONE_DISPLAY_NAME);
+      Query query = queryParser.parse(keyword, FIELD_HTML_BODY);
       TopDocs results = searcher.search(query, 2000);
       ScoreDoc[] packageNameHits = results.scoreDocs;
       hits = List.of(packageNameHits);
@@ -84,9 +90,12 @@ public class TimeZoneSearchSystem {
     log.info("Found {} hits", hits.size());
 
     return hits.stream()
-            .map(hit -> {
+            .map(scoreDoc -> {
               try {
-                return searcher.doc(hit.doc);
+                Document doc = searcher.doc(scoreDoc.doc);
+                long id = doc.getField("id").numericValue().longValue();
+                Post post = postsById.get(id);
+                return new SearchResult<>(post, doc, scoreDoc);
               } catch (IOException e) {
                 throw new IllegalStateException("Unexpected error while getting the document from the index", e);
               }
@@ -96,16 +105,25 @@ public class TimeZoneSearchSystem {
 
   /**
    * Index the domain data into an in-memory Lucene index.
+   * <p>
+   * todo Consider creating an Indexer inner class. Maybe it creates the index and then can go away.
    */
   private void indexData() {
     try (var indexWriter = indexWriter(indexDir, analyzer)) {
 
-      List<String> timeZoneDisplayNames = findTimeZones();
-      log.info("Indexing {} known time zones.", timeZoneDisplayNames.size());
+      List<Post> posts = Posts.readPostData();
+      log.info("Indexing {} StackOverflow posts.", posts.size());
 
-      var indexer = new Indexer(indexWriter);
-      for (var timeZoneDisplayName : timeZoneDisplayNames) {
-        indexer.index(timeZoneDisplayName);
+      for (var post : posts) {
+        var doc = new Document();
+
+        doc.add(new StoredField("id", post.id()));
+        doc.add(new TextField(SearchSystem.FIELD_HTML_BODY, post.htmlBody(), Field.Store.YES));
+        // todo index the tags. Should I use a second index? Or overload the existing index with tags and empties?
+
+        postsById.put(post.id(), post);
+
+        indexWriter.addDocument(doc);
       }
 
       log.info("Indexing done.");
@@ -123,16 +141,4 @@ public class TimeZoneSearchSystem {
 
     return new IndexWriter(dir, config);
   }
-
-  private static List<String> findTimeZones() {
-    String[] timeZoneIds = TimeZone.getAvailableIDs();
-    return Arrays.stream(timeZoneIds)
-            .map(id -> TimeZone.getTimeZone(id).getDisplayName(Locale.US))
-            // Filter out "GMT" because the results are not interesting. They just describe offsets not places.
-            .filter(displayName -> !displayName.startsWith("GMT"))
-            .distinct()
-            .sorted()
-            .toList();
-  }
-
 }
