@@ -40,9 +40,11 @@ Follow these instructions to build and run a Lucene demo program:
 
 Stuff that needs implementing/designing/deciding:
 
-* [ ] DONE Read the sample posts
-* [ ] DONE Index the sample posts (the htmlBody)
+* [x] DONE Read the sample posts
+* [x] DONE Index the sample posts (the htmlBody)
 * [ ] Nice to have. Can we index the htmlBody and the tags separately?
-* [ ] JSONify the API response (so it can be used the search-ui).
+* [x] DONE JSONify the API response (so it can be used the search-ui).
 * [ ] Adapt search-ui to point optionally to Algolia or search-api. This should be decently possible, a lot of projects
       use the algolia-ui tools and don't use Algolia API.
+* [ ] How to report highlighting data? Lucene has server-side highlighting, but in React, I dont' really want to `dangerouslySetInnerHtml`
+      ... although I totally could. That's probably best for "nike just do it".

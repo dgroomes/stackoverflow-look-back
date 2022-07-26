@@ -1,5 +1,6 @@
 package dgroomes.http;
 
+import dgroomes.Util;
 import dgroomes.posts.Post;
 import dgroomes.search.SearchResult;
 import dgroomes.search.SearchSystem;
@@ -15,6 +16,7 @@ import org.apache.hc.core5.net.URIBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,10 +27,10 @@ import java.util.stream.Collectors;
  */
 public class HttpHandler implements HttpRequestHandler {
 
-  private final SearchSystem timeZoneSearchSystem;
+  private final SearchSystem searchSystem;
 
-  public HttpHandler(SearchSystem timeZoneSearchSystem) {
-    this.timeZoneSearchSystem = timeZoneSearchSystem;
+  public HttpHandler(SearchSystem searchSystem) {
+    this.searchSystem = searchSystem;
   }
 
   @Override
@@ -41,28 +43,23 @@ public class HttpHandler implements HttpRequestHandler {
     }
 
     var keyword = keywordOpt.get();
-    List<SearchResult<Post>> results = timeZoneSearchSystem.search(keyword);
+    List<SearchResult<Post>> results = searchSystem.search(keyword);
 
-    var msgBody = results.stream()
-            .map(result -> result.doc().get(SearchSystem.FIELD_HTML_BODY))
-            .sorted()
-            .map(timeZone -> {
-              // Indent it for easier reading.
-              return "\t" + timeZone;
+    var resultsNode = results.stream()
+            .sorted(Comparator.<SearchResult<Post>, Float>comparing(result -> result.scoreDoc().score).reversed())
+            .map(result -> {
+              Post post = result.domain();
+              return Util.jsonObject(node -> {
+                node.put("id", post.id());
+                node.put("html_body", post.htmlBody());
+              });
             })
-            .collect(Collectors.joining("\n", "", ""));
+            .toList();
 
-    String msg;
-    if (results.isEmpty()) {
-      msg = "No search results found for keyword '%s'".formatted(keyword);
-    } else {
-      msg = """
-              Search found %d results for keyword '%s':
-              %s
-              """.formatted(results.size(), keyword, msgBody);
-    }
+    String json = Util.toJson(resultsNode);
 
-    var responseBody = new StringEntity(msg);
+    var responseBody = new StringEntity(json);
+    response.addHeader("Content-Type", "application/json");
     response.setEntity(responseBody);
   }
 

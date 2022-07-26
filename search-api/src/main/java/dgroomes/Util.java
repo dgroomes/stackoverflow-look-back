@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +13,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -41,7 +44,7 @@ public class Util {
   }
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-  public static final ObjectWriter writer = OBJECT_MAPPER.writerWithDefaultPrettyPrinter();
+  private static final ObjectWriter OBJECT_WRITER = OBJECT_MAPPER.writerWithDefaultPrettyPrinter();
 
   /**
    * Deserialize a JSON string.
@@ -56,9 +59,20 @@ public class Util {
 
   public static String toJson(Object obj) {
     try {
-      return writer.writeValueAsString(obj);
+      return OBJECT_WRITER.writeValueAsString(obj);
     } catch (JsonProcessingException e) {
       throw new IllegalArgumentException("Failed to serialize to JSON", e);
     }
+  }
+
+  /**
+   * Create a JSON node programmatically using the API of Jackson's {@link ObjectNode} type.
+   *
+   * @param fn - A function to customize the object.
+   */
+  public static ObjectNode jsonObject(Consumer<ObjectNode> fn) {
+    ObjectNode node = OBJECT_MAPPER.createObjectNode();
+    fn.accept(node);
+    return node;
   }
 }
