@@ -10,7 +10,66 @@ const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
 const INDEX_NAME = "posts_full";
 
-const searchClient = algoliasearch(APP_ID, API_KEY);
+// const searchClient = algoliasearch(APP_ID, API_KEY);
+const searchClient = {
+    clearCache: () => this.clearCache(),
+    search: async function(instantsearchRequests) {
+        return {
+            "results": [
+                {
+                    "hits": [
+                        {
+                            "htmlBody": "<p>I'm using Bash. I have a Bash script. How can I tell if the script is a symlink, from within the script?</p>\n",
+                            "id": 1,
+                            "questionId": 1,
+                            "type": "question",
+                            "objectID": "1",
+                            "_highlightResult": {
+                                "htmlBody": {
+                                    "value": "<p>I'm using Bash. I have a Bash __ais-highlight__script__/ais-highlight__. How can I tell if the script is a symlink, from within the script?\n",
+                                    "matchLevel": "full",
+                                    "fullyHighlighted": false,
+                                    "matchedWords": [
+                                        "script"
+                                    ]
+                                },
+                                "id": {
+                                    "value": "2",
+                                    "matchLevel": "none",
+                                    "matchedWords": []
+                                },
+                                "questionId": {
+                                    "value": "1",
+                                    "matchLevel": "none",
+                                    "matchedWords": []
+                                },
+                                "type": {
+                                    "value": "answer",
+                                    "matchLevel": "none",
+                                    "matchedWords": []
+                                }
+                            }
+                        }
+                    ],
+                    "nbHits": 1,
+                    "page": 0,
+                    "nbPages": 1,
+                    "hitsPerPage": 1,
+                    "exhaustiveNbHits": true,
+                    "exhaustiveTypo": true,
+                    "query": "script",
+                    "params": "",
+                    "index": "",
+                    "renderingContent": {},
+                    "processingTimeMS": 1
+                }
+            ]
+        }
+    },
+    searchForFacetValues: async function(instantsearchRequests) {
+        return {}
+    }
+}
 
 /**
  * A simple mashup of Algolia UI control elements.

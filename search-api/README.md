@@ -44,7 +44,8 @@ Stuff that needs implementing/designing/deciding:
 * [x] DONE Index the sample posts (the htmlBody)
 * [ ] Nice to have. Can we index the htmlBody and the tags separately?
 * [x] DONE JSONify the API response (so it can be used the search-ui).
-* [ ] Adapt search-ui to point optionally to Algolia or search-api. This should be decently possible, a lot of projects
+* [ ] IN PROGRESS Adapt search-ui to point optionally to Algolia or search-api. This should be decently possible, a lot of projects
       use the algolia-ui tools and don't use Algolia API.
+      * An example of adapting the Algolia client is <https://github.com/typesense/typesense-instantsearch-adapter>
 * [ ] How to report highlighting data? Lucene has server-side highlighting, but in React, I dont' really want to `dangerouslySetInnerHtml`
       ... although I totally could. That's probably best for "nike just do it".
