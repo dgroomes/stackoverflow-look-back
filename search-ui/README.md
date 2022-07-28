@@ -29,3 +29,5 @@ npm run build-target-gh-pages
 * [Algolia](https://www.algolia.com/)
 * [Algolia docs: *Using UI widgets*](https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/react-hooks#using-ui-widgets)
 * [Next.js docs: *Environment Variables*](https://nextjs.org/docs/basic-features/environment-variables)
+* [Algolia API reference: *Search Multiple Indices*](https://www.algolia.com/doc/api-reference/api-methods/multiple-queries/#json-format)
+  * This shows an example JSON response.

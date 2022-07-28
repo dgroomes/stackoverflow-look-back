@@ -50,7 +50,9 @@ public class HttpHandler implements HttpRequestHandler {
             .map(result -> {
               Post post = result.domain();
               return Util.jsonObject(node -> {
-                node.put("id", post.id());
+                node.put("id", String.valueOf(post.id()));
+                node.put("question_id", String.valueOf(post.questionId()));
+                node.put("type", post.type());
                 node.put("html_body", post.htmlBody());
               });
             })
@@ -60,6 +62,7 @@ public class HttpHandler implements HttpRequestHandler {
 
     var responseBody = new StringEntity(json);
     response.addHeader("Content-Type", "application/json");
+    response.addHeader("Access-Control-Allow-Origin", "*");
     response.setEntity(responseBody);
   }
 

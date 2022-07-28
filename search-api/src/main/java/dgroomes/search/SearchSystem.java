@@ -75,6 +75,7 @@ public class SearchSystem {
     log.info("Searching for entities using the keyword: '{}'", keyword);
     IndexSearcher searcher = new IndexSearcher(reader);
     StandardQueryParser queryParser = new StandardQueryParser(new StandardAnalyzer());
+    queryParser.setAllowLeadingWildcard(true);
 
     List<ScoreDoc> hits;
 

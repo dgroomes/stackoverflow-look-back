@@ -1,4 +1,3 @@
-import algoliasearch from "algoliasearch/lite";
 import {Configure, Highlight, Hits, InstantSearch, Pagination, SearchBox,} from "react-instantsearch-hooks-web";
 import {StackOverflowPostLink} from "./StackOverflowPostLink";
 import {RawHtml} from "./RawHtml";
@@ -13,60 +12,146 @@ const INDEX_NAME = "posts_full";
 // const searchClient = algoliasearch(APP_ID, API_KEY);
 const searchClient = {
     clearCache: () => this.clearCache(),
-    search: async function(instantsearchRequests) {
-        return {
-            "results": [
-                {
-                    "hits": [
-                        {
-                            "htmlBody": "<p>I'm using Bash. I have a Bash script. How can I tell if the script is a symlink, from within the script?</p>\n",
-                            "id": 1,
-                            "questionId": 1,
-                            "type": "question",
-                            "objectID": "1",
-                            "_highlightResult": {
-                                "htmlBody": {
-                                    "value": "<p>I'm using Bash. I have a Bash __ais-highlight__script__/ais-highlight__. How can I tell if the script is a symlink, from within the script?\n",
-                                    "matchLevel": "full",
-                                    "fullyHighlighted": false,
-                                    "matchedWords": [
-                                        "script"
-                                    ]
-                                },
-                                "id": {
-                                    "value": "2",
-                                    "matchLevel": "none",
-                                    "matchedWords": []
-                                },
-                                "questionId": {
-                                    "value": "1",
-                                    "matchLevel": "none",
-                                    "matchedWords": []
-                                },
-                                "type": {
-                                    "value": "answer",
-                                    "matchLevel": "none",
-                                    "matchedWords": []
-                                }
-                            }
-                        }
-                    ],
-                    "nbHits": 1,
-                    "page": 0,
-                    "nbPages": 1,
-                    "hitsPerPage": 1,
-                    "exhaustiveNbHits": true,
-                    "exhaustiveTypo": true,
-                    "query": "script",
-                    "params": "",
-                    "index": "",
-                    "renderingContent": {},
-                    "processingTimeMS": 1
-                }
-            ]
+    search: async function (instantsearchRequests) {
+
+        // The library is designed to execute a "multi-search request" and handle a "multi-results response".
+        // I don't yet understand this. I'll just design around the first search and first result.
+        const firstRequest = instantsearchRequests[0];
+
+        // The user-experience always starts with an empty search bar. The user should just see a set of arbitrary posts
+        // from the whole corpus. We can accomplish that with a "match everything" search which is just the wildcard
+        // character. I don't think this really counts as a search, but it works nicely.
+        let query = firstRequest.params.query;
+        if (query === "") {
+            query = "*";
         }
+
+        return await fetch(`http://localhost:8080?keyword=${query}`)
+            .then(response => {
+                const {status} = response;
+                if (status !== 200) {
+                    throw new Error(`Unexpected HTTP response status for the search: ${status}`)
+                } else {
+                    return response.json();
+                }
+            })
+            .then(hits => {
+                console.log({hits});
+                const mapped = hits.map(hit => {
+                    const id = hit.id;
+                    const questionId = hit.question_id;
+                    const type = hit.type;
+                    const htmlBody = hit.html_body;
+                    return {
+                        id,
+                        questionId,
+                        type,
+                        htmlBody,
+                        "objectID":
+                            "1",
+                        "_highlightResult":
+                            {
+                                "id":
+                                    {
+                                        "value":
+                                        id,
+                                        "matchLevel":
+                                            "none",
+                                        "matchedWords":
+                                            []
+                                    }
+                                ,
+                                "questionId":
+                                    {
+                                        "value":
+                                        questionId,
+                                        "matchLevel":
+                                            "none",
+                                        "matchedWords":
+                                            []
+                                    }
+                                ,
+                                "type":
+                                    {
+                                        "value":
+                                        type,
+                                        "matchLevel":
+                                            "none",
+                                        "matchedWords":
+                                            []
+                                    }
+                                ,
+                                "htmlBody":
+                                    {
+                                        "value":
+                                        htmlBody,
+                                        "matchLevel":
+                                            "full",
+                                        "fullyHighlighted":
+                                            false,
+                                        "matchedWords":
+                                            [
+                                                query
+                                            ]
+                                    }
+                            }
+                    };
+                });
+
+                return {
+                    "results":
+                        [
+                            {
+                                "hits": mapped,
+                                "nbHits": 1,
+                                "page": 0,
+                                "nbPages": 1,
+                                "hitsPerPage": 1,
+                                "exhaustiveNbHits": true,
+                                "exhaustiveTypo": true,
+                                "query": "script",
+                                "params": "",
+                                "index": "",
+                                "renderingContent": {},
+                                "processingTimeMS": 1
+                            }
+                        ]
+                };
+            })
+            .catch(err => {
+                console.log('Something went wrong during the search', err);
+
+                // I'm not exactly sure how best to handle the error here. If your return an object with hits equal
+                // to an empty array, the Algolia JS library will actually error with a "undefined/null" error because
+                // it tries to dereference the first element in the empty array.
+                //
+                // I think logging the error and then return a "shell" object here is fine.
+                return {
+                    results: [
+                        {
+                            "hits": [
+                                {
+                                    "objectID": "1",
+                                    "_highlightResult": {}
+                                }
+                            ],
+                            "nbHits": 0,
+                            "page": 0,
+                            "nbPages": 1,
+                            "hitsPerPage": 1,
+                            "exhaustiveNbHits": true,
+                            "exhaustiveTypo": true,
+                            "query": "script",
+                            "params": "",
+                            "index": "",
+                            "renderingContent": {},
+                            "processingTimeMS": 1
+                        }
+                    ]
+                }
+            });
     },
-    searchForFacetValues: async function(instantsearchRequests) {
+    searchForFacetValues: async function (instantsearchRequests) {
         return {}
     }
 }

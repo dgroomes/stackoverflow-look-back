@@ -1,7 +1,11 @@
 package dgroomes.posts;
 
 sealed public interface Post permits QuestionPost, AnswerPost {
-  String htmlBody();
-
   long id();
+
+  long questionId();
+
+  String type();
+
+  String htmlBody();
 }
