@@ -1,16 +1,26 @@
-import algoliasearch from "algoliasearch/lite";
 import {Configure, Highlight, Hits, InstantSearch, Pagination, SearchBox,} from "react-instantsearch-hooks-web";
 import {StackOverflowPostLink} from "./StackOverflowPostLink";
 import {RawHtml} from "./RawHtml";
+import SearchApiSearchClient from "../code/search-api-search-client";
+import algoliaSearchClient from "../code/algolia-search-client";
 
-// Algolia app IDs and API keys are not exactly secrets because they are used client-side where anyone can see them. But
-// I'll still omit them and instead load them from the environment. Fortunately this is easy with Next.js.
-const APP_ID = process.env.NEXT_PUBLIC_APP_ID;
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+let searchClient;
+
+/**
+ * Detect if the app should use a local instance of the 'search-api' or the Algolia API.
+ */
+const searchClientType = process.env.NEXT_PUBLIC_SEARCH_CLIENT;
+if (searchClientType === "search-api") {
+    console.log("Using the 'search-api' search client.");
+    searchClient = new SearchApiSearchClient();
+} else if (searchClientType === "algolia") {
+    console.log("Using the Algolia search client directly.");
+    searchClient = algoliaSearchClient();
+} else {
+    throw new Error(`Unknown search client type: ${searchClientType}`);
+}
 
 const INDEX_NAME = "posts_full";
-
-const searchClient = algoliasearch(APP_ID, API_KEY);
 
 /**
  * A simple mashup of Algolia UI control elements.
