@@ -3,11 +3,6 @@ p, h1, h2, h3 {
     font-family: system-ui, sans-serif;
 }
 
-/* Don't bleed the background color of 'pre' tags into the 'Q' and 'A' floating elements. This is a bit hacky but I don't know how else to do this. */
-pre {
-    overflow: hidden;
-}
-
 body {
     padding: 8px 50px;
 }
@@ -16,52 +11,10 @@ h1, h2, h3, p {
     color: rgb(36, 39, 41);
 }
 
-.question-title {
-    font-size: 27px;
-    font-weight: 400;
-}
-
-/* Blockquotes should have a leading vertical gray bar for visual impact */
-blockquote {
-    border-left: 5px solid rgb(200, 204, 208);
-    padding: 0.5em 10px;
-}
-
-/* Text contained in a block quote should be slightly grayed out */
-blockquote * {
-    color: rgb(83, 90, 96);
-}
-
-blockquote p {
-    display: inline;
-}
-
-pre {
-    background-color: rgb(246, 246, 246);
-}
-
-.posts {
-    display: grid;
-    gap: 10px;
-    grid-template-columns: 100px 1fr; /* The first column is the Q or A moniker and the second column is the post content */
-    grid-auto-rows: auto;
-}
-
-.question-answer-moniker {
-    font-size: 300%;
+#summary-section {
     text-align: center;
-    margin: auto;
-    margin-top: 20px;
-    display: table; /* This is a neat trick to center an inline element horizontally without much effort. */
 }
 
-.question-tags * {
+#summary-section > * {
     margin: 5px;
-    padding: 5px;
-    background-color: aliceblue;
-    color: darkslateblue;
-}
-
-#search-section {
-    text-align: center;
 }

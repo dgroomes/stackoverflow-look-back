@@ -35,12 +35,6 @@ abstract class Post {
      */
     abstract naturalOrder() : number
 
-    /**
-     * Generate an HTML string for this post.
-     * @return {string} HTML
-     */
-    abstract toHtml() : string
-
     toJSON() : object {
         return toJSON(this, "type", "questionId")
     }
