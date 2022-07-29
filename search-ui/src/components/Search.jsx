@@ -22,8 +22,6 @@ if (searchClientType === "search-api") {
 
 const INDEX_NAME = "posts_full";
 
-// const searchClient = algoliasearch(APP_ID, API_KEY);
-
 /**
  * A simple mashup of Algolia UI control elements.
  */
