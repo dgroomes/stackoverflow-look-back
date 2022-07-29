@@ -203,6 +203,10 @@ General clean ups, TODOs and things I wish to implement for this project:
 * [ ] Consider what to improve about indexing `htmlBody`. Unfortunately SEDE only provides the HTML body and doesn't have
   an option for just the content. That's perfectly reasonable. But it's awkward to index the markup. Doesn't it have any
   negative effect on search results? If not, then I can live with it. If I really wanted I could parse out the text nodes.
+* [ ] Support an incremental scrap and incremental load from SEDE, and even incremental download to file... dang that's
+  kind of expensive. Maybe don't rush to do this.
+* [ ] Get the answer's question title in the JSON data. Mostly this data is already there, but there are plenty of answers
+  I've upvoted where I didn't upvote the question. So, this has an effect on the SEDE part too.
 
 
 ## Finished Wish List items
