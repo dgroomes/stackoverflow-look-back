@@ -168,7 +168,6 @@ General clean ups, TODOs and things I wish to implement for this project:
 
 * [ ] Support the Edge browser. Write a Powershell script to build the extension distributions. This is the Windows friendly
   thing to do. Add instructions as needed.
-* [ ] Multi-term search. The search bar should take each word and apply an "AND" search
 * [ ] Implement a "recents" feature? Maybe the most relevant StackOverflow posts are the ones I just added! I'm revisiting
   them continually until I understand them (concepts) or memorize them (commands or code snippets).
 * [ ] Remove the viewer with a standalone "Search UI". I've already implemented a good deal of this effort in `search-ui/`.
@@ -178,6 +177,11 @@ General clean ups, TODOs and things I wish to implement for this project:
       changed considerably. Something to do with carrying a pair of "the original text section" and a "normalized
       (lowercased) text section" and somehow preserving case in the original phrase. Maybe regex are the right choice but
       then I have to escape the regexes if the matched term has regex special characters (which maybe they never do?).
+* [ ] Facet search. Those are the clickable search categories you see in many search UIs.
+* [ ] Show the question title.
+* [ ] Give a visual indication that an entry is an answer to a question. Question entries, by contrast, will show
+  unadorned.
+
 
 ## Finished Wish List items
 
@@ -434,7 +438,9 @@ These are the finished items from the Wish List:
       off type validation... but I think the imports just won't work.
     * DONE Migrate to Webpack and ts-loader, and use the latest BEF. Build BEF with `npm pack` and reference it from `stackoverflow-look-back`
       as an NPM dependency like `file:browser-extension-framework/browser-extension-framework/browser-extension-framework-0.1.0.tgz`
-
+* [x] OBSOLETE (The `search-ui` supportes this) Multi-term search. The search bar should take each word and apply an "AND" search
+* [x] DONE (Done. Wow Algolia made that easier than I could have imagined.) Exclude the `type` field from being searched. It doesn't matter much, but it's confusing to see it as a highlighted
+      result. UPDATE: Algolia calls these "searchable attributes".
 
 ## Background
 
