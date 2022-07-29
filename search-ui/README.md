@@ -37,6 +37,10 @@ General clean ups, TODOs and things I wish to implement for this project:
 
 * [x] DONE (Done. Wow Algolia made that easier than I could have imagined.) Exclude the `type` field from being searched. It doesn't matter much, but it's confusing to see it as a highlighted
       result. UPDATE: Algolia calls these "searchable attributes".
+* [ ] Facet search. Those are the clickable search categories you see in many search UIs.
+* [ ] Show the question title.
+* [ ] Give a visual indication that an entry is an answer to a question. Question entries, by contrast, will show
+      unadorned.
 
 ## Reference
 
