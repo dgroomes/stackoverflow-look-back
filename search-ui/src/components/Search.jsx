@@ -1,160 +1,28 @@
 import {Configure, Highlight, Hits, InstantSearch, Pagination, SearchBox,} from "react-instantsearch-hooks-web";
 import {StackOverflowPostLink} from "./StackOverflowPostLink";
 import {RawHtml} from "./RawHtml";
+import SearchApiSearchClient from "../code/search-api-search-client";
+import algoliaSearchClient from "../code/algolia-search-client";
 
-// Algolia app IDs and API keys are not exactly secrets because they are used client-side where anyone can see them. But
-// I'll still omit them and instead load them from the environment. Fortunately this is easy with Next.js.
-const APP_ID = process.env.NEXT_PUBLIC_APP_ID;
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+let searchClient;
+
+/**
+ * Detect if the app should use a local instance of the 'search-api' or the Algolia API.
+ */
+const searchClientType = process.env.NEXT_PUBLIC_SEARCH_CLIENT;
+if (searchClientType === "search-api") {
+    console.log("Using the 'search-api' search client.");
+    searchClient = new SearchApiSearchClient();
+} else if (searchClientType === "algolia") {
+    console.log("Using the Algolia search client directly.");
+    searchClient = algoliaSearchClient();
+} else {
+    throw new Error(`Unknown search client type: ${searchClientType}`);
+}
 
 const INDEX_NAME = "posts_full";
 
 // const searchClient = algoliasearch(APP_ID, API_KEY);
-const searchClient = {
-    clearCache: () => this.clearCache(),
-    search: async function (instantsearchRequests) {
-
-        // The library is designed to execute a "multi-search request" and handle a "multi-results response".
-        // I don't yet understand this. I'll just design around the first search and first result.
-        const firstRequest = instantsearchRequests[0];
-
-        // The user-experience always starts with an empty search bar. The user should just see a set of arbitrary posts
-        // from the whole corpus. We can accomplish that with a "match everything" search which is just the wildcard
-        // character. I don't think this really counts as a search, but it works nicely.
-        let query = firstRequest.params.query;
-        if (query === "") {
-            query = "*";
-        }
-
-        return await fetch(`http://localhost:8080?keyword=${query}`)
-            .then(response => {
-                const {status} = response;
-                if (status !== 200) {
-                    throw new Error(`Unexpected HTTP response status for the search: ${status}`)
-                } else {
-                    return response.json();
-                }
-            })
-            .then(hits => {
-                console.log({hits});
-                const mapped = hits.map(hit => {
-                    const id = hit.id;
-                    const questionId = hit.question_id;
-                    const type = hit.type;
-                    const htmlBody = hit.html_body;
-                    return {
-                        id,
-                        questionId,
-                        type,
-                        htmlBody,
-                        "objectID":
-                            "1",
-                        "_highlightResult":
-                            {
-                                "id":
-                                    {
-                                        "value":
-                                        id,
-                                        "matchLevel":
-                                            "none",
-                                        "matchedWords":
-                                            []
-                                    }
-                                ,
-                                "questionId":
-                                    {
-                                        "value":
-                                        questionId,
-                                        "matchLevel":
-                                            "none",
-                                        "matchedWords":
-                                            []
-                                    }
-                                ,
-                                "type":
-                                    {
-                                        "value":
-                                        type,
-                                        "matchLevel":
-                                            "none",
-                                        "matchedWords":
-                                            []
-                                    }
-                                ,
-                                "htmlBody":
-                                    {
-                                        "value":
-                                        htmlBody,
-                                        "matchLevel":
-                                            "full",
-                                        "fullyHighlighted":
-                                            false,
-                                        "matchedWords":
-                                            [
-                                                query
-                                            ]
-                                    }
-                            }
-                    };
-                });
-
-                return {
-                    "results":
-                        [
-                            {
-                                "hits": mapped,
-                                "nbHits": 1,
-                                "page": 0,
-                                "nbPages": 1,
-                                "hitsPerPage": 1,
-                                "exhaustiveNbHits": true,
-                                "exhaustiveTypo": true,
-                                "query": "script",
-                                "params": "",
-                                "index": "",
-                                "renderingContent": {},
-                                "processingTimeMS": 1
-                            }
-                        ]
-                };
-            })
-            .catch(err => {
-                console.log('Something went wrong during the search', err);
-
-                // I'm not exactly sure how best to handle the error here. If your return an object with hits equal
-                // to an empty array, the Algolia JS library will actually error with a "undefined/null" error because
-                // it tries to dereference the first element in the empty array.
-                //
-                // I think logging the error and then return a "shell" object here is fine.
-                return {
-                    results: [
-                        {
-                            "hits": [
-                                {
-                                    "objectID": "1",
-                                    "_highlightResult": {}
-                                }
-                            ],
-                            "nbHits": 0,
-                            "page": 0,
-                            "nbPages": 1,
-                            "hitsPerPage": 1,
-                            "exhaustiveNbHits": true,
-                            "exhaustiveTypo": true,
-                            "query": "script",
-                            "params": "",
-                            "index": "",
-                            "renderingContent": {},
-                            "processingTimeMS": 1
-                        }
-                    ]
-                }
-            });
-    },
-    searchForFacetValues: async function (instantsearchRequests) {
-        return {}
-    }
-}
 
 /**
  * A simple mashup of Algolia UI control elements.

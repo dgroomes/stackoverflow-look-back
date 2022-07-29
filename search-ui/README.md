@@ -24,6 +24,13 @@ To build the site for deployment to GitHub Pages, use a special environment vari
 npm run build-target-gh-pages
 ```
 
+To point the app to a local Lucene-based API implemented the `search-api/` project, add a special environment variable
+like this:
+
+```shell
+NEXT_PUBLIC_SEARCH_CLIENT=search-api npm run dev
+```
+
 ## Reference
 
 * [Algolia](https://www.algolia.com/)
