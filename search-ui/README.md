@@ -31,6 +31,13 @@ like this:
 NEXT_PUBLIC_SEARCH_CLIENT=search-api npm run dev
 ```
 
+## Wish List
+
+General clean ups, TODOs and things I wish to implement for this project:
+
+* [x] DONE (Done. Wow Algolia made that easier than I could have imagined.) Exclude the `type` field from being searched. It doesn't matter much, but it's confusing to see it as a highlighted
+      result. UPDATE: Algolia calls these "searchable attributes".
+
 ## Reference
 
 * [Algolia](https://www.algolia.com/)
