@@ -34,7 +34,7 @@ public class HttpHandler implements HttpRequestHandler {
     }
 
     @Override
-    public void handle(final ClassicHttpRequest request, final ClassicHttpResponse response, final HttpContext context) throws HttpException, IOException {
+    public void handle(final ClassicHttpRequest request, final ClassicHttpResponse response, final HttpContext context) {
         Optional<String> keywordOpt = parseKeyword(request);
         if (keywordOpt.isEmpty()) {
             response.setCode(400);

@@ -39,7 +39,6 @@ public class SearchSystem {
 
     private final Directory indexDir;
     private final Analyzer analyzer;
-
     private final Map<Long, Post> postsById = new HashMap<>();
 
     public SearchSystem(Directory indexDir, Analyzer analyzer) {
@@ -63,10 +62,11 @@ public class SearchSystem {
     }
 
     /**
-     * Search for the given keyword.
+     * Search for the given keyword. This will search the post HTML body and, and the question title (for question
+     * posts).
      */
     public List<SearchResult<Post>> search(String keyword) {
-        DirectoryReader reader; // todo I need to close this.
+        DirectoryReader reader;
         try {
             reader = DirectoryReader.open(indexDir);
         } catch (IOException e) {
@@ -97,7 +97,7 @@ public class SearchSystem {
 
         log.info("Found {} hits", hits.size());
 
-        return hits.stream()
+        List<SearchResult<Post>> results = hits.stream()
                 .map(scoreDoc -> {
                     try {
                         Document doc = storedFields.document(scoreDoc.doc);
@@ -109,6 +109,14 @@ public class SearchSystem {
                     }
                 })
                 .toList();
+
+        try {
+            reader.close();
+        } catch (IOException e) {
+            throw new RuntimeException("The search procedure was almost complete but the reader failed to close", e);
+        }
+
+        return results;
     }
 
     /**

@@ -43,7 +43,12 @@ General clean-ups, TODOs and things I wish to implement for this project:
 
 * [x] DONE Read the sample posts
 * [x] DONE Index the sample posts (the htmlBody)
-* [ ] Nice to have. Can we index the htmlBody and the tags separately?
+* [ ] Index and search on question titles
+   * Index
+   * Search
+* [ ] Index and search on the tags (maybe figure out facets first?)
+   * Index
+   * Search (this might have to go away with facets because the shape is different than the "main content")
 * [ ] Facet search
 * [x] DONE JSONify the API response (so it can be used the search-ui).
 * [x] DONE Adapt search-ui to point optionally to Algolia or search-api. This should be decently possible, a lot of projects
@@ -51,3 +56,5 @@ General clean-ups, TODOs and things I wish to implement for this project:
       * An example of adapting the Algolia client is <https://github.com/typesense/typesense-instantsearch-adapter>
 * [ ] How to report highlighting data? Lucene has server-side highlighting, but in React, I don't really want to `dangerouslySetInnerHtml`
       ... although I totally could. That's probably best for "nike just do it".
+* [ ] Do I really need to store any fields besides into the Lucene index besides the post ID? Because we already have
+  access to the full post data outside of Lucene.
