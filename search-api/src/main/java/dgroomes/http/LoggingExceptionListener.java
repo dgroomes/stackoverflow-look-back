@@ -13,21 +13,21 @@ import java.net.SocketTimeoutException;
  */
 public class LoggingExceptionListener implements ExceptionListener {
 
-  private static final Logger log = LoggerFactory.getLogger(LoggingExceptionListener.class);
+    private static final Logger log = LoggerFactory.getLogger(LoggingExceptionListener.class);
 
-  @Override
-  public void onError(final Exception ex) {
-    if (ex instanceof SocketTimeoutException) {
-      log.trace("Connection timed out", ex);
-    } else if (ex instanceof ConnectionClosedException) {
-      log.trace("Connection closed", ex);
-    } else {
-      log.error("Unexpected exception", ex);
+    @Override
+    public void onError(final Exception ex) {
+        if (ex instanceof SocketTimeoutException) {
+            log.trace("Connection timed out", ex);
+        } else if (ex instanceof ConnectionClosedException) {
+            log.trace("Connection closed", ex);
+        } else {
+            log.error("Unexpected exception", ex);
+        }
     }
-  }
 
-  @Override
-  public void onError(final HttpConnection conn, final Exception ex) {
-    onError(ex);
-  }
+    @Override
+    public void onError(final HttpConnection conn, final Exception ex) {
+        onError(ex);
+    }
 }

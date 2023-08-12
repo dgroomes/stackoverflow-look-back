@@ -27,75 +27,75 @@ import java.util.stream.Collectors;
  */
 public class HttpHandler implements HttpRequestHandler {
 
-  private final SearchSystem searchSystem;
+    private final SearchSystem searchSystem;
 
-  public HttpHandler(SearchSystem searchSystem) {
-    this.searchSystem = searchSystem;
-  }
-
-  @Override
-  public void handle(final ClassicHttpRequest request, final ClassicHttpResponse response, final HttpContext context) throws HttpException, IOException {
-    Optional<String> keywordOpt = parseKeyword(request);
-    if (keywordOpt.isEmpty()) {
-      response.setCode(400);
-      response.setEntity(new StringEntity("The 'keyword' query parameter is required. Please supply it."));
-      return;
+    public HttpHandler(SearchSystem searchSystem) {
+        this.searchSystem = searchSystem;
     }
 
-    var keyword = keywordOpt.get();
-    List<SearchResult<Post>> results = searchSystem.search(keyword);
+    @Override
+    public void handle(final ClassicHttpRequest request, final ClassicHttpResponse response, final HttpContext context) throws HttpException, IOException {
+        Optional<String> keywordOpt = parseKeyword(request);
+        if (keywordOpt.isEmpty()) {
+            response.setCode(400);
+            response.setEntity(new StringEntity("The 'keyword' query parameter is required. Please supply it."));
+            return;
+        }
 
-    var resultsNode = results.stream()
-            .sorted(Comparator.<SearchResult<Post>, Float>comparing(result -> result.scoreDoc().score).reversed())
-            .map(result -> {
-              Post post = result.domain();
-              return Util.jsonObject(node -> {
-                node.put("id", String.valueOf(post.id()));
-                node.put("question_id", String.valueOf(post.questionId()));
-                node.put("type", post.type());
-                node.put("html_body", post.htmlBody());
-              });
-            })
-            .toList();
+        var keyword = keywordOpt.get();
+        List<SearchResult<Post>> results = searchSystem.search(keyword);
 
-    String json = Util.toJson(resultsNode);
+        var resultsNode = results.stream()
+                .sorted(Comparator.<SearchResult<Post>, Float>comparing(result -> result.scoreDoc().score).reversed())
+                .map(result -> {
+                    Post post = result.domain();
+                    return Util.jsonObject(node -> {
+                        node.put("id", String.valueOf(post.id()));
+                        node.put("question_id", String.valueOf(post.questionId()));
+                        node.put("type", post.type());
+                        node.put("html_body", post.htmlBody());
+                    });
+                })
+                .toList();
 
-    var responseBody = new StringEntity(json);
-    response.addHeader("Content-Type", "application/json");
-    response.addHeader("Access-Control-Allow-Origin", "*");
-    response.setEntity(responseBody);
-  }
+        String json = Util.toJson(resultsNode);
 
-  /**
-   * Parse out the "keyword" query parameter if it exists. If it does not exist, an empty {@link Optional} is returned.
-   */
-  private Optional<String> parseKeyword(ClassicHttpRequest request) {
-    URI uri;
-    try {
-      uri = request.getUri();
-    } catch (URISyntaxException e) {
-      throw new IllegalStateException("Unexpected error while parsing the HTTP request URI", e);
+        var responseBody = new StringEntity(json);
+        response.addHeader("Content-Type", "application/json");
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.setEntity(responseBody);
     }
 
-    var params = parseQueryParams(uri);
-    if (params.containsKey("keyword")) {
-      return Optional.of(params.get("keyword"));
-    } else {
-      return Optional.empty();
-    }
-  }
+    /**
+     * Parse out the "keyword" query parameter if it exists. If it does not exist, an empty {@link Optional} is returned.
+     */
+    private Optional<String> parseKeyword(ClassicHttpRequest request) {
+        URI uri;
+        try {
+            uri = request.getUri();
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("Unexpected error while parsing the HTTP request URI", e);
+        }
 
-  /**
-   * Parse query parameters into a map.
-   * <p>
-   * This also normalizes the query parameter names by lower-casing them so you can predictably call "get" on the map.
-   *
-   * @return a map of the query parameter/value pairs, keyed by query parameter name.
-   */
-  private Map<String, String> parseQueryParams(URI uri) {
-    return new URIBuilder(uri)
-            .getQueryParams()
-            .stream()
-            .collect(Collectors.toMap(nameValuePair -> nameValuePair.getName().toLowerCase(), NameValuePair::getValue));
-  }
+        var params = parseQueryParams(uri);
+        if (params.containsKey("keyword")) {
+            return Optional.of(params.get("keyword"));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Parse query parameters into a map.
+     * <p>
+     * This also normalizes the query parameter names by lower-casing them so you can predictably call "get" on the map.
+     *
+     * @return a map of the query parameter/value pairs, keyed by query parameter name.
+     */
+    private Map<String, String> parseQueryParams(URI uri) {
+        return new URIBuilder(uri)
+                .getQueryParams()
+                .stream()
+                .collect(Collectors.toMap(nameValuePair -> nameValuePair.getName().toLowerCase(), NameValuePair::getValue));
+    }
 }

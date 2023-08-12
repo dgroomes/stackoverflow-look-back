@@ -1,0 +1,14 @@
+[versions]
+slf4j = "2.0.7" # SLF4J releases: http://www.slf4j.org/news.html
+lucene = "9.7.0" # Lucene releases: https://lucene.apache.org/core/downloads.html
+http-components = "5.2.1" # HttpComponents v5 releases: https://hc.apache.org/news.html
+jackson = "2.15.2" # Jackson releases: https://github.com/FasterXML/jackson/wiki/Jackson-Releases
+
+
+[libraries]
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+lucene-queryparser = { module = "org.apache.lucene:lucene-queryparser", version.ref = "lucene" }
+lucene-analysis = { module = "org.apache.lucene:lucene-analysis-common", version.ref = "lucene" }
+http-components = { module = "org.apache.httpcomponents.client5:httpclient5", version.ref = "http-components" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }

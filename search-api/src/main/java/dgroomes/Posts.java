@@ -10,28 +10,28 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class Posts {
-  public static List<Post> readPostData() {
-    String postsDataJson = Util.readClasspathResource("/posts-sample.json");
+    public static List<Post> readPostData() {
+        String postsDataJson = Util.readClasspathResource("/posts-sample.json");
 
-    JsonNode postsDataNode = Util.readTree(postsDataJson);
-    ArrayNode posts = (ArrayNode) postsDataNode;
-    Stream<JsonNode> postsStream = Util.toStream(posts);
+        JsonNode postsDataNode = Util.readTree(postsDataJson);
+        ArrayNode posts = (ArrayNode) postsDataNode;
+        Stream<JsonNode> postsStream = Util.toStream(posts);
 
-    return postsStream.map(Posts::parsePost).toList();
-  }
-
-  public static Post parsePost(JsonNode jsonNode) {
-    String htmlBody = jsonNode.get("htmlBody").asText();
-    long id = jsonNode.get("id").asLong();
-    long questionId = jsonNode.get("questionId").asLong();
-
-    String type = jsonNode.get("type").textValue();
-    if ("question".equals(type)) {
-      var tags = ((ArrayNode) jsonNode.get("tags"));
-      var tagsList = Util.toStream(tags).map(JsonNode::textValue).toList();
-      return new QuestionPost(id, htmlBody, tagsList);
-    } else {
-      return new AnswerPost(id, questionId, htmlBody);
+        return postsStream.map(Posts::parsePost).toList();
     }
-  }
+
+    public static Post parsePost(JsonNode jsonNode) {
+        String htmlBody = jsonNode.get("htmlBody").asText();
+        long id = jsonNode.get("id").asLong();
+        long questionId = jsonNode.get("questionId").asLong();
+
+        String type = jsonNode.get("type").textValue();
+        if ("question".equals(type)) {
+            var tags = ((ArrayNode) jsonNode.get("tags"));
+            var tagsList = Util.toStream(tags).map(JsonNode::textValue).toList();
+            return new QuestionPost(id, htmlBody, tagsList);
+        } else {
+            return new AnswerPost(id, questionId, htmlBody);
+        }
+    }
 }
