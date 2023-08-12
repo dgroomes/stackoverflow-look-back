@@ -1,4 +1,4 @@
-import {Configure, Highlight, Hits, InstantSearch, Pagination, SearchBox,} from "react-instantsearch-hooks-web";
+import {Configure, Highlight, Hits, InstantSearch, Pagination, SearchBox,} from "react-instantsearch";
 import {StackOverflowPostLink} from "./StackOverflowPostLink";
 import {RawHtml} from "./RawHtml";
 import SearchApiSearchClient from "../code/search-api-search-client";
@@ -32,7 +32,7 @@ export default function Search() {
                 <Configure hitsPerPage={8}/>
                 <div className="search-panel">
                     <div className="search-panel__results">
-                        <SearchBox placeholder="" className="searchbox"/>
+                        <SearchBox placeholder="Search here" className="searchbox"/>
                         <Hits hitComponent={Hit}/>
 
                         <div className="pagination">
@@ -69,7 +69,7 @@ function highlight(textContent, matchedWords) {
 
     const highlightedMatchedWord = <mark className="ais-Highlight-highlighted">{matchedWord}</mark>;
     // This is a bit strange but basically splice a "highlighted text React element" between every entry of the 'sections'
-    // array. The 'join()' method works great for joining elements into a string but I'm trying to join them into
+    // array. The 'join()' method works great for joining elements into a string, but I'm trying to join them into
     // a bigger array where each element is linked by a "joiner" highlight.
     const elements = sections.flatMap(section => {
         return [section, highlightedMatchedWord];
