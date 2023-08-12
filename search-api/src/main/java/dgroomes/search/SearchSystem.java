@@ -2,6 +2,7 @@ package dgroomes.search;
 
 import dgroomes.Posts;
 import dgroomes.posts.Post;
+import dgroomes.posts.QuestionPost;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -135,6 +136,9 @@ public class SearchSystem {
 
                 doc.add(new StoredField("id", post.id()));
                 doc.add(new TextField(SearchSystem.FIELD_HTML_BODY, post.htmlBody(), Field.Store.YES));
+                if (post instanceof QuestionPost questionPost) {
+                    doc.add(new TextField("title", questionPost.title(), Field.Store.NO));
+                }
                 // todo index the tags. Should I use a second index? Or overload the existing index with tags and empties?
 
                 postsById.put(post.id(), post);

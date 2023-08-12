@@ -27,9 +27,10 @@ public class Posts {
 
         String type = jsonNode.get("type").textValue();
         if ("question".equals(type)) {
+            var title = jsonNode.get("title").asText();
             var tags = ((ArrayNode) jsonNode.get("tags"));
             var tagsList = Util.toStream(tags).map(JsonNode::textValue).toList();
-            return new QuestionPost(id, htmlBody, tagsList);
+            return new QuestionPost(id, htmlBody, title, tagsList);
         } else {
             return new AnswerPost(id, questionId, htmlBody);
         }

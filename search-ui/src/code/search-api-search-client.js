@@ -49,7 +49,7 @@ export default class SearchApiSearchClient {
                     const questionId = hit.question_id;
                     const type = hit.type;
                     const htmlBody = hit.html_body;
-                    return {
+                    const mappedHit = {
                         id,
                         questionId,
                         type,
@@ -103,6 +103,15 @@ export default class SearchApiSearchClient {
                                     }
                             }
                     };
+
+                    if (type === "question") {
+                        mappedHit.title = hit.title;
+                        mappedHit._highlightResult.title = {
+                            value: hit.title
+                        }
+                    }
+
+                    return mappedHit;
                 });
 
                 return {

@@ -43,8 +43,9 @@ General clean-ups, TODOs and things I wish to implement for this project:
 
 * [x] DONE Read the sample posts
 * [x] DONE Index the sample posts (the htmlBody)
-* [ ] Index and search on question titles
-   * Index
+* [ ] IN PROGRESS Index and search on question titles
+   * DONE Serve the title in the API JSON response
+   * DONE Index
    * Search
 * [ ] Index and search on the tags (maybe figure out facets first?)
    * Index

@@ -2,18 +2,17 @@ package dgroomes.http;
 
 import dgroomes.Util;
 import dgroomes.posts.Post;
+import dgroomes.posts.QuestionPost;
 import dgroomes.search.SearchResult;
 import dgroomes.search.SearchSystem;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ClassicHttpResponse;
-import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.io.HttpRequestHandler;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.hc.core5.net.URIBuilder;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Comparator;
@@ -54,6 +53,9 @@ public class HttpHandler implements HttpRequestHandler {
                         node.put("question_id", String.valueOf(post.questionId()));
                         node.put("type", post.type());
                         node.put("html_body", post.htmlBody());
+                        if (post instanceof QuestionPost questionPost) {
+                            node.put("title", questionPost.title());
+                        }
                     });
                 })
                 .toList();
