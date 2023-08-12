@@ -7,16 +7,21 @@ This is an experimental UI for searching my StackOverflow up-voted posts using A
 
 Follow these instructions to build and run the UI:
 
-1. Install dependencies:
+1. Pre-requisite: Node.js
+    * I used version 18.17.1
+2. Install dependencies:
     * ```shell
       npm install
       ```
-1. Serve and continuously build the site with the development server:
+3. Serve and continuously build the site with the development server:
     * ```shell
       npm run dev
       ```
-1. Open the page and try it out
+4. Open the page and try it out
    * Open the browser to <http://localhost:3000>.
+
+
+### Special Instructions
 
 To build the site for deployment to GitHub Pages, use a special environment variable. The build command looks like this:
 
