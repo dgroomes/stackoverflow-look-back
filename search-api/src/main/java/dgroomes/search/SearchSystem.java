@@ -11,6 +11,7 @@ import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.StoredFields;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -29,7 +30,7 @@ import java.util.Map;
 /**
  * This class encapsulates a "search system" over the StackOverflow post data.
  * <p>
- * It exposes a search API via a public method and it encapsulates the internals of the data-under-search (the Lucene index).
+ * It exposes a search API via a public method, and it encapsulates the internals of the data-under-search (the Lucene index).
  */
 public class SearchSystem {
 
@@ -56,9 +57,9 @@ public class SearchSystem {
      * It's a trade-off.
      */
     public static SearchSystem init(Directory indexDir, Analyzer analyzer) {
-        SearchSystem timeZoneSearchSystem = new SearchSystem(indexDir, analyzer);
-        timeZoneSearchSystem.indexData();
-        return timeZoneSearchSystem;
+        var searchSystem = new SearchSystem(indexDir, analyzer);
+        searchSystem.indexData();
+        return searchSystem;
     }
 
     /**
@@ -72,9 +73,15 @@ public class SearchSystem {
             throw new IllegalStateException("Unexpected error opening the Lucene index", e);
         }
 
-        log.info("Searching for entities using the keyword: '{}'", keyword);
+        log.info("Searching for entities using the keyword: '{}' ...", keyword);
         IndexSearcher searcher = new IndexSearcher(reader);
-        StandardQueryParser queryParser = new StandardQueryParser(new StandardAnalyzer());
+        StoredFields storedFields;
+        try {
+            storedFields = searcher.storedFields();
+        } catch (IOException e) {
+            throw new RuntimeException("Something went wrong during search initialization.", e);
+        }
+        var queryParser = new StandardQueryParser(new StandardAnalyzer());
         queryParser.setAllowLeadingWildcard(true);
 
         List<ScoreDoc> hits;
@@ -93,7 +100,7 @@ public class SearchSystem {
         return hits.stream()
                 .map(scoreDoc -> {
                     try {
-                        Document doc = searcher.doc(scoreDoc.doc);
+                        Document doc = storedFields.document(scoreDoc.doc);
                         long id = doc.getField("id").numericValue().longValue();
                         Post post = postsById.get(id);
                         return new SearchResult<>(post, doc, scoreDoc);
@@ -113,7 +120,7 @@ public class SearchSystem {
         try (var indexWriter = indexWriter(indexDir, analyzer)) {
 
             List<Post> posts = Posts.readPostData();
-            log.info("Indexing {} StackOverflow posts.", posts.size());
+            log.info("Indexing {} StackOverflow posts...", posts.size());
 
             for (var post : posts) {
                 var doc = new Document();

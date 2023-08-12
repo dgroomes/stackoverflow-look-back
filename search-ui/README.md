@@ -37,6 +37,14 @@ NEXT_PUBLIC_SEARCH_CLIENT=search-api npm run dev
 ```
 
 
+## Wish List
+
+General clean-ups, TODOs and things I wish to implement for this project:
+
+* [ ] Facet search. This requires understanding the Algolia API's support for facets, mocking it in `search-api`, and
+  then doing the frontend changes. There should be some nice React components for it already.
+
+
 ## Reference
 
 * [Algolia](https://www.algolia.com/)

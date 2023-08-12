@@ -6,9 +6,4 @@ public record AnswerPost(long id, long questionId, String htmlBody) implements P
     public String type() {
         return "answer";
     }
-
-    @Override
-    public long questionId() {
-        return questionId;
-    }
 }
