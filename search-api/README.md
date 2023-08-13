@@ -47,7 +47,7 @@ General clean-ups, TODOs and things I wish to implement for this project:
    * DONE Serve the title in the API JSON response
    * DONE Index
    * DONE Search
-* [ ] Serve the tags (for question posts)
+* [x] DONE Serve the tags (for question posts)
 * [ ] Index and search on the tags (maybe figure out facets first?)
    * Index
    * Search (this might have to go away with facets because the shape is different than the "main content")

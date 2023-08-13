@@ -9,10 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -74,5 +71,11 @@ public class Util {
         ObjectNode node = OBJECT_MAPPER.createObjectNode();
         fn.accept(node);
         return node;
+    }
+
+    public static void setArrayField(ObjectNode node, String key, List<String> values) {
+        ArrayNode arrayNode = OBJECT_MAPPER.createArrayNode();
+        values.forEach(arrayNode::add);
+        node.set(key, arrayNode);
     }
 }

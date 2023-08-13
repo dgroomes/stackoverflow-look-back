@@ -15,10 +15,7 @@ import org.apache.hc.core5.net.URIBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -55,6 +52,7 @@ public class HttpHandler implements HttpRequestHandler {
                         node.put("html_body", post.htmlBody());
                         if (post instanceof QuestionPost questionPost) {
                             node.put("title", questionPost.title());
+                            Util.setArrayField(node, "tags", questionPost.tags());
                         }
                     });
                 })
