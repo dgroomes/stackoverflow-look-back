@@ -43,10 +43,11 @@ General clean-ups, TODOs and things I wish to implement for this project:
 
 * [x] DONE Read the sample posts
 * [x] DONE Index the sample posts (the htmlBody)
-* [ ] IN PROGRESS Index and search on question titles
+* [x] DONE Index and search on question titles
    * DONE Serve the title in the API JSON response
    * DONE Index
-   * Search
+   * DONE Search
+* [ ] Serve the tags (for question posts)
 * [ ] Index and search on the tags (maybe figure out facets first?)
    * Index
    * Search (this might have to go away with facets because the shape is different than the "main content")
@@ -59,3 +60,4 @@ General clean-ups, TODOs and things I wish to implement for this project:
       ... although I totally could. That's probably best for "nike just do it".
 * [ ] Do I really need to store any fields besides into the Lucene index besides the post ID? Because we already have
   access to the full post data outside of Lucene.
+* [ ] Get highlighting to work everywhere (what are the API-side things needed?)

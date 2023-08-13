@@ -15,10 +15,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.StoredFields;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +33,7 @@ import java.util.Map;
 public class SearchSystem {
 
     public static final String FIELD_HTML_BODY = "html_body";
+    public static final String FIELD_TITLE = "title";
     private static final Logger log = LoggerFactory.getLogger(SearchSystem.class);
 
     private final Directory indexDir;
@@ -87,14 +85,33 @@ public class SearchSystem {
 
         List<ScoreDoc> hits;
 
+        Query queryHtmlBody;
+        Query queryTitle;
+
         try {
-            Query query = queryParser.parse(keyword, FIELD_HTML_BODY);
-            TopDocs results = searcher.search(query, 2000);
-            ScoreDoc[] packageNameHits = results.scoreDocs;
-            hits = List.of(packageNameHits);
-        } catch (QueryNodeException | IOException e) {
-            throw new IllegalStateException("Unexpected error while searching", e);
+            queryHtmlBody = queryParser.parse(keyword, FIELD_HTML_BODY);
+            queryTitle = queryParser.parse(keyword, FIELD_TITLE);
+        } catch (QueryNodeException e) {
+            // this probably needs to fail more gracefully because this is triggerable from user-input (malformed queries)
+            throw new RuntimeException("Unexpected error while parsing the query", e);
         }
+
+        // Note: A Lucene boolean query uses the word "SHOULD" to mean "at least one of the 'should' terms must
+        // match". Here, we want the search keyword to match either the HTML body, the title (or of course both).
+        Query query = new BooleanQuery.Builder()
+                .add(queryHtmlBody, BooleanClause.Occur.SHOULD)
+                .add(queryTitle, BooleanClause.Occur.SHOULD)
+                .build();
+
+        TopDocs topDocs;
+        try {
+            topDocs = searcher.search(query, 2000);
+        } catch (IOException e) {
+            throw new RuntimeException("Unexpected error while executing the search", e);
+        }
+
+        ScoreDoc[] packageNameHits = topDocs.scoreDocs;
+        hits = List.of(packageNameHits);
 
         log.info("Found {} hits", hits.size());
 
@@ -137,7 +154,7 @@ public class SearchSystem {
                 doc.add(new StoredField("id", post.id()));
                 doc.add(new TextField(SearchSystem.FIELD_HTML_BODY, post.htmlBody(), Field.Store.YES));
                 if (post instanceof QuestionPost questionPost) {
-                    doc.add(new TextField("title", questionPost.title(), Field.Store.NO));
+                    doc.add(new TextField(SearchSystem.FIELD_TITLE, questionPost.title(), Field.Store.NO));
                 }
                 // todo index the tags. Should I use a second index? Or overload the existing index with tags and empties?
 
