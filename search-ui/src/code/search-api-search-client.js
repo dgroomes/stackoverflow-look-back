@@ -105,9 +105,16 @@ export default class SearchApiSearchClient {
                     };
 
                     if (type === "question") {
+
+                        // This is quite brittle.
                         mappedHit.title = hit.title;
                         mappedHit._highlightResult.title = {
                             value: hit.title
+                        }
+
+                        mappedHit.tags = hit.tags.join(",");
+                        mappedHit._highlightResult.tags = {
+                            value: hit.tags.join(",")
                         }
                     }
 
