@@ -1,3 +1,5 @@
+**ARCHIVED**: Very happy with this tool, but I've stopped using it, especially because we have LLMs now.
+
 # StackOverflow *Look Back Tool*
 
 🛠 Extract and search the posts you've up-voted on StackOverflow. ***Look back*** on your data.
